@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Hardware = require("../bin/models/hardware");
 var Device = require("../bin/models/device");
-var Loan = require("../bin/models/Loan");
+var Loan = require("../bin/models/loan");
 
 function checkDeviceStatus(devices, cb) {
     let lost = 0;
