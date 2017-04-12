@@ -4,6 +4,7 @@ global.appRoot = path.resolve(__dirname);
 
 
 //===============MONGODB=================
+var mongoConfig = require('./config').mongoConfig;
 var mongoose = require('mongoose');
 global. db = mongoose.connection;
 
@@ -12,7 +13,7 @@ db.once('open', function() {
     // Create your schemas and models here.
 });
 
-mongoose.connect('mongodb://localhost/pi');
+mongoose.connect('mongodb://'+mongoConfig.host+'/pi');
 
 //===============DEPENDENCIES=================
 var express = require('express');
@@ -77,7 +78,7 @@ var mongoSession = session({
   secret: 'ZHxiqtUpjxVYsap5NvY8yuZGFPUg',
   resave: true,
   store: new MongoDBStore({
-    uri: 'mongodb://localhost/express-session',
+    uri: 'mongodb://'+mongoConfig.host+'/express-session',
     collection: 'pi'
   }),
   saveUninitialized: true,
