@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var Device = require(appRoot + "/bin/models/device");
-var Loan = require(appRoot + "/bin/models/Loan");
+var Device = require("../bin/models/device");
+var Loan = require("../bin/models/Loan");
 
 
 

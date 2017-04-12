@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var User = require(appRoot + "/bin/models/user");
+var User = require("../bin/models/user");
 
 User
     .find()

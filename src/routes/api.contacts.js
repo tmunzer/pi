@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Contact = require(appRoot + "/bin/models/contact");
+var Contact = require("../bin/models/contact");
 
 
 

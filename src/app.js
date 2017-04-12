@@ -1,6 +1,5 @@
 //===============CREATE ROOT PATH=================
 var path = require('path');
-global.appRoot = path.resolve(__dirname);
 
 
 //===============MONGODB=================
@@ -96,7 +95,7 @@ var flash = require('connect-flash');
 app.use(flash());
 
 // Initialize Passport
-var initPassport = require(appRoot + '/passport/init');
+var initPassport = require('./passport/init');
 initPassport(passport);
 
 //===============ROUTES=================

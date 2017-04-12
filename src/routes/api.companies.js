@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Company = require(appRoot + "/bin/models/company");
+var Company = require("../bin/models/company");
 
 
 

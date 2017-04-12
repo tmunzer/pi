@@ -42,7 +42,6 @@ UserSchema.pre('save', function (next) {
 
 var User = mongoose.model('User', UserSchema);
 User.newLogin = function (email, password, callback) {
-    console.log(email, password);
     this.findOne({ email: email }, function (err, user) {
         if (err) callback(err, null);
         else if (!user) {
@@ -50,16 +49,9 @@ User.newLogin = function (email, password, callback) {
             callback(null, false);
         }
         else {
-            console.log(user);
-            console.log(user.password);
-            if (user.enabled == false) {
-                console.log("1");
-                callback(null, false);
-            }
-            else if (!bCrypt.compareSync(password, user.password)) {
-                console.log("2");
-                callback(null, false);
-            } else {
+            if (user.enabled == false) callback(null, false);
+            else if (!bCrypt.compareSync(password, user.password)) callback(null, false);
+            else {
                 user.lastLogin = new Date();
                 user.save(function (err) {
                     console.log(err);
