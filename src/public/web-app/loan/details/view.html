@@ -1,0 +1,86 @@
+<section>
+    <article>
+
+        <md-card md-whiteframe="5">
+            <div class="md-toolbar-tools">
+                <h2>{{loan.deviceId.length}} Devices loaned to {{loan.companyId.name}}</h2>
+                <div flex></div>
+                <md-button ng-click="refresh()">
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+            </div>
+            <md-content>
+                <md-content layout="row">
+                    <div flex=50 layout="column">
+                        <div><span>Created by:</span><span>{{loan.created_by.name.first}} {{loan.created_by.name.last}} - {{loan.created_by.email}}</span></div>
+                        <div><span>Creation date:</span><span>{{loan.created_at | date:'medium'}}</span></div>
+                    </div>
+                    <div flex=50 layout="column">
+                        <div><span>Edited by:</span><span>{{loan.edited_by.name.first | capitalize}} {{loan.edited_by.name.last | capitalize}} - {{loan.edited_by.email}}</span></div>
+                        <div><span>Last edition:</span><span>{{loan.updated_at | date:'medium'}}</span></div>
+                    </div>
+                </md-content>
+        </md-card>
+        <md-card md-whiteframe="5">
+            <div class="md-toolbar-toos">
+                <h2>Contact information</h2>
+            </div>
+            <md-content>
+                <div><span>Company: </span><span>{{loan.companyId.name}}</span></div>
+                <div layout="row">
+                    <span>Contact: </span><span>{{loan.contactId.name}}</span>
+                    <span>Phone: </span><span>{{loan.companyId.phone}}</span>
+                    <span>Email: </span><span>{{loan.companyId.email}}</span>
+                </div>
+            </md-content>
+        </md-card>
+        <div layout="row" layout-align="space-between top">
+        <md-card md-whiteframe="5" flex=50>
+            <div class="md-toolbar-tools">
+                <h2>Loan Details</h2>
+                <div flex></div>
+            </div>
+            <md-content>
+                <div>
+                    <span>Start Date: </span><span>{{loan.startDate | date:'medium'}}</span>
+                </div>
+                <div>
+                    <span>End Date: </span><span>{{loan.endDate | date:'medium'}}</span>
+                </div>
+                <div>
+                    <span># of POE injectors: </span><span>{{loan.poe}}</span>
+                </div>
+                <div>
+                    <span>Other gears: </span><span>{{loan.other}}</span>
+                </div>
+            </md-content>
+        </md-card>
+        <md-card md-whiteframe="5" flex=50>
+            <md-table-container>
+                <table md-table ng-model="loan.deviceId" md-progress="request">
+                    <thead md-head md-order="query.order">
+                        <tr md-row>
+                            <th md-column md-order-by="hardwareId.model">Model</th>
+                            <th md-column md-order-by="serialNumber">Serial Number</th>
+                            <th md-column md-order-by="macAddress">MAC Address</th>
+                        </tr>
+                    </thead>
+                    <tbody md-body>
+                        <tr md-row ng-repeat="device in loan.deviceId | orderBy: query.order">
+                            <td md-cell>
+                                <md-button href="#!/hardwares/{{ device.hardware }}" class="md-primary">{{ device.hardware }}</md-button>
+                                </td>
+                            <td md-cell>
+                                <md-button href="#!/devices/{{device.serialNumber}}" class="md-primary">{{device.serialNumber}}</md-button>
+                            </td>
+                            <td md-cell>{{device.macAddress}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+            <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{devices.length}}"
+                md-page-select="query.pageSelect"></md-table-pagination>
+        </md-card>
+    </article>
+
+</section>

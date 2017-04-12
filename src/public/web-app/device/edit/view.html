@@ -1,0 +1,76 @@
+<section style="min-width: 600px;">
+    <article>
+        <div class="new device" md-whiteframe="5">
+            <md-toolbar>
+                </md-toolbar-tools>
+                <h4>New Device</h4>
+                </md-toolbar-tools>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form name="newDevice" layout="column">
+
+                    <md-input-container>
+                        <label for="type">Model: </label>
+                        <md-select name="type" ng-model="device.hardwareId">
+                            <md-option ng-repeat="hardware in hardwares" value="{{hardware._id}}">{{hardware.model}}</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="serialNumber">Serial Number: </label>
+                        <input type="text" name="serialNumber" ng-model="device.serialNumber" 
+                              ng-minlength="14" ng-maxlength="14" ng-pattern="/^[0-9]*$/" 
+                                required="">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="macAddress">MAC Address: </label>
+                        <input type="text" style='text-transform: uppercase' ng-model="device.macAddress"
+                         ng-change="macAddressFormat()" ng-pattern="/^([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}$/"  ng-model-options="{allowInvalid: true}"
+                             required name="macAddress" />
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="owner">Owner: </label>
+                        <md-select name="owner" ng-model="device.ownerId">
+                            <md-option ng-repeat="user in users" value="{{user._id}}">{{user.name.first | capitalize}} {{user.name.last | capitalize}} ({{user.email}})</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="model">Entry Date: </label>
+                        <md-datepicker ng-model="device.entryDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="origin">Origin: </label>
+                        <input type="text" name="origin" ng-model="device.origin" required="">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="order">PO#: </label>
+                        <input type="text" name="order" ng-model="device.order" required="">
+                    </md-input-container>
+
+                    <md-input-container ng-show="device._id" style="margin: 0">
+                        <md-checkbox ng-model="device.lost">Lost Device?</md-checkbox>
+                    </md-input-container>
+
+                    <md-input-container ng-show="device.lost">
+                        <md-checkbox ng-model="checked" style="margin: 0">Replaced by another Device:</md-checkbox>
+                    </md-input-container>
+                    <md-input-container>
+                        <md-select name="type" ng-model="device.replacedDevice" ng-if="checked" md-on-open="loadReplacingDevice()">
+                            <md-option ng-repeat="replacingDevice in replacingDevices" value="{{replacingDevice._id}}" ng-if="replacingDevice._id != device._id">{{replacingDevice.serialNumber}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <div layout="row">
+                        <md-button class="md-primary" ng-click="reset()">Reset</md-button>
+                        <md-button class="md-primary" ng-click="close()">Cancel</md-button>
+                        <md-button class="md-primary md-raised" ng-click="save(device)" ng-disabled="newDevice.$invalid">Save</md-button>
+                    </div>
+                </form>
+            </md-content>
+        </div>
+    </article>
+</section>

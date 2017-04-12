@@ -1,0 +1,38 @@
+<section style="min-width: 600px;">
+    <article>
+        <div class="new hardware" md-whiteframe="5">
+            <md-toolbar>
+                </md-toolbar-tools>
+                <h4>{{action}} Hardware</h4>
+                </md-toolbar-tools>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form name="newHardware" layout="column">
+
+                    <md-input-container>
+                        <label for="type">Type: </label>
+                        <md-select name="type" ng-model="hardware.type" required="">
+                            <md-option ng-repeat="type in hardwareType" value="{{type}}">{{type}}</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="model">Model: </label>
+                        <input type="text" name="model" ng-model="hardware.model" required="">
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="serialFormat">Serial Number Format: </label>
+                        <input type="string" ng-model="hardware.serialFormat" name="serialFormat" ng-pattern="/^[0-9]*$/" />
+                    </md-input-container>
+
+                    <div layout="row">
+                        <md-button class="md-primary" ng-click="reset()">Reset</md-button>
+                        <md-button class="md-primary" ng-click="close()">Cancel</md-button>
+                        <md-button class="md-primary md-raised" ng-click="save(hardware)" ng-disabled="newHardware.$invalid">Save</md-button>
+                    </div>
+                </form>
+            </md-content>
+        </div>
+    </article>
+</section>

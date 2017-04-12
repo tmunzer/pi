@@ -1,0 +1,58 @@
+<section>
+    <article>
+
+        <md-card md-whiteframe="5">
+            <div class="md-toolbar-tools">
+                <h2>Hardwares</h2>
+                <div flex></div>
+                <md-button ng-click="refresh()">
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+                <md-button ng-click="editHardware()" class="md-primary">
+                    <md-icon class="material-icons">add_circle</md-icon>
+                    Add
+                </md-button>
+            </div>
+
+            <md-table-container>
+                <table md-table ng-model="hardwares" md-progress="request">
+                    <thead md-head md-order="query.order">
+                        <tr md-row>
+                            <th md-column md-order-by="type">Type</th>
+                            <th md-column md-order-by="model">Model</th>
+                            <th md-column md-order-by="numberOfDevices">Number of Devices</th>
+                            <th md-column md-order-by="numberOfDevices">Devices In / Out / Lost</th>                            
+                            <th md-column md-order-by="created_at">Creation Date</th>
+                            <th md-column md-order-by="created_at">Last Update</th>
+                            <th md-column></th>
+                        </tr>
+                    </thead>
+                    <tbody md-body>
+                        <tr md-row ng-repeat="hardware in hardwares | orderBy: query.order">
+                            <td md-cell>{{hardware.type}}</td>
+                            <td md-cell><md-button href="#!/hardwares/{{hardware.model}}" class="md-primary">{{hardware.model}}</md-button></td>
+                            <td md-cell><md-button href="#!/devices/model/{{hardware._id}}" class="md-primary">{{hardware.numberOfDevices}}</md-button></td>
+                            <td md-cell>{{hardware.numberOfDevices - hardware.out - hardware.lost}} / {{hardware.out}} / {{hardware.lost}}</td>
+                            <td md-cell>{{hardware.created_at | date:'medium'}}</td>
+                            <td md-cell>{{hardware.updated_at | date:'medium'}}</td>
+                            <td md-cell>
+                                <md-button class="md-icon-button" ng-click="editHardware(hardware)">
+                                    <md-icon class="material-icons edit">mode_edit</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="copyHardware(hardware)">
+                                    <md-icon class="material-icons edit">content_copy</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="remove(hardware)" ng-disabled="hardware.numberOfDevices > 0">
+                                    <md-icon class="material-icons delete">delete_forever</md-icon>
+                                </md-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+            <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{hardwares.length}}"
+                md-page-select="query.pageSelect"></md-table-pagination>
+        </md-card>
+    </article>
+
+</section>

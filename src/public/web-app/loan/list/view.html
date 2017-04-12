@@ -1,0 +1,62 @@
+<section>
+    <article>
+        <md-card md-whiteframe="5">
+            <div class="md-toolbar-tools">
+                <h2>Loans</h2>
+                <div flex></div>
+                <md-button ng-click="refresh()">
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+                <md-button ng-click="editLoan()" class="md-primary">
+                    <md-icon class="material-icons">add_circle</md-icon>
+                    Add
+                </md-button>
+            </div>
+
+            <md-table-container>
+                <table md-table ng-model="loans" md-progress="request">
+                    <thead md-head md-order="query.order">
+                        <tr md-row>
+                            <th style="width: 15%" md-column md-order-by="customer">Company</th>
+                            <th style="width: 10%" md-column md-order-by="customer">Contact</th>
+                            <th style="width: 10%" md-column md-order-by="deviceId.length"># of Devices</th>
+                            <th style="width: 15%" md-column md-order-by="ownerId.name.fisrt">Owner</th>
+                            <th style="width: 15%" md-column md-order-by="startDate">Start Date</th>
+                            <th style="width: 15%" md-column md-order-by="endDate">End Date</th>
+                            <th style="width: 5%" md-column md-order-by="status">Status</th>
+                            <th style="width: 15%" md-column></th>
+                        </tr>
+                    </thead>
+                    <tbody md-body>
+                        <tr md-row ng-repeat="loan in loans | orderBy: query.order">
+                            <td md-cell>{{loan.companyId.name}}</td>
+                            <td md-cell>{{loan.contactId.name}}</td>
+                            <td md-cell>{{loan.deviceId.length}}</td>
+                            <td md-cell>{{loan.ownerId.name.first | capitalize}} {{loan.ownerId.name.last | capitalize}} ({{loan.ownerId.email}})</td>
+                            <td md-cell>{{loan.startDate | date:'medium'}}</td>
+                            <td md-cell>{{loan.endDate | date:'medium'}}</td>
+                            <td md-cell></td>
+                            <td md-cell>
+                                <md-button href="#!/loans/{{loan._id}}" class="md-primary">Details</md-button>
+                                <md-button class="md-icon-button" ng-click="returnLoan(loan)" ng-disabled="loan.endDate">
+                                    <md-icon class="material-icons edit">assignment_returned</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="editLoan(loan)">
+                                    <md-icon class="material-icons edit">mode_edit</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="copyLoan(loan)">
+                                    <md-icon class="material-icons edit">content_copy</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="remove(loan)">
+                                    <md-icon class="material-icons delete">delete_forever</md-icon>
+                                </md-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+            <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{loans.length}}"
+                md-page-select="query.pageSelect"></md-table-pagination>
+        </md-card>
+    </article>
+</section>

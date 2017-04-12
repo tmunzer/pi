@@ -1,0 +1,129 @@
+/* ===================================
+Body
+=================================== */
+body {
+    font: 12px helvetica, arial, san-serif !important;
+    transition: opacity 1s ease;
+    overflow: hidden;   
+    max-width: 100%;
+    max-height: 100%;
+    font-size: small !important;
+    background-color: #ccc;
+}
+* {
+    outline: none;
+}
+/* ===================================
+General
+=================================== */
+.md-primary.md-raised.md-button.md-ink-ripple{
+    color: rgba(255,255,255,0.87) !important;
+}
+.md-primary.md-raised.md-button.md-ink-ripple[disabled]{
+    color: rgba(0,0,0,0.38) !important;
+}
+.no-error .md-errors-spacer {
+    min-height: 0px;
+}
+/* ===================================
+Header
+=================================== */
+header {
+    height: 70px;
+}
+
+header, .menu-tabs {
+    background-color: #333;
+}
+.menu-tabs h4 {
+    color: white;
+}
+
+.search  {
+margin-left: 10%;
+display: flex;
+padding: 5px 10px;
+margin-top: 20px;
+background-color: #ddd;
+}
+.search button, .search button:hover {
+    background-color: transparent !important;
+    border: 0 !important;
+    min-height: 0;
+    min-width: 0;
+}
+
+.search input {
+    border-color: transparent;
+    width: 100%
+}
+.search .md-errors-spacer{
+    min-height: 0;
+}
+
+.menu button {
+    height: 70px !important;
+}
+.menu md-icon {
+    font-size: xx-large;
+}
+
+md-tabs {
+    margin-left: 15%;
+    max-height: 40px;
+}
+
+md-tab-item h3, md-tab-item h4 {
+    margin: 0;
+}
+/* ===================================
+ng-view;
+=================================== */
+ng-view {
+    padding: 20px 50px;
+    overflow: auto;
+    background-color: #ccc;
+}
+
+.new {
+    max-width: 800px;
+    margin: auto;
+}
+.md-toolbar-tools h1, .new h1,
+.md-toolbar-tools h2, .new h2,
+.md-toolbar-tools h3, .new h3
+.md-toolbar-tools h4, .new h4 {
+    color: white;
+}
+md-card .md-toolbar-tools h1,
+md-card .md-toolbar-tools h2,
+md-card .md-toolbar-tools h3,
+md-card .md-toolbar-tools h4 {
+    color: #333;
+}
+.new h4 {
+    text-transform: uppercase;
+    margin: auto 10px;
+}
+
+/* TABLES */
+
+table button:not([disabled]) .delete:hover{
+    color: red !important;
+    transition: color .1s ease;
+}
+table button:not([disabled]) .edit:hover{
+    color: green !important;
+    transition: color .1s ease;
+}
+
+/* AUTOCOMPLETE */
+.autocomplete {
+    margin: 0;
+}
+.autocomplete md-input-container {
+    margin-bottom: 0;
+}
+.autocomplete input{
+    color: black !important;
+}

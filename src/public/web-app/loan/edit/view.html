@@ -1,0 +1,105 @@
+<section style="min-width: 800px;">
+    <article>
+        <div class="new loan" md-whiteframe="5">
+            <md-toolbar>
+                </md-toolbar-tools>
+                <h4>{{action}} Loan</h4>
+                </md-toolbar-tools>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form name="newLoan" layout="column">
+                    <div layout="row" layout-align="space-between center" class="no-error">
+                        <md-input-container class="autocomplete" flex=45>
+                            <md-autocomplete flex required md-no-cache="true" md-selected-item="companyId" md-search-text="company.searchText" md-items="item in company.querySearch(company.searchText)"
+                                md-item-text="item.name" md-floating-label="Company" md-require-match md-delay="250" ng-trim="false">
+                                <md-item-template>
+                                    <span md-highlight-text="company.searchText" md-highlight-flags="^i">{{item.name}}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                    <a ng-click="company.newCompany(company.searchText)">Company "{{company.searchText}}" not found... Click here to create it!</a>
+                                </md-not-found>
+                            </md-autocomplete>
+                        </md-input-container>
+
+                        <md-input-container class="autocomplete" flex=45>
+                            <md-autocomplete flex required md-no-cache="true" md-selected-item="contactId" md-search-text="contact.searchText" md-items="item in contact.querySearch(contact.searchText)"
+                                md-item-text="item.name" md-floating-label="Contact in the selected company" md-require-match
+                                md-delay="250" ng-trim="false" ng-disabled="!companyId" md-dropdown-position="bottom">
+                                <md-item-template>
+                                    <span md-highlight-text="contact.searchText" md-highlight-flags="^i">{{item.name}}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                    <a ng-click="contact.newContact(contact.searchText)">Contact "{{contact.searchText}}" not found... Click here to create it!</a>
+                                </md-not-found>
+                            </md-autocomplete>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row" layout-align="space-between center" class="no-error">
+                        <md-input-container flex=30>
+                            <input placeholder="Contact Phone" type="phone" ng-model="contactId.phone" ng-disabled="!contactId" autocomplete="contact-phone">
+                        </md-input-container>
+                        <md-icon class="material-icons" style="color: green" ng-show="contactInfoSaved">check_circle</md-icon>
+                        <md-input-container flex=45><input placeholder="Contact Email" type="email" ng-model="contactId.email" ng-disabled="!contactId"></md-input-container>
+                        <md-icon class="material-icons" style="color: green" ng-show="contactInfoSaved">check_circle</md-icon>
+                        <md-button ng-click="updateContact()" class="md-primary md-raised" ng-disabled="!contactInfoChanged" style="max-height: 20px;margin: auto 0;">Update</md-button>
+                    </div>
+
+
+<br>
+                    <div layout="row" layout-align="space-between center" class="no-error">
+                        <md-input-container flex=40>
+                            <labe>Loan Owner</labe>
+                            <md-select ng-model="loan.ownerId" required="" aria-label="Owner Id">
+                                <md-option ng-repeat="user in users" value="{{user._id}}">{{user.name.first | capitalize}} {{user.name.last | capitalize}} ({{user.email}})</md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <md-input-container flex=25>
+                            <md-datepicker placeholder="Start Date" ng-model="loan.startDate" md-open-on-focus required=""></md-datepicker>
+                        </md-input-container>
+
+                        <md-input-container flex=25>
+                            <md-datepicker placeholder="Estimated End Date" ng-model="loan.estimatedEndDate" md-open-on-focus required="" md-min-date="loan.startDate"></md-datepicker>
+                        </md-input-container>
+                    </div>
+
+<br>
+
+                    <md-content ng-repeat="device in selectedDevices" layout="row" layout-align="space-between center">
+                        <md-input-container flex=40>
+                            <label>Hardware</label>
+                            <md-select name="type" ng-model="device.hardwareId" ng-required="$index == 0" ng-disabled="device.deviceId">
+                                <md-option ng-repeat="hardwares in hardwares" value="{{hardwares._id}}">{{hardwares.model}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container flex=40>
+                            <label>Device</label>
+                            <md-select ng-model="device.deviceId" ng-required="$index == 0" md-on-open="loadDevices(device)" ng-disabled='!device.hardwareId || device.deviceId'>
+                                <md-option ng-repeat="choice in device.choices" value="{{choice._id}}">{{choice.serialNumber}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-button ng-click="removeDevice($index)" class="md-icon-button md-primary" style="width: 50px; height: 70px" ng-disabled="$last">
+                            <md-icon class="material-icons">remove_circle_outline</md-icon>
+                        </md-button>
+                    </md-content>
+                    
+                    <div layout="row" layout-align="space-between center">
+                        <md-input-container flex=40>
+                            <input placeholder="Number of PoE Injectors" type="number" ng-model="loan.poe" required="" />
+                        </md-input-container>
+                        <md-input-container flex=55>
+                            <input placeholder="Other gears?" type="text" ng-model="loan.other" />
+                        </md-input-container>
+                    </div>
+<br>
+                    <div layout="row">
+                        <md-button class="md-primary" ng-click="reset()">Reset</md-button>
+                        <md-button class="md-primary" ng-click="close()">Cancel</md-button>
+                        <md-button class="md-primary md-raised" ng-click="save()" ng-disabled="newLoan.$invalid">Save</md-button>
+                    </div>
+                </form>
+            </md-content>
+        </div>
+    </article>
+</section>
