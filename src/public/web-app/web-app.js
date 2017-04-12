@@ -46,6 +46,71 @@ pi
             else $scope.selectedIndex = -1;
         })
     })
+    .controller("SearchCtrl", function ($scope,$location, HardwareService, DeviceService, LoanService, CompanyService, ContactService) {
+        $scope.search = "";
+        $scope.results = [];
+        $scope.selected = null;
+        var hardwares = [];
+        var devices = [];
+        var loans = [];
+        var companies = [];
+        var contacts = [];
+
+        $scope.$watch("selected", function () {
+            console.log($scope.selected);
+            if ($scope.selected) {
+                if ($scope.selected.type) $location.url("/hardwares/" + $scope.selected.model)
+                else if ($scope.selected.serialNumber) $location.url("/devices/" + $scope.selected.serialNumber)
+                else if ($scope.selected.companyId) $location.url("/contacts/" + $scope.selected._id)
+                else if ($scope.selected.name) $location.url("/companies/" + $scope.selected._id)
+                $scope.selected = null;
+
+            }
+        })
+        function refresh() {
+            $scope.results = [];
+            $scope.results.push.apply($scope.results, [{ 'separator': "Hardwares (" + hardwares.length + ")" }]);
+            $scope.results.push.apply($scope.results, hardwares);
+            $scope.results.push.apply($scope.results, [{ 'separator': "Devices (" + devices.length + ")" }]);
+            $scope.results.push.apply($scope.results, devices);
+            $scope.results.push.apply($scope.results, [{ 'separator': "Companies (" + companies.length + ")" }]);
+            $scope.results.push.apply($scope.results, companies);
+            $scope.results.push.apply($scope.results, [{ 'separator': "Contacts (" + contacts.length + ")" }]);
+            $scope.results.push.apply($scope.results, contacts);
+        }
+
+        $scope.$watch("search", function () {
+            if ($scope.search && $scope.search.length > 0)
+                HardwareService.getList({ search: $scope.search }).then(function (promise) {
+                    if (promise && promise.error) console.log(promise.error)
+                    else {
+                        hardwares = promise;
+                        refresh();
+                    }
+                })
+            DeviceService.getList({ search: $scope.search }).then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else {
+                    devices = promise;
+                    refresh();
+                }
+            })
+            CompanyService.getList({ search: $scope.search }).then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else {
+                    companies = promise;
+                    refresh();
+                }
+            })
+            ContactService.getList({ search: $scope.search }).then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else {
+                    contacts = promise;
+                    refresh();
+                }
+            })
+        })
+    })
     .controller("MenuCtrl", function ($scope, $mdDialog) {
         var originatorEv;
 

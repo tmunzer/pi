@@ -13,17 +13,12 @@ angular.module('Contact').service("ContactService", function ($http, $q) {
         return httpReq(request);
     }
 
-    function getList(filters) {
-        var queryParam;
-        if (filters) {
-            queryParam = "?";
-            for (var key in filters) queryParam = queryParam + key + "=" + filters[key] + "&";
-            queryParam = queryParam.substr(0, queryParam.length - 1);
-        }
+    function getList(search) {
         var canceller = $q.defer();
         var request = $http({
-            url: "/api/contacts" + queryParam,
+            url: "/api/contacts",
             method: "GET",
+            params: search,
             timeout: canceller.promise
         });
         return httpReq(request);

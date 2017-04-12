@@ -25,11 +25,15 @@ General
 .no-error .md-errors-spacer {
     min-height: 0px;
 }
+ .highlight {
+    color: #FF5722 !important;
+    font-weight: bold;
+}
 /* ===================================
 Header
 =================================== */
 header {
-    height: 70px;
+    height: 60px;
 }
 
 header, .menu-tabs {
@@ -39,12 +43,26 @@ header, .menu-tabs {
     color: white;
 }
 
+
+/* SEARCH BAR */
 .search  {
 margin-left: 10%;
 display: flex;
-padding: 5px 10px;
 margin-top: 20px;
+}
+.search .md-input-has-value label {
+    color:#FF5722 !important;
+}
+.search > .input {
 background-color: #ddd;
+}
+.search md-input-container {
+    margin: 0;
+    border-color: transparent;
+    width: 100%
+}
+.search md-input-container label:not(.md-container-ignore) {
+    bottom: 110% !important;    
 }
 .search button, .search button:hover {
     background-color: transparent !important;
@@ -53,13 +71,34 @@ background-color: #ddd;
     min-width: 0;
 }
 
-.search input {
-    border-color: transparent;
-    width: 100%
-}
 .search .md-errors-spacer{
     min-height: 0;
 }
+
+
+
+.autocomplete-search-template li {
+  height: auto;
+  width: 100%;
+  padding: 0;
+  white-space: normal;
+  line-height: 40px;
+}
+
+.autocomplete-search-template .separator {
+  border-top: 1px solid #ccc;
+    background-color: white;
+    cursor: default;
+    color: #999;
+}
+.autocomplete-search-template .separator {
+    padding: 0 10px;
+}
+.autocomplete-search-template .selector {
+    padding: 0 20px;
+}
+
+
 
 .menu button {
     height: 70px !important;

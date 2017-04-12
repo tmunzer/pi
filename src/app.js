@@ -36,37 +36,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static('../bower_components'));
 
 //=============CREATE LOGGER===============
-var winston = require('winston');
-winston.emitErrs = true;
-global.logger = new winston.Logger({
-    transports: [
-        new winston.transports.File({
-            level: 'info',
-            filename: __dirname + '/logs/all-logs.log',
-            handleExceptions: true,
-            json: true,
-            maxsize: 5242880, //5MB
-            maxFiles: 5,
-            colorize: false
-        }),
-        new winston.transports.Console({
-            level: 'debug',
-            handleExceptions: true,
-            json: false,
-            colorize: true
-        })
-    ],
-    exitOnError: false
-});
 
-logger.stream = {
-    write: function(message, encoding){
-        logger.info(message);
-    }
-};
-
-logger.debug("Overriding 'Express' logger");
-app.use(require('morgan')("default", { "stream": logger.stream }));
+var morgan = require('morgan')
+app.use(morgan('\x1b[32minfo\x1b[0m: :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', {
+  skip: function (req, res) { return res.statusCode < 400 && req.url != "/" && req.originalUrl.indexOf("/api") < 0 && req.originalUrl.indexOf("/webhook") < 0 }
+}));
 
 //===============PASSPORT=================
 global.passport = require('passport');

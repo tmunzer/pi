@@ -30,11 +30,12 @@ angular.module('Hardware').service("HardwareService", function ($http, $q) {
         return httpReq(request);
     }
 
-    function getList() {
+    function getList(search) {
         var canceller = $q.defer();
         var request = $http({
-            url: "/api/hardwares/",
+            url: "/api/hardwares",
             method: "GET",
+            params: search,
             timeout: canceller.promise
         });
         return httpReq(request);

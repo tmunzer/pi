@@ -37,11 +37,21 @@ html(ng-app="pi")
                 span.pi.contrasted P
                 span.pi.colored !
             md-input-container(flex=75 style="margin: 0;")
-                div.search(flex=75  md-whiteframe="5")    
-                    div(style="width: 100%")  
-                        input(type='text' ng-model-options="{ debounce: 500 }" aria-label="search")
+                div.search(flex=75  ng-controller="SearchCtrl")    
+                    div.input(style="width: 100%" md-whiteframe="5")  
+                        md-autocomplete(flex md-no-cache="true" md-selected-item="selected" md-item-text="data._id" md-search-text="search" md-items="data in results" md-floating-label="Search" md-delay="500" md-menu-class="autocomplete-search-template")
+                            md-item-template
+                                div(flex).separator(ng-if="data.separator") {{data.separator}}
+                                div(flex).selector(ng-if="data.model" md-highlight-text="search" md-highlight-flags="i") {{data.type}} {{data.model}}
+                                div(flex).selector(ng-if="data.serialNumber" md-highlight-text="search" md-highlight-flags="i") S/N: {{data.serialNumber}} -- {{data.macAddress}}
+                                div(flex).selector(ng-if="data.name && !data.phone" md-highlight-text="search" md-highlight-flags="i") {{data.name}}
+                                div(flex).selector(ng-if="data.email" md-highlight-text="search" md-highlight-flags="i") {{data.name}} ({{data.email}})
+                               
+        
+                            md-not-found
+                                span(disabled="") Nothing found here!                                                           
                     div
-                        md-button
+                        md-button(style="left: -50px")
                             md-icon.material-icons.md-24 search
             span(flex)
             div.menu(ng-controller="MenuCtrl as ctrl" layout="row")

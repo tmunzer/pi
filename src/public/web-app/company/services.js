@@ -13,11 +13,12 @@ angular.module('Company').service("CompanyService", function ($http, $q) {
         return httpReq(request);
     }
 
-    function getList() {
+    function getList(search) {
         var canceller = $q.defer();
         var request = $http({
-            url: "/api/companies/",
+            url: "/api/companies",
             method: "GET",
+            params: search,
             timeout: canceller.promise
         });
         return httpReq(request);

@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var Device = require("../bin/models/device");
-var Loan = require("../bin/models/loan");
+const express = require('express');
+const router = express.Router();
+const Device = require("../bin/models/device");
+const Loan = require("../bin/models/loan");
 
 
 

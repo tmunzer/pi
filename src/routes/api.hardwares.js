@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var Hardware = require("../bin/models/hardware");
-var Device = require("../bin/models/device");
-var Loan = require("../bin/models/loan");
+const express = require('express');
+const router = express.Router();
+const Hardware = require("../bin/models/hardware");
+const Device = require("../bin/models/device");
+const Loan = require("../bin/models/loan");
 
 function checkDeviceStatus(devices, cb) {
     let lost = 0;
@@ -50,7 +50,7 @@ function countDevices(hardwares, cb) {
 
 
 router.get("/", function (req, res, next) {
-    if (req.query.hasOwnProperty('type')) {
+    if (req.query.type) {
         Hardware.findByType(req.query.type, function (err, hardwares) {
             if (err) res.status(500).json(err);
             else countDevices(hardwares, function (result) {
@@ -58,13 +58,16 @@ router.get("/", function (req, res, next) {
             });
         })
     } else {
+        var filters = {};
+        if (req.query.search) filters = { $or: [{ model: { "$regex": req.query.search, "$options": "i"  } }, { type: { "$regex": req.query.search, "$options": "i"  } }] };
         Hardware
-            .find({})
+            .find(filters)
             .sort({ 'model': 'asc' })
             .populate("created_by")
             .populate("edited_by")
             .exec(function (err, hardwares) {
                 if (err) res.status(500).json(err);
+                else if (req.query.search) res.json(hardwares);
                 else countDevices(hardwares, function (result) {
                     res.json(result);
                 });
@@ -81,7 +84,6 @@ router.get("/:model", function (req, res, next) {
             else res.json(hardware);
         })
 })
-
 router.post("/", function (req, res, next) {
     if (req.body.hardware) {
         const hardware = req.body.hardware;

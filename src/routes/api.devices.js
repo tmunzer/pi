@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var Device = require("../bin/models/device");
-var Loan = require("../bin/models/loan");
+const express = require('express');
+const router = express.Router();
+const Device = require("../bin/models/device");
+const Loan = require("../bin/models/loan");
 
 function checkDeviceStatus(list, res, cb) {
     const devices = JSON.parse(JSON.stringify(list));
@@ -25,9 +25,9 @@ router.get("/", function (req, res, next) {
     var filters = {};
     if (req.query.ownerId) filters.ownersId = req.query.ownerId;
     if (req.query.hardwareId) filters.hardwareId = req.query.hardwareId;
-
     if (req.query.serialNumber) filters.serialNumber = req.query.serialNumber;
     if (req.query.macAddress) filters.macAddress = req.query.macAddress;
+    if (req.query.search) filters = {$or: [{ serialNumber: { "$regex": req.query.search } },{ macAddress: { "$regex": req.query.search, "$options": "i" } }]}
 
     Device
         .find(filters)

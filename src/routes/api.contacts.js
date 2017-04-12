@@ -1,12 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var Contact = require("../bin/models/contact");
+const express = require('express');
+const router = express.Router();
+const Contact = require("../bin/models/contact");
 
 
 
 router.get("/", function (req, res, next) {
+    var filters = {};
+    if (req.query.search)
+        filters = { $or: [{ name: { "$regex": req.query.search, "$options": "i" }}, {email: { "$regex": req.query.search, "$options": "i" } }] }    
     Contact
-        .find()
+        .find(filters)
         .sort("name")
         .exec(function (err, contacts) {
             if (err) res.status(500).json(err);
@@ -35,15 +38,13 @@ router.post("/", function (req, res, next) {
 router.post("/:contact_id", function (req, res, next) {
     if (req.body.contact)
         Contact.findById(req.params.contact_id, function (err, contact) {
-            console.log(contact);
             if (err) res.status(500).json(err);
             else {
                 contact.companyId = req.body.contact.companyId;
-                contact.name = req.body.contact.name;     
-                contact.phone = req.body.contact.phone;               
-                contact.email = req.body.contact.email;               
+                contact.name = req.body.contact.name;
+                contact.phone = req.body.contact.phone;
+                contact.email = req.body.contact.email;
                 contact.edited_by = req.session.passport.user.id;
-                console.log(contact)
                 contact.save(function (err, result) {
                     if (err) res.status(500).json(err);
                     else res.json(result);

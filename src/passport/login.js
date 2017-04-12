@@ -10,10 +10,10 @@ module.exports = function (passport) {
             // check in mongo if a user with username exists or not
             User.newLogin(username, password, function (err, user) {
                 if (err || !user) {
-                    logger.warn("User "+ username + ': Wrong login or password');
+                    console.warn("User "+ username + ': Wrong login or password');
                     return done(null, false, req.flash("message", "error_login_password"));
                 } else {
-                    logger.info("User " + user.email + " is now logged in");
+                    console.info("User " + user.email + " is now logged in");
                     return done(null, user);
                 }
             });

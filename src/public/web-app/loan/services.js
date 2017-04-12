@@ -17,7 +17,7 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
     function getList() {
         var canceller = $q.defer();
         var request = $http({
-            url: "/api/loans/",
+            url: "/api/loans",
             method: "GET",
             timeout: canceller.promise
         });

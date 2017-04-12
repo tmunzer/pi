@@ -1,12 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var Company = require("../bin/models/company");
+const express = require('express');
+const router = express.Router();
+const Company = require("../bin/models/company");
 
 
 
 router.get("/", function (req, res, next) {
+    var filters = {};
+    if (req.query.search) filters = { name: { "$regex": req.query.search , "$options": "i" } }
+
     Company
-        .find()
+        .find(filters)
         .sort("name")
         .exec(function (err, companies) {
             if (err) res.status(500).json(err);
@@ -38,7 +41,7 @@ router.post("/:company_id", function (req, res, next) {
         Company.findById(req.params.company_id, function (err, company) {
             if (err) res.status(500).json(err);
             else {
-                if (req.body.company.name) company.name = req.body.company.name;               
+                if (req.body.company.name) company.name = req.body.company.name;
                 company.edited_by = req.session.passport.user.id;
                 company.save(function (err, result) {
                     if (err) res.status(500).json(err);

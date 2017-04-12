@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var User = require("../bin/models/user");
+const express = require('express');
+const router = express.Router();
+const User = require("../bin/models/user");
 
 User
     .find()
@@ -26,7 +26,7 @@ router.post('/login/', passport.authenticate('login', {
 
 /* Handle Logout */
 router.get('/logout/', function (req, res) {
-    logger.info("User " + req.user.username + " is now logged out.");
+    console.info("User " + req.user.username + " is now logged out.");
     req.logout();
     req.session.destroy();
     res.redirect('/login/');
