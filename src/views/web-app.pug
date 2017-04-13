@@ -41,11 +41,11 @@ html(ng-app="pi")
                     div.input(style="width: 100%" md-whiteframe="5")  
                         md-autocomplete(flex md-no-cache="true" md-selected-item="selected" md-item-text="data._id" md-search-text="search" md-items="data in results" md-floating-label="Search" md-delay="500" md-menu-class="autocomplete-search-template")
                             md-item-template
-                                div(flex).separator(ng-if="data.separator") {{data.separator}}
-                                div(flex).selector(ng-if="data.model" md-highlight-text="search" md-highlight-flags="i") {{data.type}} {{data.model}}
-                                div(flex).selector(ng-if="data.serialNumber" md-highlight-text="search" md-highlight-flags="i") S/N: {{data.serialNumber}} -- {{data.macAddress}}
-                                div(flex).selector(ng-if="data.name && !data.phone" md-highlight-text="search" md-highlight-flags="i") {{data.name}}
-                                div(flex).selector(ng-if="data.email" md-highlight-text="search" md-highlight-flags="i") {{data.name}} ({{data.email}})
+                                div.separator(flex ng-if="data.separator") {{data.separator}}
+                                div.selector(flex ng-if="data.model" md-highlight-text="search" md-highlight-flags="i") {{data.type}} {{data.model}}
+                                div.selector(flex ng-if="data.serialNumber" md-highlight-text="search" md-highlight-flags="i") S/N: {{data.serialNumber}} -- {{data.macAddress}}
+                                div.selector(flex ng-if="data.name && !data.phone" md-highlight-text="search" md-highlight-flags="i") {{data.name}}
+                                div.selector(flex ng-if="data.email" md-highlight-text="search" md-highlight-flags="i") {{data.name}} ({{data.email}})
                                
         
                             md-not-found
@@ -89,16 +89,20 @@ html(ng-app="pi")
             md-tabs(md-selected="selectedIndex")
                 md-tab
                     md-tab-label
-                        h4(ng-click='goto("dashboard")') Dashboard
+                        div(ng-click='goto("dashboard")') 
+                            h4 Dashboard
                 md-tab
                     md-tab-label
-                        h4(ng-click='goto("hardwares")') Hardware
+                        div(ng-click='goto("hardwares")') 
+                            h4 Hardware
                 md-tab
                     md-tab-label
-                        h4(ng-click='goto("devices")') Devices
+                        div(ng-click='goto("devices")') 
+                            h4 Devices
                 md-tab
                     md-tab-label
-                        h4(ng-click='goto("loans")') Loans                
+                        div(ng-click='goto("loans")')
+                            h4 Loans                
 
 
         div(flex layout="column" role="main")

@@ -43,6 +43,12 @@ header, .menu-tabs {
     color: white;
 }
 
+.menu-tabs md-tab-item {
+    padding: 0 !important;
+}
+.menu-tabs div {
+    padding: 12px 24px;
+}
 
 /* SEARCH BAR */
 .search  {
