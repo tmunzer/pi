@@ -16,14 +16,14 @@
     <table md-table ng-model="loans" md-progress="request">
         <thead md-head md-order="query.order">
             <tr md-row>
-                <th style="width: 15%" md-column md-order-by="customer">Company</th>
+                <th style="width: 13%" md-column md-order-by="customer">Company</th>
                 <th style="width: 10%" md-column md-order-by="deviceId.length"># of Devices</th>
                 <th style="width: 20%" md-column md-order-by="ownerId.name.fisrt">Owner</th>
                 <th style="width: 10%" md-column md-order-by="startDate">Start Date</th>
                 <th style="width: 10%" md-column md-order-by="estimatedEndDate"><span>Est. End Date<span></th>
                 <th style="width: 10%" md-column md-order-by="endDate">End Date</th>
                 <th style="width: 10%" md-column md-order-by="status">Status</th>
-                <th style="width: 15%" md-column></th>
+                <th style="width: 17%" md-column></th>
             </tr>
         </thead>
         <tbody md-body>
@@ -37,7 +37,7 @@
                 <td md-cell>
                     <span class="status small error" ng-if="checkStatus(loan) == 'overdue'">OVERDUE</span>
                     <span class="status small ok" ng-if="checkStatus(loan) == 'progress'">PROGRESS</span>
-                    <span class="status small warning" ng-if="checkStatus(loan) == 'ended'">ENDED</span>
+                    <span class="status small warning" ng-if="checkStatus(loan) == 'ended'">RETURNED</span>
                     <span class="status small none" ng-if="checkStatus(loan) == 'aborted'">ABORTED</span>
                 </td>
                 <td md-cell>
