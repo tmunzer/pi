@@ -1,114 +1,20 @@
 
 angular.module('Device').controller('DeviceListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, DeviceService) {
-    $scope.devices = [];
-    $scope.displayedDevices = [];
-    $scope.selected = [];
-    $scope.query = {
-        order: "model",
-        limit: 10,
-        page: 1,
-        pageSelect: 1,
-        loaned: true,
-        lost: false,
-        filter: ""
-    }
-    $scope.request;
+
     var filters;
     if ($routeParams.hardwareId) filters = { hardwareId: $routeParams.hardwareId };
 
-
-    function filter() {
-        $scope.displayedDevices = [];
-        $scope.devices.forEach(function (device) {
-            if (($scope.query.loaned || !device.loanId)
-                && ($scope.query.lost || !device.lost)
-                && ($scope.query.filter == ""
-                    || device.hardwareId.model.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                    || device.serialNumber.indexOf($scope.query.filter) >= 0
-                    || device.macAddress.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
-                $scope.displayedDevices.push(device);
-        })
-    }
-    $scope.$watch("query.loaned", function () {
-        filter();
-    })
-    $scope.$watch("query.lost", function () {
-        filter();
-    })
-    $scope.$watch("query.filter", function () {
-        filter();
-    })
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
-
+    $scope.refreshRequested = true;
     $scope.refresh = function () {
-        $scope.request = DeviceService.getList(filters)
-        $scope.request.then(function (promise) {
-            if (promise && promise.error) displayError(promise);
-            else {
-                $scope.displayedDevices = $scope.devices = promise;
-                filter() 
-            }
-        });
+        $scope.refreshRequested = true;
     }
-
-    $scope.editDevice = function (device) {
-        $mdDialog.show({
-            controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit/view.html',
-            locals: {
-                items: device
-            }
-        }).then(function () {
-            $scope.refresh();
-        });
-    }
-    $scope.copyDevice = function (device) {
-        const clonedDevice = angular.copy(device);
-        delete clonedDevice._id;
-        $mdDialog.show({
-            controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit/view.html',
-            locals: {
-                items: clonedDevice
-            }
-        }).then(function () {
-            $scope.refresh();
-        });
-    }
-    $scope.remove = function (device) {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirm.html',
-            locals: {
-                items: { item: "Device" }
-            }
-        }).then(function () {
-            $scope.savedDevice = device.model;
-            DeviceService.remove(device._id).then(function (promise) {
-                if (promise && promise.error) displayError(promise);
-                else $scope.refresh();
-            });
-        });
-    }
-
-
-    $scope.refresh();
 });
 
 
 
 angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, LoanService) {
     $scope.device;
-    $scope.loans;
+    $scope.filters;
     $scope.query = {
         order: "startDate",
         limit: 10,
@@ -128,41 +34,35 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
             }
         });
     }
-
-    $scope.refresh = function () {
-        $scope.request = LoanService.getList({ deviceId: deviceId })
-        $scope.request.then(function (promise) {
-            if (promise && promise.error) displayError(promise);
-            else $scope.loans = promise;
-        });
-    }
-
-    $scope.editLoan = function (loan) {
-        var items;
-        if (loan) items = loan;
-        else items = {
-            loanId: $scope.loan._id
-        }
+    $scope.editDevice = function () {
         $mdDialog.show({
-            controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit/view.html',
+            controller: 'DeviceEditCtrl',
+            templateUrl: 'device/edit/view.html',
             locals: {
-                items: items
+                items: $scope.device
             }
         }).then(function () {
-            $scope.refresh();
+            loadDevice();
         });
     }
 
+    function loadDevice() {
+        DeviceService.get($routeParams.serialNumber).then(function (promise) {
+            if (promise.error) displayError(promise);
+            else {
+                $scope.device = promise;
+                deviceId = promise._id;
+                $scope.filters = { deviceId: deviceId };
+                $scope.refresh();
+            }
+        });
+    }
+    loadDevice();
 
-    DeviceService.get($routeParams.serialNumber).then(function (promise) {
-        if (promise.error) displayError(promise);
-        else {
-            $scope.device = promise;
-            deviceId = promise._id;
-            $scope.refresh();
-        }
-    });
+    $scope.refreshRequested = false;
+    $scope.refresh = function () {
+        $scope.refreshRequested = true;
+    }
 });
 
 angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routeParams, $mdDialog, items, HardwareService, DeviceService, DevicesToReplace, UserService) {

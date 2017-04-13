@@ -1,83 +1,60 @@
 <section>
     <article>
 
-        <md-card md-whiteframe="5">
-            <div class="md-toolbar-tools">
-                <h2>{{device.hardwareId.model}} - S/N: {{device.serialNumber}}</h2>
-                <div flex></div>
-                <md-button ng-click="edit()">
-                    <md-icon class="material-icons">content_edit</md-icon>
-                </md-button>
-            </div>
-            <md-content layout="row">
-                <div flex=50 layout="column">
-                    <div><span>Created by: </span><span>{{device.created_by.name.first}} {{device.created_by.name.last}} - {{device.created_by.email}}</span></div>
-                    <div><span>Creation date: </span><span>{{device.created_at | date:'medium'}}</span></div>
-                </div>
-                <div flex=50 layout="column">
-                    <div><span>Edited by: </span><span>{{device.edited_by.name.first | capitalize}} {{device.edited_by.name.last | capitalize}} - {{device.edited_by.email}}</span></div>
-                    <div><span>Last edition: </span><span>{{device.updated_at | date:'medium'}}</span></div>
-                </div>                
-            </md-content>
-            </md-content>
-        </md-card>
+        <detailed-header title="{{device.hardwareId.model}} - S/N: {{device.serialNumber}}" object="device"></detailed-header>
+
+        <div layout="row">
+            <md-card flex=25 layout=column>
+                <md-card-header class="small">
+                    <h2>Current Status</h2>
+                </md-card-header>
+                <md-card-content layout="row" layout-align="center center" flex>
+                    <div>
+                        <span class="status error" ng-if="device.lost">LOST</span>
+                        <span class="status warning" ng-if="device.loanId">LOANED</span>
+                        <span class="status ok" ng-if="device && !device.lost && !device.loanId">IN STOCK</span>
+                    </div>
+                </md-card-content>
+            </md-card>
+            <md-card flex=75>
+                <md-card-header class="small" layout-align="center center">
+                    <h2>Details</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button md-primary md-raised" ng-click="editDevice()">
+                         <md-tooltip>Edit</md-tooltip>
+                        <md-icon class="material-icon">mode_edit</md-icon>
+                    </md-button>
+                </md-card-header>
+                <md-card-content layout="row" layout-padding>
+                    <div layout="column" flex=50>
+                        <div layout=row><b flex=25>Type:</b><span>{{device.hardwareId.type}}</span></div>
+                        <div layout=row><b flex=25>Model:</b><span><a href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</a></span></div>
+                        <div layout=row><b flex=25>Serial Number:</b><span>{{device.serialNumber}}</span></div>
+                        <div layout=row><b flex=25>MAC Address:</b><span>{{device.macAddress}}</span></div>
+                    </div>
+                    <div layout="column" flex=50>
+                        <div layout=row><b flex=25>Received Date:</b><span>{{device.entryDate | date: 'medium'}}</span></div>
+                        <div layout=row><b flex=25>Owner:</b><span>{{device.ownerId.name.first | capitalize}} {{device.ownerId.name.last | capitalize}} - {{device.ownerId.email}}</span></div>
+                        <div layout=row><b flex=25>Origin:</b><span>{{device.origin}}</span></div>
+                        <div layout=row><b flex=25>PO#:</b><span>{{device.order}}</span></div>
+                    </div>
+
+                </md-card-content>
+            </md-card>
+
+        </div>
         <md-card>
-            <md-content>
-                <div><span>Owner:</span><span>{{device.ownerId.name.first | capitalize}} {{device.ownerId.name.last | capitalize}} - {{device.ownerId.email}}</span></div>
-                </div>
-                <div><span>Serial Number:</span><span>{{device.serialNumber}}</span></div>
-                </div>
-                <div><span>MAC Address:</span><span>{{device.macAddress}}</span></div>
-                </div>
-                <div><span>Origin:</span><span>{{device.origin}}</span></div>
-                </div>
-                <div><span>PO#:</span><span>{{device.order}}</span></div>
-                </div>
-            </md-content>
-        </md-card>
-        <md-card md-whiteframe="5">
-            <div class="md-toolbar-tools">
+            <md-card-header class="small" layout-align="center center">
                 <h2>History</h2>
                 <div flex></div>
                 <md-button ng-click="refresh()">
+                    <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-            </div>
-            <md-table-container>
-                <table md-table ng-model="loans" md-progress="request">
-                    <thead md-head md-order="query.order">
-                        <tr md-row>
-                            <th md-column md-order-by="customer">Customer</th>
-                            <th md-column md-order-by="contact">Contact</th>
-                            <th md-column md-order-by="deviceId.length">Number of Devices</th>
-                            <th md-column md-order-by="ownerId.name.fisrt">Owner</th>
-                            <th md-column md-order-by="startDate">StartDate</th>
-                            <th md-column md-order-by="status">Status</th>
-                            <th md-column></th>
-                        </tr>
-                    </thead>
-                    <tbody md-body>
-                        <tr md-row ng-repeat="loan in loans | orderBy: query.order">
-                            <td md-cell>{{loan.companyId.name}}</td>
-                            <td md-cell>{{loan.contactId.name}}</td>
-                            <td md-cell>{{loan.deviceId.length}}</td>
-                            <td md-cell>{{loan.ownerId.name.first | capitalize}} {{loan.ownerId.name.last | capitalize}} ({{loan.ownerId.email}})</td>
-                            <td md-cell>{{loan.startDate | date:'medium'}}</td>
-                            <td md-cell></td>
-                            <td md-cell>
-                                <md-button ng-click="editDevice(loan)">
-                                    <md-icon class="material-icons edit">mode_edit</md-icon>
-                                </md-button>
-                                <md-button ng-click="copyDevice(loan)">
-                                    <md-icon class="material-icons edit">content_copy</md-icon>
-                                </md-button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </md-table-container>
-            <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{loans.length}}"
-                md-page-select="query.pageSelect"></md-table-pagination>
+            </md-card-header>
+            </md-card-content>
+            <list-loans filters="filters" refresh="refreshRequested"></list-loans>
+            </md-card-content>
         </md-card>
     </article>
 

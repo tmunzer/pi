@@ -13,12 +13,13 @@ var loanSchema = new mongoose.Schema({
     ownerId: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
     startDate: { type: Date, required: true },
     estimatedEndDate: { type: Date, required: true },
-    endDate: { type: Date, required: false },
+    endDate: { type: Date, required: false, default: null },
     comments: [{
         date: { type: Date, required: true },
         userId: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
         comment: { type: String, required: true }
     }],
+    aborted: {type: Boolean, required: false},
     created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     edited_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     created_at: { type: Date },

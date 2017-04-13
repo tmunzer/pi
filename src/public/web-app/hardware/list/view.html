@@ -1,11 +1,12 @@
 <section>
     <article>
 
-        <md-card md-whiteframe="5">
+        <md-card>
             <div class="md-toolbar-tools">
                 <h2>Hardwares</h2>
                 <div flex></div>
                 <md-button ng-click="refresh()">
+                    <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
                 <md-button ng-click="editHardware()" class="md-primary">
@@ -37,12 +38,15 @@
                             <td md-cell>{{hardware.updated_at | date:'medium'}}</td>
                             <td md-cell>
                                 <md-button class="md-icon-button" ng-click="editHardware(hardware)">
+                                    <md-tooltip>Edit</md-tooltip>
                                     <md-icon class="material-icons edit">mode_edit</md-icon>
                                 </md-button>
                                 <md-button class="md-icon-button" ng-click="copyHardware(hardware)">
+                                    <md-tooltip>Clone</md-tooltip>
                                     <md-icon class="material-icons edit">content_copy</md-icon>
                                 </md-button>
                                 <md-button class="md-icon-button" ng-click="remove(hardware)" ng-disabled="hardware.numberOfDevices > 0">
+                                    <md-tooltip>Delete</md-tooltip>
                                     <md-icon class="material-icons delete">delete_forever</md-icon>
                                 </md-button>
                             </td>

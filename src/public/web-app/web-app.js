@@ -6,6 +6,7 @@ angular.module('Contact', []);
 angular.module('User', []);
 angular.module("CustomFilters", []);
 angular.module("Modals", []);
+angular.module("Partials", []);
 var pi = angular.module("pi", [
     "ngRoute",
     'ui.bootstrap',
@@ -20,7 +21,8 @@ var pi = angular.module("pi", [
     'Contact',
     'User',
     'CustomFilters',
-    'Modals'
+    'Modals',
+    'Partials'
 ]);
 
 
@@ -57,7 +59,6 @@ pi
         var contacts = [];
 
         $scope.$watch("selected", function () {
-            console.log($scope.selected);
             if ($scope.selected) {
                 if ($scope.selected.type) $location.url("/hardwares/" + $scope.selected.model)
                 else if ($scope.selected.serialNumber) $location.url("/devices/" + $scope.selected.serialNumber)

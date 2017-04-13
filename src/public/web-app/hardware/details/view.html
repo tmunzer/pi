@@ -1,71 +1,23 @@
 <section>
     <article>
+        <detailed-header title="{{hardware.type}} {{hardware.model}}" object="hardware" edit="edit()"></detailed-header>
 
-        <md-card md-whiteframe="5">
-            <div class="md-toolbar-tools">
-                <h2>{{hardware.type}} {{hardware.model}}</h2>
-                <div flex></div>
-                <md-button ng-click="edit()">
-                    <md-icon class="material-icons">content_edit</md-icon>
-                </md-button>
-            </div>
-            <md-content>
-                <md-content layout="row">
-                    <div flex=50 layout="column">
-                        <div><span>Created by:</span><span>{{hardware.created_by.name.first}} {{hardware.created_by.name.last}} - {{hardware.created_by.email}}</span></div>
-                        <div><span>Creation date:</span><span>{{hardware.created_at | date:'medium'}}</span></div>
-                    </div>
-                    <div flex=50 layout="column">
-                        <div><span>Edited by:</span><span>{{hardware.edited_by.name.first | capitalize}} {{hardware.edited_by.name.last | capitalize}} - {{hardware.edited_by.email}}</span></div>
-                        <div><span>Last edition:</span><span>{{hardware.updated_at | date:'medium'}}</span></div>
-                    </div>
-                </md-content>
-        </md-card>
-        <md-card md-whiteframe="5">
-            <div class="md-toolbar-tools">
+
+        <md-card>
+            <md-card-header class="small" layout-align="start center" class="md-toolbar-tools">
                 <h2>Devices list</h2>
                 <div flex></div>
                 <md-button ng-click="refresh()">
+                    <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
                 <md-button ng-click="editDevice()" class="md-primary">
                     <md-icon class="material-icons">add_circle</md-icon>
                     New {{hardware.model}}
                 </md-button>
-            </div>
-            <md-table-container>
-                <table md-table ng-model="devices" md-progress="request">
-                    <thead md-head md-order="query.order">
-                        <tr md-row>
-                            <th md-column md-order-by="hardwareId.model">Model</th>
-                            <th md-column md-order-by="serialNumber">Serial Number</th>
-                            <th md-column md-order-by="macAddress">MAC Address</th>
-                            <th md-column md-order-by="status">Status</th>
-                            <th md-column md-order-by="owner">Owner</th>
-                            <th md-column></th>
-                        </tr>
-                    </thead>
-                    <tbody md-body>
-                        <tr md-row ng-repeat="device in devices | orderBy: query.order">
-                            <td md-cell>{{device.hardwareId.model}}</td>
-                            <td md-cell><md-button href="#!/devices/{{device.serialNumber}}" class="md-primary">{{device.serialNumber}}</md-button></td>
-                            <td md-cell>{{device.macAddress}}</td>
-                            <td md-cell>{{device.status}}</td>
-                            <td md-cell>{{device.ownerId.name.first | capitalize}} {{device.ownerId.name.last | capitalize}} ({{device.ownerId.email}})</td>
-                            <td md-cell>
-                                <md-button ng-click="editDevice(device)">
-                                    <md-icon class="material-icons edit">mode_edit</md-icon>
-                                </md-button>
-                                <md-button ng-click="copyDevice(device)">
-                                    <md-icon class="material-icons edit">content_copy</md-icon>
-                                </md-button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </md-table-container>
-            <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{devices.length}}"
-                md-page-select="query.pageSelect"></md-table-pagination>
+            </md-card-header>
+            <list-devices filters="filters" refresh="refreshRequested"></list-devices>
+
         </md-card>
     </article>
 

@@ -1,0 +1,61 @@
+<div layout="row" layout-align="start center" layout-margin md-whiteframe="2">
+    <md-input-container>
+        <md-checkbox style="margin: 0" ng-model="query.loaned" aria-label="Only Available">Loaned devices</md-checkbox>
+    </md-input-container>
+    <md-input-container>
+        <md-checkbox style="margin: 0" ng-model="query.lost" aria-label="Only Available">Lost devices</md-checkbox>
+    </md-input-container>
+    <md-input-container md-no-float="true" class="no-error">
+        <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
+        />
+    </md-input-container>
+    <span flex></span>
+    <span>Displayed: {{displayedDevices.length}} | Total: {{devices.length}}</span>
+</div>
+<md-table-container>
+    <table md-table ng-model="displayedDevices" md-progress="request">
+        <thead md-head md-order="query.order">
+            <tr md-row>
+                <th md-column md-order-by="hardwareId.model">Model</th>
+                <th md-column md-order-by="serialNumber">Serial Number</th>
+                <th md-column md-order-by="macAddress">MAC Address</th>
+                <th md-column md-order-by="status">Status</th>
+                <th md-column md-order-by="owner">Owner</th>
+                <th md-column></th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row ng-repeat="device in displayedDevices | orderBy: query.order">
+                <td md-cell>
+                    <md-button href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</md-button>
+                </td>
+                <td md-cell>
+                    <md-button href="#!/devices/{{device.serialNumber}}" class="md-primary">{{device.serialNumber}}</md-button>
+                </td>
+                <td md-cell>{{device.macAddress}}</td>
+                <td md-cell style="text-align: left;">
+                    <md-button ng-if="device.loanId && !device.lost" class="md-icon-button md-primary" href="#!/loans/{{device.loanId}}">OUT</md-button>
+                    <span ng-if="!device.loanId && !device.lost">Available</span>
+                    <span ng-if="!device.loanId && device.lost" style="color: red">LOST</span>
+                </td>
+                <td md-cell>{{device.ownerId.name.first | capitalize}} {{device.ownerId.name.last | capitalize}} ({{device.ownerId.email}})</td>
+                <td md-cell>
+                    <md-button class="md-icon-button" ng-click="editDevice(device)">
+                        <md-tooltip>Edit</md-tooltip>
+                        <md-icon class="material-icons edit">mode_edit</md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="copyDevice(device)">
+                        <md-tooltip>Clone</md-tooltip>
+                        <md-icon class="material-icons edit">content_copy</md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="remove(device)" ng-disabled="device.loanId">
+                        <md-tooltip>Delete</md-tooltip>
+                        <md-icon class="material-icons delete">delete_forever</md-icon>
+                    </md-button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>
+<md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedDevices.length}}"
+    md-page-select="query.pageSelect"></md-table-pagination>

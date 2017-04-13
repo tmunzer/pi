@@ -20,6 +20,7 @@ html(ng-app="pi")
         script(src="/web-app/web-app.js")
         script(src="/web-app/routes.js")
         script(src="/web-app/modals/controllers.js")
+        script(src="/web-app/partials/directives.js")
         script(src="/web-app/hardware/services.js")
         script(src="/web-app/hardware/controllers.js")
         script(src="/web-app/device/services.js")
@@ -38,7 +39,7 @@ html(ng-app="pi")
                 span.pi.colored !
             md-input-container(flex=75 style="margin: 0;")
                 div.search(flex=75  ng-controller="SearchCtrl")    
-                    div.input(style="width: 100%" md-whiteframe="5")  
+                    div.input(style="width: 100%")  
                         md-autocomplete(flex md-no-cache="true" md-selected-item="selected" md-item-text="data._id" md-search-text="search" md-items="data in results" md-floating-label="Search" md-delay="500" md-menu-class="autocomplete-search-template")
                             md-item-template
                                 div.separator(flex ng-if="data.separator") {{data.separator}}

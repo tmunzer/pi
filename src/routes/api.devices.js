@@ -3,31 +3,39 @@ const router = express.Router();
 const Device = require("../bin/models/device");
 const Loan = require("../bin/models/loan");
 
-function checkDeviceStatus(list, res, cb) {
+function checkDeviceStatus(list, loanId, res, cb) {
+    let filters = {};
+    if (loanId) filters._id = loanId;
+    else filters = {endDate: null, aborted: {$ne: true}};
+    let results = [];
     const devices = JSON.parse(JSON.stringify(list));
     Loan
-        .find({ 'endDate': null })
+        .find(filters)
         .exec(function (err, loans) {
             if (err) res.status(500).json(err);
             else
                 devices.forEach(function (device) {
-                    if (!device.lost)
-                        loans.forEach(function (loan) {
-                            if (loan.deviceId.indexOf(device._id) >= 0) device.loanId = loan._id;
-                        })
+                    loans.forEach(function (loan) {
+                        if (loan.deviceId.indexOf(device._id) >= 0) device.loanId = loan._id;                        
+                    })
+                    if (!loanId || (loanId && device.loanId == loanId)) results.push(device);
                 })
-            cb(devices);
+
+            cb(results);
         })
 }
 
 
 router.get("/", function (req, res, next) {
+    let loanId;
+    if (req.query.loanId) loanId = req.query.loanId;
+
     var filters = {};
     if (req.query.ownerId) filters.ownersId = req.query.ownerId;
     if (req.query.hardwareId) filters.hardwareId = req.query.hardwareId;
     if (req.query.serialNumber) filters.serialNumber = req.query.serialNumber;
     if (req.query.macAddress) filters.macAddress = req.query.macAddress;
-    if (req.query.search) filters = {$or: [{ serialNumber: { "$regex": req.query.search } },{ macAddress: { "$regex": req.query.search, "$options": "i" } }]}
+    if (req.query.search) filters = { $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }
 
     Device
         .find(filters)
@@ -40,7 +48,7 @@ router.get("/", function (req, res, next) {
         .sort("serialNumber")
         .exec(function (err, result) {
             if (err) res.status(500).json(err);
-            else checkDeviceStatus(result, res, function (devices) {
+            else checkDeviceStatus(result, loanId, res, function (devices) {
                 res.json(devices);
             })
         })
@@ -56,7 +64,7 @@ router.get("/:serialNumber", function (req, res, next) {
         .populate("edited_by")
         .exec(function (err, result) {
             if (err) res.status(500).json(err);
-            else checkDeviceStatus([result], res, function (device) {
+            else checkDeviceStatus([result], null, res, function (device) {
                 res.json(device[0]);
             })
         })

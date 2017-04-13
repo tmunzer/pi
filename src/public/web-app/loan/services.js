@@ -14,11 +14,12 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
         return httpReq(request);
     }
 
-    function getList() {
+    function getList(search) {
         var canceller = $q.defer();
         var request = $http({
             url: "/api/loans",
             method: "GET",
+            params: search,
             timeout: canceller.promise
         });
         return httpReq(request);

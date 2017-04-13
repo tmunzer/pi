@@ -1,0 +1,17 @@
+
+        <md-dialog aria-label="List dialog" style="width:400px">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Am I wrong???</h2>
+                </div>
+            </md-toolbar>
+            <md-dialog-content>
+                <div class="md-dialog-content">
+                    <div>Are you sure do you want to abort this loan for company {{item}}?</div>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <md-button ng-click="cancel()" aria-label="cancel">Cancel</md-button>
+                <md-button ng-click="confirm()" class="md-raised md-primary" aria-label="ok">Yes, I confirm!</md-button>
+            </md-dialog-actions>
+        </md-dialog>

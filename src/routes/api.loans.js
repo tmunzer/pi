@@ -8,7 +8,7 @@ const Loan = require("../bin/models/loan");
 router.get("/", function (req, res, next) {
     var filters = {};
     if (req.query.ownerId) filters.ownersId = req.query.ownerId;
-    if (req.query.hardwareId) filters.hardwareId = req.query.hardwareId;
+    if (req.query.deviceId) filters.deviceId = req.query.deviceId;
     if (req.query.serialNumber) filters.serialNumber = req.query.serialNumber;
     if (req.query.macAddress) filters.macAddress = req.query.macAddress;
 
@@ -80,6 +80,7 @@ router.post("/:loan_id", function (req, res, next) {
                 loan.ownerId = req.body.loan.ownerId;
                 loan.startDate = req.body.loan.startDate;
                 loan.estimatedEndDate = req.body.loan.estimatedEndDate;
+                loan.aborted = req.body.loan.aborted;
                 loan.endDate = req.body.loan.endDate;
                 loan.edited_by = req.session.passport.user.id;
                 loan.save(function (err, result) {

@@ -78,14 +78,9 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
 
 angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, HardwareService) {
     $scope.hardware;
-    $scope.devices;
-    $scope.query = {
-        order: "model",
-        limit: 10,
-        page: 1,
-        pageSelect: 1
-    }
     $scope.request;
+    $scope.filters;
+    $scope.refreshRequested = false;
     var hardwareId;
 
     function displayError(error) {
@@ -98,41 +93,30 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
             }
         });
     }
-
-    $scope.refresh = function () {
-        $scope.request = DeviceService.getList({ hardwareId: hardwareId })
-        $scope.request.then(function (promise) {
-            if (promise && promise.error) displayError(promise);
-            else $scope.devices = promise;
-        });
-    }
-
     $scope.editDevice = function (device) {
-        var items;
-        if (device) items = device;
-        else items = {
-            model: $scope.hardware._id
-        }
         $mdDialog.show({
             controller: 'DeviceEditCtrl',
             templateUrl: 'device/edit/view.html',
             locals: {
-                items: items
+                items: device
             }
         }).then(function () {
             $scope.refresh();
         });
     }
-
-
     HardwareService.get($routeParams.model).then(function (promise) {
         if (promise.error) displayError(promise);
         else {
             $scope.hardware = promise;
-            hardwareId = promise._id;
+            $scope.hardwareId = promise._id;
+            $scope.filters = { hardwareId: $scope.hardwareId };
             $scope.refresh();
         }
     });
+
+    $scope.refresh = function(){
+            $scope.refreshRequested = true;
+    }
 });
 
 angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdDialog, items, HardwareTypeService, HardwareService) {

@@ -1,12 +1,5 @@
 angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams, $mdDialog, LoanService) {
-    $scope.loans = [];
-    $scope.query = {
-        order: "startDate",
-        limit: 10,
-        page: 1,
-        pageSelect: 1
-    }
-    $scope.request;
+
 
     function displayError(error) {
         console.log(error);
@@ -19,87 +12,29 @@ angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams
         });
     }
 
-    $scope.refresh = function () {
-        $scope.request = LoanService.getList();
-        $scope.request.then(function (promise) {
-            if (promise.error) displayError(promise);
-            else {
-                $scope.loans = promise;
-            }
-        });
-    }
 
     $scope.editLoan = function (loan) {
         $mdDialog.show({
             controller: 'LoanEditCtrl',
             templateUrl: 'loan/edit/view.html',
             locals: {
-                items: loan
+                items: null
             }
         }).then(function () {
-            $scope.refresh();
-        });
-    }
-    $scope.copyLoan = function (loan) {
-        const clonedLoan = angular.copy(loan);
-        delete clonedLoan._id;
-        $mdDialog.show({
-            controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit/view.html',
-            locals: {
-                items: clonedLoan
-            }
-        }).then(function () {
-            $scope.refresh();
-        });
-    }
-    $scope.returnLoan = function (loan) {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirmReturn.html',
-            locals: {
-                items: { item: loan.companyId.name }
-            }
-        }).then(function () {
-            loan.endDate = new Date();
-            LoanService.create(loan).then(function (promise) {
-                if (promise && promise.error) console.log(promise.error)
-                else $scope.refresh();
-            })
-
+            $scope.refreshRequested = true;
         });
     }
 
-    $scope.remove = function (loan) {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirm.html',
-            locals: {
-                items: { item: "Loan" }
-            }
-        }).then(function () {
-            LoanService.remove(loan._id).then(function (promise) {
-                if (promise.errmsg) displayError(promise);
-                else {
-                    $scope.refresh();
-                }
-            });
-        });
-
-
+    $scope.refreshRequested = true;
+    $scope.refresh = function () {
+        $scope.refreshRequested = true;
     }
-
-    $scope.refresh();
 });
 
 angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routeParams, $mdDialog, LoanService, HardwareService) {
     $scope.loan;
-    $scope.query = {
-        order: "serialNumber",
-        limit: 10,
-        page: 1,
-        pageSelect: 1
-    }
+    $scope.filters;
+    $scope.status;
     let hardwares;
 
     function displayError(error) {
@@ -113,28 +48,57 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
         });
     }
 
-    $scope.refresh = function () {
-        HardwareService.getList().then(function (promise) {
-            if (promise && promise.error) console.log(err);
+    function checkStatus() {
+        if ($scope.loan.aborted) return "aborted";
+        else if ($scope.loan.endDate) return "ended";
+        else if (new Date($scope.loan.estimatedEndDate) > new Date()) return "progress";
+        else return "overdue";
+    }
+
+    function Load() {
+        LoanService.get($routeParams.loanId).then(function (promise) {
+            if (promise.error) displayError(promise);
             else {
-                hardwares = promise;
-                LoanService.get($routeParams.loanId).then(function (promise) {
-                    if (promise.error) displayError(promise);
-                    else {
-                        $scope.loan = promise;
-                        $scope.loan.deviceId.forEach(function (device) {
-                            hardwares.forEach(function (hardware) {
-                                if (hardware._id == device.hardwareId) device.hardware = hardware.model;
-                            })
-                        })
-                    }
-                })
+                $scope.loan = promise;
+                $scope.filters = { loanId: $scope.loan._id };
+                $scope.status = checkStatus();
+                $scope.refresh();
             }
         });
     }
+    $scope.abortLoan = function () {
+        $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmAbort.html',
+            locals: {
+                items: { item: $scope.loan.companyId.name }
+            }
+        }).then(function () {
+            $scope.loan.aborted = true;
+            LoanService.create($scope.loan).then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else Load();
+            })
 
+        });
+    }
+    $scope.revert = function () {
+        $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmRevert.html',
+            locals: {
+                items: { item: $scope.loan.companyId.name }
+            }
+        }).then(function () {
+            $scope.loan.aborted = false;
+            $scope.loan.endDate = null;
+            LoanService.create($scope.loan).then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else Load();
+            })
 
-
+        });
+    }
     $scope.editLoan = function () {
         $mdDialog.show({
             controller: 'LoanEditCtrl',
@@ -143,25 +107,32 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
                 items: $scope.loan
             }
         }).then(function () {
-            $scope.refresh();
+            Load();
         });
     }
-    $scope.copyLoan = function (loan) {
-        const clonedLoan = angular.copy(loan);
-        delete clonedLoan._id;
+    $scope.returnLoan = function () {
         $mdDialog.show({
-            controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit/view.html',
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmReturn.html',
             locals: {
-                items: clonedLoan
+                items: { item: $scope.loan.companyId.name }
             }
         }).then(function () {
-            $scope.refresh();
+            $scope.loan.endDate = new Date();
+            LoanService.create($scope.loan).then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else Load();
+            })
+
         });
     }
 
-    $scope.refresh();
+    $scope.refreshRequested = false;
+    $scope.refresh = function () {
+        $scope.refreshRequested = true;
+    }
 
+    Load();
 });
 
 
@@ -174,8 +145,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             contactId: items.contactId,
             ownerId: items.ownerId._id,
             startDate: new Date(items.startDate),
-            estimatedEndDate: new Date(items.estimatedEndDate),
-            endDate: new Date(items.endDate)
+            estimatedEndDate: new Date(items.estimatedEndDate)
         };
         var master_companyId = items.companyId;
         var master_contactId = items.contactId;
@@ -184,6 +154,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             master._id = items._id;
             master.poe = items.poe;
             master.other = items.other;
+            if (items.endDate) master.endDate = new Date(items.endDate);
             var master_selectedDevices = [];
             items.deviceId.forEach(function (dev) {
                 master_selectedDevices.push({ hardwareId: dev.hardwareId, deviceId: dev._id, choices: [{ _id: dev._id, serialNumber: dev.serialNumber }] })
@@ -207,8 +178,8 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             poe: 0,
             other: "",
             startDate: new Date(),
-            estimatedEndDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-            endDate: ""
+            estimatedEndDate: new Date(new Date().setMonth(new Date().getMonth() + 1))
+
         };
         var master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
         var master_companyId = null;
