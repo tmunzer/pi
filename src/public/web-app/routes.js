@@ -41,15 +41,15 @@ angular.module('pi').config(function ($routeProvider) {
             templateUrl: "/web-app/user/list.html",
             controller: "UsersListCtrl"
         })
-        .when("/settings/companies", {
+        .when("/companies", {
             templateUrl: "/web-app/company/list.html",
             controller: "CompaniesListCtrl"
         })
-        .when("/settings/companies/:company_id", {
+        .when("/companies/:company_id", {
             templateUrl: "/web-app/company/details.html",
             controller: "CompaniesDetailsCtrl"
         })
-        .when("/settings/contacts", {
+        .when("/contacts", {
             templateUrl: "/web-app/contact/list.html",
             controller: "ContactListCtrl"
         })

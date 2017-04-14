@@ -1,6 +1,4 @@
-<div ng-include="'/web-app/settings/menu.html'"></div>
-
-<section class="settings">
+<section>
     <article>
         <md-card flex md-whiteframe=5>
             <md-card-header class="small" layout-align="start center">
@@ -38,7 +36,7 @@
                         </thead>
                         <tbody md-body>
                             <tr md-row ng-repeat="company in displayedCompanies | orderBy: query.order">
-                                <td md-cell><md-button href="#!/settings/companies/{{company._id}}" class="md-primary">{{company.name | capitalize }}</md-button></td>
+                                <td md-cell><a href="#!/companies/{{company._id}}" class="md-primary">{{company.name | capitalize }}</a></td>
                                 <td md-cell>{{company.contacts }}</td>
                                 <td md-cell>{{company.created_at | date: 'medium'}}</td>
                                 <td md-cell>{{company.updated_at | date: 'medium'}}</td>

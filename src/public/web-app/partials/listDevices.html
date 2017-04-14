@@ -27,14 +27,14 @@
         <tbody md-body>
             <tr md-row ng-repeat="device in displayedDevices | orderBy: query.order">
                 <td md-cell>
-                    <md-button href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</md-button>
+                    <a href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</a>
                 </td>
                 <td md-cell>
-                    <md-button href="#!/devices/{{device.serialNumber}}" class="md-primary">{{device.serialNumber}}</md-button>
+                    <a href="#!/devices/{{device.serialNumber}}" class="md-primary">{{device.serialNumber}}</a>
                 </td>
                 <td md-cell>{{device.macAddress}}</td>
                 <td md-cell style="text-align: left;">
-                    <md-button ng-if="device.loanId && !device.lost" class="md-icon-button md-primary" href="#!/loans/{{device.loanId}}">OUT</md-button>
+                    <a ng-if="device.loanId && !device.lost" class="md-icon-button md-primary" href="#!/loans/{{device.loanId}}">OUT</a>
                     <span ng-if="!device.loanId && !device.lost">Available</span>
                     <span ng-if="!device.loanId && device.lost" style="color: red">LOST</span>
                 </td>

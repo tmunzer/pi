@@ -47,6 +47,8 @@ pi
             else if ($location.path().indexOf("/hardwares") == 0) $scope.selectedIndex = 1;
             else if ($location.path().indexOf("/devices") == 0) $scope.selectedIndex = 2;
             else if ($location.path().indexOf("/loans") == 0) $scope.selectedIndex = 3;
+            else if ($location.path().indexOf("/companies") == 0) $scope.selectedIndex = 4;
+            else if ($location.path().indexOf("/contacts") == 0) $scope.selectedIndex = 5;
             else $scope.selectedIndex = -1;
         })
     })

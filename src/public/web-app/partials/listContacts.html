@@ -21,7 +21,7 @@
         </thead>
         <tbody md-body>
             <tr md-row ng-repeat="contact in displayedContacts | orderBy: query.order">
-                <td md-cell>{{contact.companyId.name | capitalize }}</td>
+                <td md-cell><a href="#!/companies/{{contact.companyId._id}}" class="md-primary">{{contact.companyId.name | capitalize }}</a></td>
                 <td md-cell>{{contact.name | capitalize }}</td>
                 <td md-cell>{{contact.email}}</td>
                 <td md-cell>{{contact.phone}}</td>
