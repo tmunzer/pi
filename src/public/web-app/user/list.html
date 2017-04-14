@@ -6,7 +6,7 @@
             <md-card-header class="small" layout-align="start center">
                 <h2>Accounts</h2>
                 <div flex></div>
-            
+
                 <md-button ng-click="refresh()">
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
@@ -29,8 +29,8 @@
                     <table md-table ng-model="displayedUsers" md-progress="request">
                         <thead md-head md-order="query.order">
                             <tr md-row>
-                                <th style="width:25%" md-column md-order-by="user.name.first">Name</th>
-                                <th style="width:25%" md-column md-order-by="user.email">Serial Number</th>
+                                <th style="width:25%" md-column md-order-by="user.name.first">Email</th>
+                                <th style="width:25%" md-column md-order-by="user.email">Name</th>
                                 <th style="width:10%" md-column md-order-by="user.anabled">Enabled</th>
                                 <th style="width:25%" md-column md-order-by="user.lastLogin">Last login</th>
                                 <th style="width:15%" md-column></th>
@@ -39,10 +39,10 @@
                         <tbody md-body>
                             <tr md-row ng-repeat="user in displayedUsers | orderBy: query.order">
                                 <td md-cell>
-                                    {{user.name.first | capitalize }} {{user.name.last | capitalize}}
+                                    {{user.email}}
                                 </td>
                                 <td md-cell>
-                                    {{user.email}}
+                                    {{user.name.first | capitalize }} {{user.name.last | capitalize}}
                                 </td>
                                 <td md-cell>{{user.enabled}}</td>
                                 <td md-cell>{{user.lastLogin}}</td>
@@ -68,6 +68,6 @@
                     md-page-select="query.pageSelect"></md-table-pagination>
             </md-card-content>
         </md-card>
-        
+
     </article>
 </section>

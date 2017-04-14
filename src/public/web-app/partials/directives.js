@@ -316,9 +316,9 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                 })
             }
 
-            $scope.editContact = function (contact) {
+            $scope.edit = function (contact) {
                 $mdDialog.show({
-                    controller: 'ContactEditCtrl',
+                    controller: 'ContactsEditCtrl',
                     templateUrl: 'contact/edit.html',
                     locals: {
                         items: contact

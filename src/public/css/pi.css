@@ -67,7 +67,9 @@ header, .menu-tabs {
 .menu-tabs div {
     padding: 12px 24px;
 }
-
+.menu {
+        margin-right: 20px;
+}
 /* SEARCH BAR */
 .search  {
 margin-left: 10%;

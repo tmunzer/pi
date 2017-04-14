@@ -1,0 +1,41 @@
+<section style="min-width: 600px;">
+    <article>
+        <div class="new company">
+            <md-toolbar>
+                </md-toolbar-tools>
+                <h4>{{action}} Company</h4>
+                </md-toolbar-tools>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form name="newCompany" layout="column">
+
+                    <md-input-container>
+                        <label>Company</label>
+                        <md-select name="company" ng-model="contact.companyId">
+                            <md-option ng-repeat="company in companies" value="{{company._id}}">{{company.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container style="margin-bottom: 0;">
+                        <input placeholder="Name" type="text" ng-model="contact.name" required="">
+                    </md-input-container>
+                    <div layout='row'>
+                    <md-input-container style="margin-bottom: 0;" flex=50>
+                        <input placeholder="Contact Phone" type="phone" ng-model="contact.phone">
+                    </md-input-container>
+                    <md-input-container style="margin-bottom: 0;" flex=50>
+                        <input placeholder="Contact Email" type="email" ng-model="contact.email">
+                    </md-input-container>
+                    </div>
+                </form>
+
+        <div layout="row">
+            <md-button class="md-primary" ng-click="reset()">Reset</md-button>
+            <md-button class="md-primary" ng-click="close()">Cancel</md-button>
+            <md-button class="md-primary md-raised" ng-click="save(company)" ng-disabled="newCompany.$invalid">Save</md-button>
+        </div>
+        </form>
+        </md-content>
+        </div>
+    </article>
+</section>
