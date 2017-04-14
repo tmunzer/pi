@@ -32,8 +32,8 @@
                         <tr md-row ng-repeat="hardware in hardwares | orderBy: query.order">
                             <td md-cell>{{hardware.type}}</td>
                             <td md-cell><md-button href="#!/hardwares/{{hardware.model}}" class="md-primary">{{hardware.model}}</md-button></td>
-                            <td md-cell><md-button href="#!/devices/model/{{hardware._id}}" class="md-primary">{{hardware.numberOfDevices}}</md-button></td>
-                            <td md-cell>{{hardware.numberOfDevices - hardware.out - hardware.lost}} / {{hardware.out}} / {{hardware.lost}}</td>
+                            <td md-cell>{{hardware.count.total}}</td>
+                            <td md-cell>{{hardware.count.total - hardware.count.out - hardware.count.lost}} / {{hardware.count.out}} / {{hardware.count.lost}}</td>
                             <td md-cell>{{hardware.created_at | date:'medium'}}</td>
                             <td md-cell>{{hardware.updated_at | date:'medium'}}</td>
                             <td md-cell>

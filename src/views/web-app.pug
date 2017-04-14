@@ -7,6 +7,7 @@ html(ng-app="pi")
         link(rel="stylesheet" href="/bower_components/material-design-icons/iconfont/material-icons.css")
         link(rel="stylesheet" href="/bower_components/angular-material-data-table/dist/md-data-table.min.css")
         link(rel="stylesheet" href="/css/pi.css")
+        link(rel="stylesheet" href="/css/sidenav.css")
         link(rel="stylesheet" href="/css/orange.css")
         script(src="/bower_components/angular/angular.js")
         script(src="/bower_components/angular-aria/angular-aria.js")
@@ -27,8 +28,10 @@ html(ng-app="pi")
         script(src="/web-app/device/controllers.js")
         script(src="/web-app/loan/controllers.js")
         script(src="/web-app/loan/services.js")
+        script(src="/web-app/company/controller.js")
         script(src="/web-app/company/services.js")
         script(src="/web-app/contact/services.js")
+        script(src="/web-app/user/controller.js")
         script(src="/web-app/user/services.js")
         script(src="/web-app/dist/filters.js")
         
@@ -40,13 +43,13 @@ html(ng-app="pi")
             md-input-container(flex=75 style="margin: 0;")
                 div.search(flex=75  ng-controller="SearchCtrl")    
                     div.input(style="width: 100%")  
-                        md-autocomplete(flex md-no-cache="true" md-selected-item="selected" md-item-text="data._id" md-search-text="search" md-items="data in results" md-floating-label="Search" md-delay="500" md-menu-class="autocomplete-search-template")
+                        md-autocomplete(flex md-no-cache='true' md-selected-item="selected" md-item-text="data._id" md-search-text="search" md-items="data in results" md-floating-label="Search" md-delay="200" md-menu-class="autocomplete-search-template")
                             md-item-template
                                 div.separator(flex ng-if="data.separator") {{data.separator}}
                                 div.selector(flex ng-if="data.model" md-highlight-text="search" md-highlight-flags="i") {{data.type}} {{data.model}}
                                 div.selector(flex ng-if="data.serialNumber" md-highlight-text="search" md-highlight-flags="i") S/N: {{data.serialNumber}} -- {{data.macAddress}}
-                                div.selector(flex ng-if="data.name && !data.phone" md-highlight-text="search" md-highlight-flags="i") {{data.name}}
-                                div.selector(flex ng-if="data.email" md-highlight-text="search" md-highlight-flags="i") {{data.name}} ({{data.email}})
+                                div.selector(flex ng-if="data.name && !data.companyId" md-highlight-text="search" md-highlight-flags="i") {{data.name}}
+                                div.selector(flex ng-if="data.companyId" md-highlight-text="search" md-highlight-flags="i") {{data.name}} ({{data.email}})
                                
         
                             md-not-found
@@ -78,7 +81,7 @@ html(ng-app="pi")
                         md-icon.material-icons.md-24(style="color: #fff;") account_circle
                     md-menu-content
                         md-menu-item
-                            md-button(ng-click="addHardware()") 
+                            md-button(href="#!/settings/accounts") 
                                 md-icon.material-icons settings
                                 span Account Settings
                         md-menu-item

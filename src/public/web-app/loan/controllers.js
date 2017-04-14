@@ -16,7 +16,7 @@ angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams
     $scope.editLoan = function (loan) {
         $mdDialog.show({
             controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit/view.html',
+            templateUrl: 'loan/edit.html',
             locals: {
                 items: null
             }
@@ -33,8 +33,9 @@ angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams
 
 angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routeParams, $mdDialog, LoanService, HardwareService) {
     $scope.loan;
-    $scope.filters;
     $scope.status;
+    $scope.refreshRequested = false;
+    $scope.filters = {id: []};
     let hardwares;
 
     function displayError(error) {
@@ -60,9 +61,12 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
             if (promise.error) displayError(promise);
             else {
                 $scope.loan = promise;
-                $scope.filters = { loanId: $scope.loan._id };
                 $scope.status = checkStatus();
-                $scope.refresh();
+                $scope.loan.deviceId.forEach(function(device){
+                    $scope.filters.id.push(device._id);
+                })
+                console.log($scope.filters);
+                $scope.refreshRequested = true;
             }
         });
     }
@@ -102,7 +106,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
     $scope.editLoan = function () {
         $mdDialog.show({
             controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit/view.html',
+            templateUrl: 'loan/edit.html',
             locals: {
                 items: $scope.loan
             }
@@ -125,11 +129,6 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
             })
 
         });
-    }
-
-    $scope.refreshRequested = false;
-    $scope.refresh = function () {
-        $scope.refreshRequested = true;
     }
 
     Load();

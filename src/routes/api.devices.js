@@ -1,73 +1,60 @@
 const express = require('express');
 const router = express.Router();
 const Device = require("../bin/models/device");
-const Loan = require("../bin/models/loan");
 
-function checkDeviceStatus(list, loanId, res, cb) {
-    let filters = {};
-    if (loanId) filters._id = loanId;
-    else filters = {endDate: null, aborted: {$ne: true}};
-    let results = [];
-    const devices = JSON.parse(JSON.stringify(list));
-    Loan
-        .find(filters)
-        .exec(function (err, loans) {
-            if (err) res.status(500).json(err);
-            else
-                devices.forEach(function (device) {
-                    loans.forEach(function (loan) {
-                        if (loan.deviceId.indexOf(device._id) >= 0) device.loanId = loan._id;                        
-                    })
-                    if (!loanId || (loanId && device.loanId == loanId)) results.push(device);
-                })
-
-            cb(results);
+function xfilters(field, values) {
+    let temp = {};
+    if (typeof values == "string") {
+        temp[field] = values;
+        return temp;
+    }
+    else if (typeof values == "object") {
+        let qstring = { $or: [] };
+        values.forEach(function (value) {
+            var test = {};
+            test[field] = values;
+            qstring.$or.push(test)
         })
+        return qstring;
+    }
 }
 
-
 router.get("/", function (req, res, next) {
-    let loanId;
-    if (req.query.loanId) loanId = req.query.loanId;
-
-    var filters = {};
-    if (req.query.ownerId) filters.ownersId = req.query.ownerId;
-    if (req.query.hardwareId) filters.hardwareId = req.query.hardwareId;
-    if (req.query.serialNumber) filters.serialNumber = req.query.serialNumber;
-    if (req.query.macAddress) filters.macAddress = req.query.macAddress;
-    if (req.query.search) filters = { $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }
-
-    Device
-        .find(filters)
-        .populate("hardwareId")
-        .populate("ownerId")
-        .populate("companyId")
-        .populate("contactId")
-        .populate("created_by")
-        .populate("edited_by")
-        .sort("serialNumber")
-        .exec(function (err, result) {
+    let filters;
+    if (req.query.search)
+        Device.find({ $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }, function (err, devices) {
             if (err) res.status(500).json(err);
-            else checkDeviceStatus(result, loanId, res, function (devices) {
-                res.json(devices);
-            })
+            else res.json(devices);
+        });
+    else {
+        if (req.query.id) filters = xfilters('_id', req.query.id);
+        if (req.query.ownerId) filters = xfilters('ownerId', req.query.ownerId);
+        if (req.query.hardwareId) filters = xfilters('hardwareId', req.query.hardwareId);
+        if (req.query.serialNumber) filters = xfilters('serialNumber', req.query.serialNumber);
+        if (req.query.macAddress) filters = xfilters('macAddress', req.query.macAddress);
+
+
+        Device.loadLoandId(filters, function (err, devices) {
+            if (err) res.status(500).json(err);
+            else {
+                if (req.query.loanId) {
+                    const result = [];
+                    devices.forEach(function (device) {
+                        if (device.loanId == req.query.loanId) result.push(device);
+                    })
+                    res.json(result);
+                }
+                else res.json(devices);
+            }
         })
+    }
 
 });
 router.get("/:serialNumber", function (req, res, next) {
-    Device.findOne({ serialNumber: req.params.serialNumber })
-        .populate("hardwareId")
-        .populate("ownerId")
-        .populate("companyId")
-        .populate("contactId")
-        .populate("created_by")
-        .populate("edited_by")
-        .exec(function (err, result) {
-            if (err) res.status(500).json(err);
-            else checkDeviceStatus([result], null, res, function (device) {
-                res.json(device[0]);
-            })
-        })
+    Device.loadLoandId({ serialNumber: req.params.serialNumber }, function (err, devices) {
+        if (err) res.status(500).json(err);
+        else res.json(devices[0]);
+    })
 })
 router.post("/", function (req, res, next) {
     if (req.body.device) {
@@ -85,16 +72,17 @@ router.post("/:device_id", function (req, res, next) {
         Device.findById(req.params.device_id, function (err, device) {
             if (err) res.status(500).json(err);
             else {
-                if (req.body.device.ownerId) device.ownerId = req.body.device.ownerId;
-                if (req.body.device.hardwareId) device.hardwareId = req.body.device.hardwareId;
-                if (req.body.device.serialNumber) device.serialNumber = req.body.device.serialNumber;
-                if (req.body.device.macAddress) device.macAddress = req.body.device.macAddress;
-                if (req.body.device.entryDate) device.entryDate = req.body.device.entryDate;
-                if (req.body.device.origin) device.origin = req.body.device.origin;
-                if (req.body.device.order) device.order = req.body.device.order;
-                if (req.body.device.replacingDeviceId) device.replacingDeviceId = req.body.device.replacingDeviceId;
-                if (req.body.device.comment) device.comment = req.body.device.comment;
-                if (req.body.device.lost) device.lost = req.body.device.lost;
+                device.ownerId = req.body.device.ownerId;
+                device.hardwareId = req.body.device.hardwareId;
+                device.serialNumber = req.body.device.serialNumber;
+                device.macAddress = req.body.device.macAddress;
+                device.entryDate = req.body.device.entryDate;
+                device.origin = req.body.device.origin;
+                device.order = req.body.device.order;
+                device.replacingDeviceId = req.body.device.replacingDeviceId;
+                device.comment = req.body.device.comment;
+                device.lost = req.body.device.lost;
+                device.removed = req.body.device.removed;
                 device.edited_by = req.session.passport.user.id;
                 device.save(function (err, result) {
                     if (err) res.status(500).json(err);
@@ -106,9 +94,15 @@ router.post("/:device_id", function (req, res, next) {
 });
 
 router.delete("/:device_id", function (req, res, next) {
-    Device.remove({ "_id": req.params.device_id }, function (err, device) {
+    Device.findById(req.params.device_id, function (err, device) {
         if (err) res.status(500).json(err);
-        else res.json(device.result);
+        else {
+            device.removed = true;
+            device.save(function (err, result) {
+                if (err) res.status(500).json(err);
+                else res.json(device.result);
+            })
+        }
     })
 });
 router.get("/replace/", function (req, res, next) {

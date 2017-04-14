@@ -33,7 +33,7 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
     $scope.editHardware = function (hardware) {
         $mdDialog.show({
             controller: 'HardwareEditCtrl',
-            templateUrl: 'hardware/edit/view.html',
+            templateUrl: 'hardware/edit.html',
             locals: {
                 items: hardware
             }
@@ -46,7 +46,7 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
         delete clonedHardware._id;
         $mdDialog.show({
             controller: 'HardwareEditCtrl',
-            templateUrl: 'hardware/edit/view.html',
+            templateUrl: 'hardware/edit.html',
             locals: {
                 items: clonedHardware
             }
@@ -96,7 +96,7 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
     $scope.editDevice = function (device) {
         $mdDialog.show({
             controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit/view.html',
+            templateUrl: 'device/edit.html',
             locals: {
                 items: device
             }

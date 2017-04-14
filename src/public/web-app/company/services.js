@@ -45,6 +45,8 @@ angular.module('Company').service("CompanyService", function ($http, $q) {
     }
 
     function httpReq(request) {
+        var canceller = $q.defer();
+        request.timout = canceller.promise;
         var promise = request.then(
             function (response) {
                 return response.data;
@@ -58,6 +60,7 @@ angular.module('Company').service("CompanyService", function ($http, $q) {
             });
 
         promise.abort = function () {
+            console.info("sqdsqCleaning up object references.");
             canceller.resolve();
         };
         promise.finally(function () {

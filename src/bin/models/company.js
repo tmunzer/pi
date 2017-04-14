@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+
 
 function capitalize(val) {
     if (typeof val !== 'string') val = '';
@@ -6,8 +7,8 @@ function capitalize(val) {
 }
 
 
-var CompanySchema = new mongoose.Schema({
-    name: { type: String, required: true, set: capitalize, trim: true},
+const CompanySchema = new mongoose.Schema({
+    name: { type: String, required: true, set: capitalize, trim: true },
     created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     edited_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     created_at: { type: Date },
@@ -17,7 +18,7 @@ var CompanySchema = new mongoose.Schema({
 
 // Pre save
 CompanySchema.pre('save', function (next) {
-    var now = new Date();
+    const now = new Date();
     this.updated_at = now;
     if (!this.created_at) {
         this.created_at = now;
@@ -25,6 +26,33 @@ CompanySchema.pre('save', function (next) {
     next();
 });
 
-var Company = mongoose.model('Company', CompanySchema);
+const Company = mongoose.model('Company', CompanySchema);
+Company.load = function (filters, cb) {
+    const Contact = require("./contact");
+    let done = 0;
+    this.find(filters)
+        .sort('name')
+        .exec(function (err, companies) {
+            if (err) cb(err);
+            else {
+                companies = JSON.parse(JSON.stringify(companies))
+                companies.forEach(function (company) {
+                    Contact
+                        .find({ companyId: company._id })
+                        .count(function (err, count) {
+                            if (err) {
+                                console.log(err)
+                                cb(err);
+                            }
+                            else {
+                                company.contacts = count;
+                                done++;
+                            }
+                            if (done == companies.length) cb(null, companies);
+                        })
+                });
+            }
+        });
+}
 
 module.exports = Company;

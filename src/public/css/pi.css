@@ -1,6 +1,9 @@
 /* ===================================
 Body
 =================================== */
+html{
+    overflow: hidden;
+}
 body {
     font: 12px helvetica, arial, san-serif !important;
     transition: opacity 1s ease;
@@ -128,7 +131,7 @@ md-tab-item h3, md-tab-item h4 {
 /* ===================================
 ng-view;
 =================================== */
-ng-view {
+ng-view > section {
     padding: 2px 50px;
     overflow: auto;
     background-color: #ccc;

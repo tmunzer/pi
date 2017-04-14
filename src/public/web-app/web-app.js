@@ -4,6 +4,7 @@ angular.module('Loan', []);
 angular.module('Company', []);
 angular.module('Contact', []);
 angular.module('User', []);
+angular.module('Company', []);
 angular.module("CustomFilters", []);
 angular.module("Modals", []);
 angular.module("Partials", []);
@@ -20,6 +21,7 @@ var pi = angular.module("pi", [
     'Company',
     'Contact',
     'User',
+    'Company',
     'CustomFilters',
     'Modals',
     'Partials'
@@ -48,7 +50,7 @@ pi
             else $scope.selectedIndex = -1;
         })
     })
-    .controller("SearchCtrl", function ($scope,$location, HardwareService, DeviceService, LoanService, CompanyService, ContactService) {
+    .controller("SearchCtrl", function ($scope, $location, $timeout, HardwareService, DeviceService, LoanService, CompanyService, ContactService) {
         $scope.search = "";
         $scope.results = [];
         $scope.selected = null;
@@ -70,48 +72,86 @@ pi
         })
         function refresh() {
             $scope.results = [];
-            $scope.results.push.apply($scope.results, [{ 'separator': "Hardwares (" + hardwares.length + ")" }]);
-            $scope.results.push.apply($scope.results, hardwares);
-            $scope.results.push.apply($scope.results, [{ 'separator': "Devices (" + devices.length + ")" }]);
-            $scope.results.push.apply($scope.results, devices);
-            $scope.results.push.apply($scope.results, [{ 'separator': "Companies (" + companies.length + ")" }]);
-            $scope.results.push.apply($scope.results, companies);
-            $scope.results.push.apply($scope.results, [{ 'separator': "Contacts (" + contacts.length + ")" }]);
-            $scope.results.push.apply($scope.results, contacts);
+            if (hardwares) {
+                $scope.results.push.apply($scope.results, [{ 'separator': "Hardwares (" + hardwares.length + ")" }]);
+                $scope.results.push.apply($scope.results, hardwares);
+            }
+            if (devices) {
+                $scope.results.push.apply($scope.results, [{ 'separator': "Devices (" + devices.length + ")" }]);
+                $scope.results.push.apply($scope.results, devices);
+            }
+            if (companies) {
+                $scope.results.push.apply($scope.results, [{ 'separator': "Companies (" + companies.length + ")" }]);
+                $scope.results.push.apply($scope.results, companies);
+            }
+            if (contacts) {
+                $scope.results.push.apply($scope.results, [{ 'separator': "Contacts (" + contacts.length + ")" }]);
+                $scope.results.push.apply($scope.results, contacts);
+            }
         }
 
-        $scope.$watch("search", function () {
-            if ($scope.search && $scope.search.length > 0)
-                HardwareService.getList({ search: $scope.search }).then(function (promise) {
-                    if (promise && promise.error) console.log(promise.error)
-                    else {
-                        hardwares = promise;
-                        refresh();
-                    }
-                })
-            DeviceService.getList({ search: $scope.search }).then(function (promise) {
+        let lastRequest;
+        var hardwareRequest;
+        var deviceRequest;
+        var companyRequest;
+        var contactRequest;
+
+        function update() {
+            if (hardwareRequest) hardwareRequest.abort();
+            if (deviceRequest) deviceRequest.abort();
+            if (companyRequest) companyRequest.abort();
+            if (contactRequest) contactRequest.abort();
+
+            hardwareRequest = HardwareService.getList({ search: $scope.search })
+            hardwareRequest.then(function (promise) {
+                if (promise && promise.error) console.log(promise.error)
+                else {
+                    hardwares = promise;
+                    refresh();
+                }
+            })
+            deviceRequest = DeviceService.getList({ search: $scope.search });
+            deviceRequest.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error)
                 else {
                     devices = promise;
                     refresh();
                 }
             })
-            CompanyService.getList({ search: $scope.search }).then(function (promise) {
+            companyRequest = CompanyService.getList({ search: $scope.search });
+            companyRequest.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error)
                 else {
                     companies = promise;
                     refresh();
                 }
             })
-            ContactService.getList({ search: $scope.search }).then(function (promise) {
+            contactRequest = ContactService.getList({ search: $scope.search });
+            contactRequest.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error)
                 else {
                     contacts = promise;
                     refresh();
                 }
             })
+        }
+
+        var searchTemp = '';
+        var searchTimeout;
+        $scope.$watch("search", function (val) {
+            if ($scope.search && $scope.search.length > 0) {
+                if (searchTimeout) $timeout.cancel(searchTimeout);
+
+                searchTemp = $scope.search;
+                searchTimeout = $timeout(function () {
+                    if (searchTemp == $scope.search) update();
+                }, 100); // delay 250 ms
+
+            }
         })
     })
+
+
     .controller("MenuCtrl", function ($scope, $mdDialog) {
         var originatorEv;
 
@@ -122,7 +162,7 @@ pi
         $scope.addHardware = function () {
             $mdDialog.show({
                 controller: 'HardwareEditCtrl',
-                templateUrl: 'hardware/edit/view.html',
+                templateUrl: 'hardware/edit.html',
                 locals: {
                     items: null
                 }
@@ -131,7 +171,7 @@ pi
         $scope.addDevice = function () {
             $mdDialog.show({
                 controller: 'DeviceEditCtrl',
-                templateUrl: 'device/edit/view.html',
+                templateUrl: 'device/edit.html',
                 locals: {
                     items: null
                 }
@@ -140,7 +180,7 @@ pi
         $scope.addLoan = function () {
             $mdDialog.show({
                 controller: 'LoanEditCtrl',
-                templateUrl: 'loan/edit/view.html',
+                templateUrl: 'loan/edit.html',
                 locals: {
                     items: null
                 }

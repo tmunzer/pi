@@ -4,76 +4,24 @@ const Hardware = require("../bin/models/hardware");
 const Device = require("../bin/models/device");
 const Loan = require("../bin/models/loan");
 
-function checkDeviceStatus(devices, cb) {
-    let lost = 0;
-    let out = 0;
-    Loan
-        .find({ 'endDate': null })
-        .exec(function (err, loans) {
-            console.log(loans);
-            if (err) res.status(500).json(err);
-            else
-                devices.forEach(function (device) {
-                    if (device.lost) lost++;
-                    else loans.forEach(function (loan) {
-                        if (loan.deviceId.indexOf(device._id) >= 0) out++;
-                    })
-                })
-            cb({ lost: lost, out: out });
-        })
-}
-
-
-function countDevices(hardwares, cb) {
-    done = 0;
-    let result = JSON.parse(JSON.stringify(hardwares));
-    result.forEach(function (hardware) {
-        Device
-            .find({ hardwareId: hardware._id })
-            .exec(function (err, res) {
-                if (err) {
-                    hardware.numberOfDevices = 'n/a';
-                    done++;
-                    if (done == hardwares.length) cb(result);
-                } else {
-                    hardware.numberOfDevices = res.length;
-                    checkDeviceStatus(res, function (status) {
-                        hardware.out = status.out;
-                        hardware.lost = status.lost;
-                        done++;
-                        if (done == hardwares.length) cb(result);
-                    })
-                }
-            })
-    })
-}
-
 
 router.get("/", function (req, res, next) {
-    if (req.query.type) {
-        Hardware.findByType(req.query.type, function (err, hardwares) {
+    let filters;
+    if (req.query.search)
+        Hardware.find({ $or: [{ model: { "$regex": req.query.search, "$options": "i" } }, { type: { "$regex": req.query.search, "$options": "i" } }] }, function (err, hardwares) {
             if (err) res.status(500).json(err);
-            else countDevices(hardwares, function (result) {
-                res.json(result);
-            });
+            else res.json(hardwares);
+        });
+    else {
+
+        if (req.query.type) filters = { type: req.query.type };
+        Hardware.loadWithDevicesNumber(filters, function (err, hardwares) {
+            if (err) res.status(500).json(err);
+            else res.json(hardwares);
         })
-    } else {
-        var filters = {};
-        if (req.query.search) filters = { $or: [{ model: { "$regex": req.query.search, "$options": "i"  } }, { type: { "$regex": req.query.search, "$options": "i"  } }] };
-        Hardware
-            .find(filters)
-            .sort({ 'model': 'asc' })
-            .populate("created_by")
-            .populate("edited_by")
-            .exec(function (err, hardwares) {
-                if (err) res.status(500).json(err);
-                else if (req.query.search) res.json(hardwares);
-                else countDevices(hardwares, function (result) {
-                    res.json(result);
-                });
-            })
     }
 });
+
 router.get("/:model", function (req, res, next) {
     Hardware
         .findOne({ model: req.params.model })

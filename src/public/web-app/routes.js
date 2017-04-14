@@ -4,36 +4,31 @@ angular.module('pi').config(function ($routeProvider) {
             templateUrl: "/web-app/partials/dashboard.html"
         })
         .when("/devices", {
-            templateUrl: "/web-app/device/list/view.html",
+            templateUrl: "/web-app/device/list.html",
             module: "Device",
             controller: "DeviceListCtrl"
         })
         .when("/devices/:serialNumber", {
-            templateUrl: "/web-app/device/details/view.html",
+            templateUrl: "/web-app/device/details.html",
             module: "Device",
             controller: "DeviceDetailsCtrl"
         })
-        .when("/devices/model/:hardwareId", {
-            templateUrl: "/web-app/device/list/view.html",
-            module: "Device",
-            controller: "DeviceListCtrl"
-        })
         .when("/loans", {
-            templateUrl: "/web-app/loan/list/view.html",
+            templateUrl: "/web-app/loan/list.html",
             module: "Loan",
             controller: "LoanListCtrl"
         })
         .when("/loans/:loanId", {
-            templateUrl: "/web-app/loan/details/view.html",
+            templateUrl: "/web-app/loan/details.html",
             module: "Loan",
             controller: "LoanDetailsCtrl"
         })
         .when("/hardwares", {
-            templateUrl: "/web-app/hardware/list/view.html",
+            templateUrl: "/web-app/hardware/list.html",
             controller: "HardwareListCtrl"
         })
         .when("/hardwares/:model", {
-            templateUrl: "/web-app/hardware/details/view.html",
+            templateUrl: "/web-app/hardware/details.html",
             controller: "HardwareDetailsCtrl"
         })
         .when("/user", {
@@ -41,6 +36,14 @@ angular.module('pi').config(function ($routeProvider) {
         })
         .when("/admin", {
             templateUrl: "/web-app/partials/admin.html"
+        })
+        .when("/settings/accounts", {
+            templateUrl: "/web-app/user/list.html",
+            controller: "UsersListCtrl"
+        })
+        .when("/settings/companies", {
+            templateUrl: "/web-app/company/list.html",
+            controller: "CompaniesListCtrl"
         })
         .otherwise({
             redirectTo: "/dashboard/"

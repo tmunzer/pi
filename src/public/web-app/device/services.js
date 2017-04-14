@@ -1,7 +1,6 @@
 angular.module('Device').service("DevicesToReplace", function ($http, $q) {
 
     function getList(modelId) {
-        console.log({ modelId: modelId });
         var canceller = $q.defer();
         var request = $http({
             url: "/api/devices/replace/",
@@ -88,6 +87,8 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
         return httpReq(request);
     }
     function httpReq(request) {
+        var canceller = $q.defer();
+        request.timout = canceller.promise;
         var promise = request.then(
             function (response) {
                 return response.data;
@@ -101,7 +102,7 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
             });
 
         promise.abort = function () {
-            canceller.resolve();
+            canceller.resolve("aborted");
         };
         promise.finally(function () {
             console.info("Cleaning up object references.");

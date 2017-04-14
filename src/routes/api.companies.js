@@ -3,24 +3,23 @@ const router = express.Router();
 const Company = require("../bin/models/company");
 
 
-
 router.get("/", function (req, res, next) {
-    var filters = {};
-    if (req.query.search) filters = { name: { "$regex": req.query.search , "$options": "i" } }
-
-    Company
-        .find(filters)
-        .sort("name")
-        .exec(function (err, companies) {
+    let filters;
+    if (req.query.search) {
+        Company.find({ name: { "$regex": req.query.search, "$options": "i" } }, function (err, companies) {
             if (err) res.status(500).json(err);
             else res.json(companies);
         })
-
+    } else
+        Company.load(filters, function (err, companies) {
+            if (err) res.status(500).json(err);
+            else res.json(companies);
+        })
 });
 router.get("/:company_id", function (req, res, next) {
-    Company.findById(req.params.company_id, function (err, company) {
+    Company.load({ _id: req.params.company_id }, function (err, companies) {
         if (err) res.status(500).json(err);
-        else res.json(company);
+        else res.json(companies[0]);
     })
 })
 router.post("/", function (req, res, next) {

@@ -59,7 +59,6 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
             function filter() {
                 $scope.displayedLoans = [];
                 $scope.loans.forEach(function (loan) {
-                    console.log(new Date(loan.endDate).getTime());
                     if (
                         ($scope.query.returned || !loan.endDate || new Date(loan.endDate).getTime() == 0)
                         && ($scope.query.aborted || !loan.aborted)
@@ -81,7 +80,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                 }
                 $mdDialog.show({
                     controller: 'LoanEditCtrl',
-                    templateUrl: 'loan/edit/view.html',
+                    templateUrl: 'loan/edit.html',
                     locals: {
                         items: items
                     }
@@ -94,7 +93,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                 delete clonedLoan._id;
                 $mdDialog.show({
                     controller: 'LoanEditCtrl',
-                    templateUrl: 'loan/edit/view.html',
+                    templateUrl: 'loan/edit.html',
                     locals: {
                         items: clonedLoan
                     }
@@ -220,7 +219,7 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
             $scope.editDevice = function (device) {
                 $mdDialog.show({
                     controller: 'DeviceEditCtrl',
-                    templateUrl: 'device/edit/view.html',
+                    templateUrl: 'device/edit.html',
                     locals: {
                         items: device
                     }
@@ -233,7 +232,7 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 delete clonedDevice._id;
                 $mdDialog.show({
                     controller: 'DeviceEditCtrl',
-                    templateUrl: 'device/edit/view.html',
+                    templateUrl: 'device/edit.html',
                     locals: {
                         items: clonedDevice
                     }

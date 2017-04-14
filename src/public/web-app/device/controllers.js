@@ -1,12 +1,20 @@
 
 angular.module('Device').controller('DeviceListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, DeviceService) {
 
-    var filters;
-    if ($routeParams.hardwareId) filters = { hardwareId: $routeParams.hardwareId };
-
     $scope.refreshRequested = true;
     $scope.refresh = function () {
         $scope.refreshRequested = true;
+    }
+    $scope.editDevice = function () {
+        $mdDialog.show({
+            controller: 'DeviceEditCtrl',
+            templateUrl: 'device/edit.html',
+            locals: {
+                items: $scope.device
+            }
+        }).then(function () {
+            $scope.refreshRequested = true;
+        });
     }
 });
 
@@ -37,7 +45,7 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
     $scope.editDevice = function () {
         $mdDialog.show({
             controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit/view.html',
+            templateUrl: 'device/edit.html',
             locals: {
                 items: $scope.device
             }

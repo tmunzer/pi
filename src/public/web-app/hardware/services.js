@@ -62,6 +62,8 @@ angular.module('Hardware').service("HardwareService", function ($http, $q) {
     }
 
     function httpReq(request) {
+        var canceller = $q.defer();
+        request.timout = canceller.promise;
         var promise = request.then(
             function (response) {
                 return response.data;
@@ -75,7 +77,7 @@ angular.module('Hardware').service("HardwareService", function ($http, $q) {
             });
 
         promise.abort = function () {
-            canceller.resolve();
+            canceller.resolve("aborted");
         };
         promise.finally(function () {
             console.info("Cleaning up object references.");
