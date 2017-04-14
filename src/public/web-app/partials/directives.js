@@ -15,7 +15,8 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
         restrict: 'E',
         scope: {
             'filters': "=",
-            'refresh': '='
+            'refresh': '=',
+            'loans': "=?"
         },
         templateUrl: "/web-app/partials/listLoans.html",
         link: function postLink($scope) {
@@ -278,7 +279,8 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
         restrict: 'E',
         scope: {
             'filters': "=",
-            'refresh': "="
+            'refresh': "=",
+            'contacts': "=?"
         },
         templateUrl: "/web-app/partials/listContacts.html",
         link: function postLink($scope) {
@@ -346,7 +348,7 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                 $scope.request.then(function (promise) {
                     if (promise && promise.error) displayError(promise);
                     else {
-                        $scope.displayedDevices = $scope.contacts = promise;
+                        $scope.contacts = promise;
                         filter();
                     }
                     $scope.refresh = false;

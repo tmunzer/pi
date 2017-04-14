@@ -63,7 +63,33 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
 angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $routeParams, $mdDialog, CompanyService) {
     $scope.company;
     $scope.filters;
-
+    $scope.loans;
+    $scope.contacts;
+    $scope.ended = 0;
+    $scope.progress = 0;
+    $scope.overdue = 0;
+    $scope.aborted = 0;
+    $scope.loansTotal = 0;
+    $scope.contactsTotal = 0;
+    $scope.$watch("loans", function () {
+        if ($scope.loans && $scope.loans.length > 0) {
+            $scope.ended = 0;
+            $scope.progress = 0;
+            $scope.overdue = 0;
+            $scope.aborted = 0;
+            $scope.loansTotal = 0;
+            $scope.loans.forEach(function (loan) {
+                if (loan.aborted) $scope.aborted++;
+                else if (loan.endDate) $scope.ended++;
+                else if (new Date(loan.estimatedEndDate) < new Date()) $scope.overdue++;
+                else $scope.progress++
+                $scope.loansTotal++
+            })
+        }
+    })
+    $scope.$watch("contacts", function () {
+        if ($scope.contacts) $scope.contactsTotal = $scope.contacts.length;
+    })
     var companyId;
 
     function displayError(error) {
@@ -76,12 +102,12 @@ angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $
             }
         });
     }
-    $scope.editDevice = function () {
+    $scope.edit = function () {
         $mdDialog.show({
             controller: 'CompaniesEditCtrl',
             templateUrl: 'company/edit.html',
             locals: {
-                items: $scope.device
+                items: $scope.company
             }
         }).then(function () {
             loadDevice();
@@ -115,7 +141,7 @@ angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $
 
 angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdDialog, items, CompanyService) {
     // items is injected in the controller, not its scope!   
-    console.log(items) 
+    console.log(items)
     if (items && items._id) {
         $scope.action = "Edit";
         var master = items;
@@ -126,7 +152,7 @@ angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdD
         $scope.action = "Add";
         var master = { name: "" };
     }
-    
+
     $scope.reset = function () {
         $scope.company = angular.copy(master);
     };

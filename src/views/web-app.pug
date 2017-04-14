@@ -91,31 +91,39 @@ html(ng-app="pi")
                                 span Logout
 
         div.menu-tabs(ng-controller="TabCtrl")
-            md-tabs(md-selected="selectedIndex")
+            md-tabs(md-selected="selectedIndex" md-no-pagination="true" md-enable-disconnect="true")
                 md-tab
                     md-tab-label
                         div(ng-click='goto("dashboard")') 
-                            h4 Dashboard
-                md-tab
-                    md-tab-label
-                        div(ng-click='goto("hardwares")') 
-                            h4 Hardware
-                md-tab
-                    md-tab-label
-                        div(ng-click='goto("devices")') 
-                            h4 Devices
+                            h3 Dashboard
                 md-tab
                     md-tab-label
                         div(ng-click='goto("loans")')
-                            h4 Loans                
+                            h3 Loans  
+               
+                md-tab(ng-disabled="'true'")
+                    md-tab-label
+                        div
+                md-tab
+                    md-tab-label
+                        div(ng-click='goto("hardwares")') 
+                            h5 Hardwares
+                md-tab
+                    md-tab-label
+                        div(ng-click='goto("devices")') 
+                            h5 Devices
+                                
+                md-tab(ng-disabled="'true'")
+                    md-tab-label
+                        div( style="width: 20px")
                 md-tab
                     md-tab-label
                         div(ng-click='goto("companies")')
-                            h4 Companies                
+                            h5 Companies                
                 md-tab
                     md-tab-label
                         div(ng-click='goto("contacts")')
-                            h4 Contacts                
+                            h5 Contacts                
 
 
         div(flex layout="column" role="main" style="overflow: auto")

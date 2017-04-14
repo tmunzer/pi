@@ -44,11 +44,11 @@ pi
         }
         $scope.$on('$routeChangeStart', function (next, current) {
             if ($location.path().indexOf("/dashboard") == 0) $scope.selectedIndex = 0;
-            else if ($location.path().indexOf("/hardwares") == 0) $scope.selectedIndex = 1;
-            else if ($location.path().indexOf("/devices") == 0) $scope.selectedIndex = 2;
-            else if ($location.path().indexOf("/loans") == 0) $scope.selectedIndex = 3;
-            else if ($location.path().indexOf("/companies") == 0) $scope.selectedIndex = 4;
-            else if ($location.path().indexOf("/contacts") == 0) $scope.selectedIndex = 5;
+            else if ($location.path().indexOf("/loans") == 0) $scope.selectedIndex = 1;
+            else if ($location.path().indexOf("/hardwares") == 0) $scope.selectedIndex = 3;
+            else if ($location.path().indexOf("/devices") == 0) $scope.selectedIndex = 4;
+            else if ($location.path().indexOf("/companies") == 0) $scope.selectedIndex = 6;
+            else if ($location.path().indexOf("/contacts") == 0) $scope.selectedIndex = 7;
             else $scope.selectedIndex = -1;
         })
     })

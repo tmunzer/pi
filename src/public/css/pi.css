@@ -46,12 +46,23 @@ header {
 header, .menu-tabs {
     background-color: #333;
 }
-.menu-tabs h4 {
+
+.menu-tabs md-tab-item:not(.md-active) h3,
+.menu-tabs md-tab-item:not(.md-active) h4,
+.menu-tabs md-tab-item:not(.md-active) h5 {
     color: white;
+}
+.menu-tabs h3,
+.menu-tabs h4,
+.menu-tabs h5 {
+    margin: 0;
 }
 
 .menu-tabs md-tab-item {
     padding: 0 !important;
+}
+.menu-tabs md-tab-item.md-disabled {
+    width: 20px;
 }
 .menu-tabs div {
     padding: 12px 24px;
@@ -121,7 +132,7 @@ background-color: #ddd;
 }
 
 md-tabs {
-    margin-left: 15%;
+    margin-left: 12%;
     max-height: 40px;
 }
 
