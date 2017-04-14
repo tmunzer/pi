@@ -1,0 +1,32 @@
+<section>
+    <article>
+
+        <detailed-header title="{{company.name}}" object="company"></detailed-header>
+        <md-card>
+            <md-card-header class="small" layout-align="center center">
+                <h2>Company Contacts</h2>
+                <div flex></div>
+                <md-button ng-click="refreshContacts()">
+                    <md-tooltip>Refresh</md-tooltip>
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+            </md-card-header>
+            <md-card-content>
+            <list-contacts filters="filters" refresh="refreshRequestedContacts"></list-contacts>
+            </md-card-content>
+        </md-card>
+        <md-card>
+            <md-card-header class="small" layout-align="center center">
+                <h2>Loans History</h2>
+                <div flex></div>
+                <md-button ng-click="refreshLoans()">
+                    <md-tooltip>Refresh</md-tooltip>
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+            </md-card-header>
+            <md-card-content>
+                <list-loans filters="filters" refresh="refreshRequestedLoans"></list-loans>
+            </md-card-content>
+        </md-card>
+    </article>
+</section>

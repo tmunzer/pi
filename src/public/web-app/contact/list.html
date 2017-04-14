@@ -17,57 +17,11 @@
                 </md-button>
             </md-card-header>
             <md-card-content layout="column">
-                <div layout="row" layout-align="start center" layout-margin md-whiteframe="2">
-                    <md-input-container md-no-float="true" class="no-error">
-                        <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
-                        />
-                    </md-input-container>
-                    <span flex></span>
-                    <span>Displayed: {{displayedContacts.length}} | Total: {{contacts.length}}</span>
-                </div>
-                <md-table-container>
-                    <table md-table ng-model="displayedContacts" md-progress="request">
-                        <thead md-head md-order="query.order">
-                            <tr md-row>
-                                <th style="width:35%" md-column md-order-by="user.name.first">Name</th>
-                                <th style="width:35%" md-column md-order-by="user.name.first">Email</th>
-                                <th style="width:35%" md-column md-order-by="user.name.first">Phone</th>
-                                <th style="width:25%" md-column md-order-by="user.created_ad">Creation Date</th>
-                                <th style="width:25%" md-column md-order-by="user.edited_at">Edition Date</th>
-                                <th style="width:15%" md-column></th>
-                            </tr>
-                        </thead>
-                        <tbody md-body>
-                            <tr md-row ng-repeat="contact in displayedContacts | orderBy: query.order">
-                                <td md-cell>
-                                    {{contacts.name | capitalize }}
-                                </td>
-                                <td md-cell>
-                                    {{contacts.email}}
-                                </td>
-                                <td md-cell>{{contacts.phone}}</td>
-                                <td md-cell>{{contacts.created_at | date: 'medium'}}</td>
-                                <td md-cell>{{contacts.updated_at | date: 'medium'}}</td>
-                                <td md-cell>
-                                    <md-button class="md-icon-button" ng-click="edit(contact)">
-                                        <md-tooltip>Edit</md-tooltip>
-                                        <md-icon class="material-icons edit">mode_edit</md-icon>
-                                    </md-button>
-                                    <md-button class="md-icon-button" ng-click="copy(contact)">
-                                        <md-tooltip>Clone</md-tooltip>
-                                        <md-icon class="material-icons edit">content_copy</md-icon>
-                                    </md-button>
-                                    <md-button class="md-icon-button" ng-click="remove(contact)">
-                                        <md-tooltip>Delete</md-tooltip>
-                                        <md-icon class="material-icons delete">delete_forever</md-icon>
-                                    </md-button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </md-table-container>
-                <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedContacts.length}}"
-                    md-page-select="query.pageSelect"></md-table-pagination>
+                
+
+
+            <list-contacts filters="filters" refresh="refreshRequested"></list-contacts>
+
             </md-card-content>
         </md-card>
 

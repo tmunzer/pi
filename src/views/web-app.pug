@@ -30,6 +30,7 @@ html(ng-app="pi")
         script(src="/web-app/loan/services.js")
         script(src="/web-app/company/controller.js")
         script(src="/web-app/company/services.js")
+        script(src="/web-app/contact/controller.js")
         script(src="/web-app/contact/services.js")
         script(src="/web-app/user/controller.js")
         script(src="/web-app/user/services.js")
@@ -109,5 +110,5 @@ html(ng-app="pi")
                             h4 Loans                
 
 
-        div(flex layout="column" role="main")
+        div(flex layout="column" role="main" style="overflow: auto")
             ng-view

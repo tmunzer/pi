@@ -339,7 +339,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
                 if (company_name.toLowerCase() === comp_list.name.toLowerCase) already_exists = true;
             })
             if (!already_exists)
-                CompanyService.create(company.trim()).then(function (promise) {
+                CompanyService.create({name: company.trim()}).then(function (promise) {
                     if (promise && promise.error) console.log(promise.error)
                     else {
                         $scope.company.selectedItem = promise;

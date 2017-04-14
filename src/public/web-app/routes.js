@@ -45,6 +45,14 @@ angular.module('pi').config(function ($routeProvider) {
             templateUrl: "/web-app/company/list.html",
             controller: "CompaniesListCtrl"
         })
+        .when("/settings/companies/:company_id", {
+            templateUrl: "/web-app/company/details.html",
+            controller: "CompaniesDetailsCtrl"
+        })
+        .when("/settings/contacts", {
+            templateUrl: "/web-app/contact/list.html",
+            controller: "ContactListCtrl"
+        })
         .otherwise({
             redirectTo: "/dashboard/"
         })

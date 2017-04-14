@@ -7,19 +7,23 @@ const Contact = require("../bin/models/contact");
 router.get("/", function (req, res, next) {
     const filters = {};
     if (req.query.search) {
-        Contact.find({ $or :[{ name: { "$regex": req.query.search, "$options": "i" } }, { email: { "$regex": req.query.search, "$options": "i" } }] }, function (err, contacts) {
+        Contact.find({ $or: [{ name: { "$regex": req.query.search, "$options": "i" } }, { email: { "$regex": req.query.search, "$options": "i" } }] }, function (err, contacts) {
             if (err) res.status(500).json(err);
             else res.json(contacts);
         })
-    } else
+    } else {
+        if (req.query.companyId) filters.companyId = req.query.companyId;
+        if (req.query.email) filters.email = req.query.email;
+        if (req.query.name) filters.name = req.query.name;
         Contact
             .find(filters)
+            .populate('companyId')
             .sort("name")
             .exec(function (err, contacts) {
                 if (err) res.status(500).json(err);
                 else res.json(contacts);
             })
-
+    }
 });
 router.get("/:contact_id", function (req, res, next) {
     Contact.findById(req.params.contact_id, function (err, contact) {

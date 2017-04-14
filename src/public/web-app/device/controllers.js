@@ -20,16 +20,9 @@ angular.module('Device').controller('DeviceListCtrl', function ($scope, $routePa
 
 
 
-angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, LoanService) {
+angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService) {
     $scope.device;
     $scope.filters;
-    $scope.query = {
-        order: "startDate",
-        limit: 10,
-        page: 1,
-        pageSelect: 1
-    }
-    $scope.request;
     var deviceId;
 
     function displayError(error) {

@@ -24,8 +24,7 @@ router.get("/:company_id", function (req, res, next) {
 })
 router.post("/", function (req, res, next) {
     if (req.body.company) {
-        const company = {};
-        company.name = req.body.company;
+        const company = req.body.company;
         company.created_by = req.session.passport.user.id;
         company.edited_by = req.session.passport.user.id;
         Company(company).save(function (err, company) {

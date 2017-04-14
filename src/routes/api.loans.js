@@ -9,6 +9,7 @@ router.get("/", function (req, res, next) {
     var filters = {};
     if (req.query.ownerId) filters.ownersId = req.query.ownerId;
     if (req.query.deviceId) filters.deviceId = req.query.deviceId;
+    if (req.query.companyId) filters.companyId = req.query.companyId;
     if (req.query.serialNumber) filters.serialNumber = req.query.serialNumber;
     if (req.query.macAddress) filters.macAddress = req.query.macAddress;
 

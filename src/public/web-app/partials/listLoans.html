@@ -28,7 +28,7 @@
         </thead>
         <tbody md-body>
             <tr md-row ng-repeat="loan in displayedLoans | orderBy: query.order">
-                <td md-cell>{{loan.companyId.name}}</td>
+                <td md-cell><md-button href="#!/settings/companies/{{loan.companyId._id}}" class="md-primary">{{loan.companyId.name}}</md-button></td>
                 <td md-cell>{{loan.deviceId.length}}</td>
                 <td md-cell>{{loan.ownerId.name.first | capitalize}} {{loan.ownerId.name.last | capitalize}} ({{loan.ownerId.email}})</td>
                 <td md-cell>{{loan.startDate | date:'medium'}}</td>

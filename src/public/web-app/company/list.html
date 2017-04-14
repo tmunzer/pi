@@ -11,7 +11,7 @@
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="editUser()" class="md-primary">
+                <md-button ng-click="edit()" class="md-primary">
                     <md-icon class="material-icons">add_circle</md-icon>
                     Add
                 </md-button>
@@ -29,7 +29,7 @@
                     <table md-table ng-model="displayedCompanies" md-progress="request">
                         <thead md-head md-order="query.order">
                             <tr md-row>
-                                <th style="width:30%" md-column md-order-by="user.name.first">Name</th>
+                                <th style="width:25%" md-column md-order-by="user.name.first">Name</th>
                                 <th style="width:5%" md-column md-order-by="user.name.first"># of Contacts</th>
                                 <th style="width:25%" md-column md-order-by="user.created_ad">Creation Date</th>
                                 <th style="width:25%" md-column md-order-by="user.edited_at">Edition Date</th>            
@@ -38,20 +38,16 @@
                         </thead>
                         <tbody md-body>
                             <tr md-row ng-repeat="company in displayedCompanies | orderBy: query.order">
-                                <td md-cell>{{company.name | capitalize }}</td>
+                                <td md-cell><md-button href="#!/settings/companies/{{company._id}}" class="md-primary">{{company.name | capitalize }}</md-button></td>
                                 <td md-cell>{{company.contacts }}</td>
                                 <td md-cell>{{company.created_at | date: 'medium'}}</td>
                                 <td md-cell>{{company.updated_at | date: 'medium'}}</td>
                                 <td md-cell>
-                                    <md-button class="md-icon-button" ng-click="editUser(company)">
+                                    <md-button class="md-icon-button" ng-click="edit(company)">
                                         <md-tooltip>Edit</md-tooltip>
                                         <md-icon class="material-icons edit">mode_edit</md-icon>
                                     </md-button>
-                                    <md-button class="md-icon-button" ng-click="copyUser(company)">
-                                        <md-tooltip>Clone</md-tooltip>
-                                        <md-icon class="material-icons edit">content_copy</md-icon>
-                                    </md-button>
-                                    <md-button class="md-icon-button" ng-click="removeUser(company)">
+                                    <md-button class="md-icon-button" ng-click="remove(company)">
                                         <md-tooltip>Delete</md-tooltip>
                                         <md-icon class="material-icons delete">delete_forever</md-icon>
                                     </md-button>

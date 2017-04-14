@@ -271,3 +271,95 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
         }
     };
 });
+
+
+angular.module('Partials').directive('listContacts', function ($mdDialog, ContactService) {
+    return {
+        restrict: 'E',
+        scope: {
+            'filters': "=",
+            'refresh': "="
+        },
+        templateUrl: "/web-app/partials/listContacts.html",
+        link: function postLink($scope) {
+            $scope.contacts = [];
+            $scope.displayedContacts = [];
+            $scope.query = {
+                order: "name",
+                limit: 10,
+                page: 1,
+                pageSelect: 1,
+                filter: ""
+            }
+
+            function displayError(error) {
+                console.log(error);
+                $mdDialog.show({
+                    controller: 'ErrorCtrl',
+                    templateUrl: 'modals/error.html',
+                    locals: {
+                        items: error
+                    }
+                });
+            }
+
+            function filter() {
+                $scope.displayedContacts = [];
+                $scope.contacts.forEach(function (contact) {
+                    if ($scope.query.filter == ""
+                        || contact.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
+                        || contact.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
+                        || contact.phone.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0)
+                        $scope.displayedContacts.push(contact);
+                })
+            }
+
+            $scope.editContact = function (contact) {
+                $mdDialog.show({
+                    controller: 'ContactEditCtrl',
+                    templateUrl: 'contact/edit.html',
+                    locals: {
+                        items: contact
+                    }
+                }).then(function () {
+                    refresh();
+                });
+            }
+       
+            $scope.remove = function (contact) {
+                $mdDialog.show({
+                    controller: 'ConfirmCtrl',
+                    templateUrl: 'modals/confirm.html',
+                    locals: {
+                        items: { item: "Contact" }
+                    }
+                }).then(function () {
+                    ContactService.remove(contact._id).then(function (promise) {
+                        if (promise && promise.error) displayError(promise);
+                        else refresh();
+                    });
+                });
+            }
+
+            function refresh() {
+                $scope.request = ContactService.getList($scope.filters)
+                $scope.request.then(function (promise) {
+                    if (promise && promise.error) displayError(promise);
+                    else {
+                        $scope.displayedDevices = $scope.contacts = promise;
+                        filter();
+                    }
+                    $scope.refresh = false;
+                });
+            }
+        
+            $scope.$watch("query.filter", function () {
+                filter();
+            })
+
+            $scope.$watch('refresh', function () {
+                if ($scope.refresh) refresh();
+            })
+        }
+    };
+});
