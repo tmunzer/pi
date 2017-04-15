@@ -132,6 +132,17 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
             $scope.user = user;
         });
     }
+    $scope.changePassword = function () {
+        $mdDialog.show({
+            controller: 'PasswordCtrl',
+            templateUrl: 'user/password.html',
+            locals: {
+                items: {user: $scope.user}
+            }
+        }).then(function (user) {
+            console.log(user);
+        });
+    }
     UserService.getById(userId).then(function (promise) {
         if (promise.error) displayError(promise);
         else {
@@ -141,7 +152,6 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
     });
 
     $scope.refresh = function () {
-        console.log($scope.filters);
         $scope.refreshRequested = true;
     }
 });
@@ -181,4 +191,19 @@ angular.module('User').controller('UserEditCtrl', function ($scope, $mdDialog, i
         $mdDialog.hide(promise);
     };
 
+});
+
+angular.module('User').controller('PasswordCtrl', function ($scope, $mdDialog, items, UserService) {
+    // items is injected in the controller, not its scope!
+    $scope.user = items.user;
+    $scope.password ="";
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
+    $scope.save = function () {
+        UserService.changePassword($scope.user._id, $scope.password).then(function(promise){
+            if (promise && promise.error) console.log(promise.error)
+            else $mdDialog.hide(promise);
+        })
+    }
 });

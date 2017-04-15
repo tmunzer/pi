@@ -13,6 +13,16 @@ angular.module('User').service("UserService", function ($http, $q) {
         });
         return httpReq(request);
     }
+    function changePassword(id, password) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/users/" + id + "/password",
+            method: "POST",
+            data: { password: password },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
     function getById(id) {
         var canceller = $q.defer();
         var request = $http({
@@ -60,6 +70,7 @@ angular.module('User').service("UserService", function ($http, $q) {
 
     return {
         create: create,
+        changePassword: changePassword,
         getList: getList,
         getById: getById
     }

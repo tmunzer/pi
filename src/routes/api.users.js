@@ -38,8 +38,8 @@ router.post("/:user_id", function (req, res, next) {
                 user.email = req.body.user.email;
                 user.enabled = req.body.user.enabled;
                 user.edited_by = req.session.passport.user.id;
-                user.save(function (err, result) {
-                    if (err) res.status(500).json(err);
+                user.save(function (err, user) {
+                    if (err) res.status(500).json(user);
                     else {
                         user = JSON.parse(JSON.stringify(user));
                         delete user.password;
@@ -50,5 +50,22 @@ router.post("/:user_id", function (req, res, next) {
         });
     else res.status(400).json({ error: "missing parametesr" });
 });
+router.post("/:user_id/password", function (req, res, next) {
+    if (req.body.password)
+        User.findById(req.params.user_id, function (err, user) {
+            if (err) res.status(500).json(err);
+            else {
+                user.password = req.body.password;
+                user.save(function (err, user) {
+                    if (err) res.status(500).json(user);
+                    else {
+                        user = JSON.parse(JSON.stringify(user));
+                        delete user.password;
+                        res.json(user);
+                    }
+                })
+            }
+        })
+})
 
 module.exports = router;
