@@ -52,13 +52,13 @@
                                         <md-tooltip>Edit</md-tooltip>
                                         <md-icon class="material-icons edit">mode_edit</md-icon>
                                     </md-button>
-                                    <md-button ng-if="user.enabled" class="md-icon-button" ng-click="removeUser(user)">
-                                        <md-tooltip>Lock user</md-tooltip>
-                                        <md-icon class="material-icons delete">lock</md-icon>
+                                    <md-button ng-disabled="user._id == myId" ng-if="user.enabled" class="md-icon-button" ng-click="lock(user)">
+                                        <md-tooltip>Lock User</md-tooltip>
+                                        <md-icon class="material-icons delete">lock_open</md-icon>
                                     </md-button>
-                                    <md-button ng-if="!user.enabled" class="md-icon-button" ng-click="removeUser(user)">
-                                        <md-tooltip>Unlock user</md-tooltip>
-                                        <md-icon class="material-icons delete">unlock</md-icon>
+                                    <md-button ng-if="!user.enabled" class="md-icon-button" ng-click="unlock(user)">
+                                        <md-tooltip>Unlock User</md-tooltip>
+                                        <md-icon class="material-icons edit">lock</md-icon>
                                     </md-button>
                                 </td>
                             </tr>

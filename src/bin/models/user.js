@@ -66,8 +66,28 @@ User.newLogin = function (email, password, callback) {
 User.findByEmail = function (email, callback) {
     this.findOne({ email: email }, callback);
 };
-User.findById = function (id, callback) {
-    this.findOne({ _id: id }, callback);
+User.findByIdWithoutPassword = function (id, callback) {
+    this.findOne({ _id: id }, function (err, user) {
+        if (err) callback(err);
+        else {
+            user = JSON.parse(JSON.stringify(user));
+            delete user.password;
+            callback(null, user);
+        }
+    });
+}
+User.findWithoutPassword = function(filters, cb){
+    User.find(filters)
+    .exec(function(err, users){
+        if (err) cb(err);
+        else {
+            users = JSON.parse(JSON.stringify(users));
+            users.forEach(function(user){
+                delete user.password;            
+            });
+            cb(null, users);
+        }
+    })
 }
 // Validation
 /*UserSchema.path('email').validate(function(value, done) {

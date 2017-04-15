@@ -4,16 +4,15 @@ const User = require("../bin/models/user");
 
 router.get("/", function (req, res, next) {
     if (req.query.id) {
-        User.findById(req.query.id, function (err, user) {
+        User.findByIdWithoutPassword(req.query.id, function (err, user) {
             if (err) res.status(500).json(err);
             else res.json(user);
         })
     } else
-        User.find()
-            .exec(function (err, users) {
-                if (err) res.status(500).json(err);
-                else res.json({ currentUser: req.session.passport.user.id, users: users });
-            })
+        User.findWithoutPassword({}, function (err, users) {
+            if (err) res.status(500).json(err);
+            else res.json({ currentUser: req.session.passport.user.id, users: users });
+        })
 });
 router.post("/", function (req, res, next) {
     if (req.body.user) {
@@ -22,8 +21,34 @@ router.post("/", function (req, res, next) {
         user.edited_by = req.session.passport.user.id;
         User(user).save(function (err, user) {
             if (err) res.status(500).json(err);
-            else res.json(user);
+            else {
+                user = JSON.parse(JSON.stringify(user));
+                delete user.password;
+                res.json(user);
+            }
         });
     } else res.status(400).json({ error: "missing parametesr" });
 });
+router.post("/:user_id", function (req, res, next) {
+    if (req.body.user)
+        User.findById(req.params.user_id, function (err, user) {
+            if (err) res.status(500).json(err);
+            else {
+                user.name = req.body.user.name;
+                user.email = req.body.user.email;
+                user.enabled = req.body.user.enabled;
+                user.edited_by = req.session.passport.user.id;
+                user.save(function (err, result) {
+                    if (err) res.status(500).json(err);
+                    else {
+                        user = JSON.parse(JSON.stringify(user));
+                        delete user.password;
+                        res.json(user);
+                    }
+                });
+            }
+        });
+    else res.status(400).json({ error: "missing parametesr" });
+});
+
 module.exports = router;

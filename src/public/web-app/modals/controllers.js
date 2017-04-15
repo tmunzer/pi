@@ -14,7 +14,7 @@ angular.module('Modals').controller("ErrorService", function ($scope, $mdDialog,
 
 angular.module('Modals').controller('ConfirmCtrl', function ($scope, $mdDialog, items) {
     // items is injected in the controller, not its scope!
-    $scope.item = items.item;
+    $scope.items = items;
     $scope.cancel = function () {
         $mdDialog.cancel()
     };

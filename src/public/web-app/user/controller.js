@@ -1,6 +1,7 @@
 angular.module('User').controller('UserListCtrl', function ($scope, $routeParams, $mdDialog, UserService) {
 
     $scope.users = [];
+    $scope.myId;
     $scope.displayedUsers = [];
     $scope.query = {
         order: "name.first",
@@ -47,11 +48,47 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
         });
     }
 
+    $scope.lock = function (user) {
+            $mdDialog.show({
+                controller: 'ConfirmCtrl',
+                templateUrl: 'modals/confirmLock.html',
+                locals: {
+                    items: { action: "lock", user: user.email }
+                }
+            }).then(function () {
+                user.enabled = false;
+                UserService.create(user).then(function (promise) {
+                    if (promise.errmsg) displayError(promise);
+                    else {
+                        $scope.refresh();
+                    }
+                });
+            });
+    }
+    $scope.unlock = function (user) {
+            $mdDialog.show({
+                controller: 'ConfirmCtrl',
+                templateUrl: 'modals/confirmLock.html',
+                locals: {
+                    items: { action: "unlock", user: user.email }
+                }
+            }).then(function () {
+                user.enabled = true;
+                UserService.create(user).then(function (promise) {
+                    if (promise.errmsg) displayError(promise);
+                    else {
+                        $scope.refresh();
+                    }
+                });
+            });
+    }
+
     $scope.refresh = function () {
         $scope.request = UserService.getList();
         $scope.request.then(function (promise) {
             if (promise && promise.error) displayError(promise);
             else {
+                $scope.myId = promise.currentUser;
                 $scope.users = promise.users;
                 filter();
             }
@@ -89,10 +126,10 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
             controller: 'UserEditCtrl',
             templateUrl: 'user/edit.html',
             locals: {
-                items:  $scope.user 
+                items: $scope.user
             }
-        }).then(function () {
-            $scope.refresh();
+        }).then(function (user) {
+            $scope.user = user;
         });
     }
     UserService.getById(userId).then(function (promise) {
@@ -113,13 +150,13 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
 
 angular.module('User').controller('UserEditCtrl', function ($scope, $mdDialog, items, UserService) {
     // items is injected in the controller, not its scope!   
-    console.log(items) 
+    console.log(items)
     if (items && items._id) {
         $scope.action = "Edit";
         var master = items;
     } else {
         $scope.action = "Add";
-        var master = { email: "", name: { first: "", last: "" }, password: "", enabled:true };
+        var master = { email: "", name: { first: "", last: "" }, password: "", enabled: true };
     }
     $scope.reset = function () {
         $scope.user = angular.copy(master);
@@ -131,17 +168,17 @@ angular.module('User').controller('UserEditCtrl', function ($scope, $mdDialog, i
         UserService.create($scope.user).then(function (promise) {
             if (promise.errmsg) console.log(promise)
             else {
-                $mdDialog.hide();
+                $mdDialog.hide(promise);
             }
         })
     };
     $scope.cancel = function () {
         $mdDialog.cancel()
     };
-    $scope.close = function () {
+    $scope.close = function (promise) {
         // Easily hides most recent dialog shown...
         // no specific instance reference is needed.
-        $mdDialog.hide();
+        $mdDialog.hide(promise);
     };
 
 });
