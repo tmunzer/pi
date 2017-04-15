@@ -53,7 +53,9 @@ angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDi
             }
         })
     };
-
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
     $scope.close = function () {
         // Easily hides most recent dialog shown...
         // no specific instance reference is needed.

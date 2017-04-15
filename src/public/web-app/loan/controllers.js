@@ -298,7 +298,9 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             }
         })
     };
-
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
     $scope.close = function () {
         // Easily hides most recent dialog shown...
         // no specific instance reference is needed.

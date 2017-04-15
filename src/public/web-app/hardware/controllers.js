@@ -93,12 +93,12 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
             }
         });
     }
-    $scope.editDevice = function (device) {
+    $scope.edit = function () {
         $mdDialog.show({
             controller: 'DeviceEditCtrl',
             templateUrl: 'device/edit.html',
             locals: {
-                items: device
+                items: { model: $scope.hardware._id }
             }
         }).then(function () {
             $scope.refresh();
@@ -114,8 +114,8 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
         }
     });
 
-    $scope.refresh = function(){
-            $scope.refreshRequested = true;
+    $scope.refresh = function () {
+        $scope.refreshRequested = true;
     }
 });
 
@@ -147,7 +147,9 @@ angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdD
             }
         })
     };
-
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
     $scope.close = function () {
         // Easily hides most recent dialog shown...
         // no specific instance reference is needed.

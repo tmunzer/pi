@@ -167,7 +167,9 @@ angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdD
             }
         })
     };
-
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
     $scope.close = function () {
         // Easily hides most recent dialog shown...
         // no specific instance reference is needed.
