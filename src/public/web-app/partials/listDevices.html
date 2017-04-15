@@ -25,7 +25,7 @@
             </tr>
         </thead>
         <tbody md-body>
-            <tr md-row ng-repeat="device in displayedDevices | orderBy: query.order">
+            <tr md-row ng-repeat="device in displayedDevices | orderBy: query.order  | limitTo: query.limit: (query.page - 1) * query.limit">
                 <td md-cell ng-if="toDisplay('hardware')">
                     <a href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</a>
                 </td>
@@ -60,4 +60,4 @@
     </table>
 </md-table-container>
 <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedDevices.length}}"
-    md-page-select="query.pageSelect"></md-table-pagination>
+    md-page-select></md-table-pagination>

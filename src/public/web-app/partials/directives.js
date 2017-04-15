@@ -30,7 +30,6 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                 page: 1,
                 aborted: false,
                 returned: true,
-                pageSelect: 1,
                 filter: ""
             }
             $scope.request;
@@ -181,7 +180,6 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 order: "serialNumber",
                 limit: 10,
                 page: 1,
-                pageSelect: 1,
                 loaned: true,
                 lost: false,
                 filter: ""
@@ -303,7 +301,6 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                 order: "name",
                 limit: 10,
                 page: 1,
-                pageSelect: 1,
                 filter: ""
             }
 

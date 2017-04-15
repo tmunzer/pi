@@ -4,7 +4,6 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
         order: "model",
         limit: 10,
         page: 1,
-        pageSelect: 1
     }
     $scope.request;
 

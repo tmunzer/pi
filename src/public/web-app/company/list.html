@@ -24,7 +24,7 @@
                     <span>Displayed: {{displayedCompanies.length}} | Total: {{companies.length}}</span>
                 </div>
                 <md-table-container>
-                    <table md-table ng-model="displayedCompanies" md-progress="request">
+                    <table md-table md-progress="request">
                         <thead md-head md-order="query.order">
                             <tr md-row>
                                 <th style="width:25%" md-column md-order-by="user.name.first">Name</th>
@@ -35,7 +35,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row ng-repeat="company in displayedCompanies | orderBy: query.order">
+                            <tr md-row ng-repeat="company in displayedCompanies | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
                                 <td md-cell><a href="#!/companies/{{company._id}}" class="md-primary">{{company.name | capitalize }}</a></td>
                                 <td md-cell>{{company.contacts }}</td>
                                 <td md-cell>{{company.created_at | date: 'medium'}}</td>
@@ -55,7 +55,7 @@
                     </table>
                 </md-table-container>
                 <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedCompanies.length}}"
-                    md-page-select="query.pageSelect"></md-table-pagination>
+                    md-page-select></md-table-pagination>
             </md-card-content>
         </md-card>
         

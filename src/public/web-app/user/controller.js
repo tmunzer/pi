@@ -7,7 +7,6 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
         order: "name.first",
         limit: 10,
         page: 1,
-        pageSelect: 1,
         filter: ""
     }
     $scope.request;

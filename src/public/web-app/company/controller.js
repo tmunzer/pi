@@ -6,7 +6,6 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
         order: "name",
         limit: 10,
         page: 1,
-        pageSelect: 1,
         filter: ""
     }
     $scope.request;

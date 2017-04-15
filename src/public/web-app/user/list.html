@@ -38,7 +38,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row ng-repeat="user in displayedUsers | orderBy: query.order">
+                            <tr md-row ng-repeat="user in displayedUsers | orderBy: query.order  | limitTo: query.limit: (query.page - 1) * query.limit">
                                 <td md-cell>
                                     <a href="#!/settings/accounts/{{user._id}}" class="md-primary">{{user.email}}</a>
                                 </td>
@@ -66,7 +66,7 @@
                     </table>
                 </md-table-container>
                 <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedUsers.length}}"
-                    md-page-select="query.pageSelect"></md-table-pagination>
+                    md-page-select></md-table-pagination>
             </md-card-content>
         </md-card>
 

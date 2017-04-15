@@ -27,7 +27,7 @@
             </tr>
         </thead>
         <tbody md-body>
-            <tr md-row ng-repeat="loan in displayedLoans | orderBy: query.order : true">
+            <tr md-row ng-repeat="loan in displayedLoans | orderBy: query.order : true  | limitTo: query.limit: (query.page - 1) * query.limit">
                 <td md-cell ng-if="toDisplay('company')"><a href="#!/companies/{{loan.companyId._id}}" class="md-primary">{{loan.companyId.name}}</a></td>
                 <td md-cell>{{loan.deviceId.length}}</td>
                 <td md-cell ng-if="toDisplay('user')"><a href="#!/settings/accounts/{{loan.ownerId._id}}" class="md-primary">{{loan.ownerId.email}}</a></td>
@@ -56,4 +56,4 @@
     </table>
 </md-table-container>
 <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedLoans.length}}"
-    md-page-select="query.pageSelect"></md-table-pagination>
+    md-page-select></md-table-pagination>
