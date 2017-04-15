@@ -1,20 +1,19 @@
 <section>
     <article>
         <md-card>
-            <div class="md-toolbar-tools">
+            <md-card-header class="small" layout-align="start center">
                 <h2>Devices</h2>
                 <div flex></div>
-                <md-button ng-click="refresh()">
+                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="editDevice()" class="md-primary">
-                    <md-icon class="material-icons">add_circle</md-icon>
-                    Add
+                <md-button ng-click="editDevice()" class='md-primary md-raised md-icon-button '>
+                    <md-tooltip>Add new Device</md-tooltip>
+                    <md-icon class="material-icon">add</md-icon>
                 </md-button>
-            </div>
+            </md-card-header>
             <list-devices filters="filters" refresh="refreshRequested"></list-devices>
-          
         </md-card>
     </article>
 </section>

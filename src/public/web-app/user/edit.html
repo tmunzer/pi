@@ -1,0 +1,40 @@
+<section style="min-width: 600px;">
+    <article>
+        <div class="new company">
+            <md-toolbar>
+                </md-toolbar-tools>
+                <h4>{{action}} Company</h4>
+                </md-toolbar-tools>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form name="newUser" layout="column">
+
+
+                    <div layout='row'>
+                        <md-input-container style="margin-bottom: 0;">
+                            <input placeholder="First Name" type="text" ng-model="contact.name.first" required="">
+                        </md-input-container>
+                        <md-input-container style="margin-bottom: 0;">
+                            <input placeholder="Last Name" type="text" ng-model="contact.name.last" required="">
+                        </md-input-container>
+                    </div>
+                    <div layout='row'>
+                        <md-input-container style="margin-bottom: 0;" flex=50>
+                            <input placeholder="Contact Phone" type="phone" ng-model="contact.phone">
+                        </md-input-container>
+                        <md-input-container style="margin-bottom: 0;" flex=50>
+                            <input placeholder="Email" type="email" ng-model="contact.email">
+                        </md-input-container>
+                    </div>
+                </form>
+
+                <div layout="row">
+                    <md-button class="md-primary" ng-click="reset()">Reset</md-button>
+                    <md-button class="md-primary" ng-click="close()">Cancel</md-button>
+                    <md-button class="md-primary md-raised" ng-click="save(company)" ng-disabled="newUser.$invalid">Save</md-button>
+                </div>
+                </form>
+            </md-content>
+        </div>
+    </article>
+</section>

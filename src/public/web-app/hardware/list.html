@@ -1,19 +1,18 @@
 <section>
     <article>
-
         <md-card>
-            <div class="md-toolbar-tools">
+            <md-card-header class="small" layout-align="start center">
                 <h2>Hardwares</h2>
                 <div flex></div>
-                <md-button ng-click="refresh()">
+                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="editHardware()" class="md-primary">
-                    <md-icon class="material-icons">add_circle</md-icon>
-                    Add
+                <md-button ng-click="editHardware()" class='md-primary md-raised md-icon-button '>
+                    <md-tooltip>Add new Hardware</md-tooltip>
+                    <md-icon class="material-icon">add</md-icon>
                 </md-button>
-            </div>
+            </md-card-header>
 
             <md-table-container>
                 <table md-table ng-model="hardwares" md-progress="request">
@@ -22,7 +21,7 @@
                             <th md-column md-order-by="type">Type</th>
                             <th md-column md-order-by="model">Model</th>
                             <th md-column md-order-by="numberOfDevices">Number of Devices</th>
-                            <th md-column md-order-by="numberOfDevices">Devices In / Out / Lost</th>                            
+                            <th md-column md-order-by="numberOfDevices">Devices In / Out / Lost</th>
                             <th md-column md-order-by="created_at">Creation Date</th>
                             <th md-column md-order-by="created_at">Last Update</th>
                             <th md-column></th>
@@ -33,7 +32,8 @@
                             <td md-cell>{{hardware.type}}</td>
                             <td md-cell><a href="#!/hardwares/{{hardware.model}}" class="md-primary">{{hardware.model}}</a></td>
                             <td md-cell>{{hardware.count.total}}</td>
-                            <td md-cell>{{hardware.count.total - hardware.count.out - hardware.count.lost}} / {{hardware.count.out}} / {{hardware.count.lost}}</td>
+                            <td md-cell>{{hardware.count.total - hardware.count.out - hardware.count.lost}} / {{hardware.count.out}}
+                                / {{hardware.count.lost}}</td>
                             <td md-cell>{{hardware.created_at | date:'medium'}}</td>
                             <td md-cell>{{hardware.updated_at | date:'medium'}}</td>
                             <td md-cell>

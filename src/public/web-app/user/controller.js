@@ -35,7 +35,7 @@ angular.module('User').controller('UsersListCtrl', function ($scope, $routeParam
         })
     }
 
-    $scope.editLoan = function (loan) {
+    $scope.edit = function (loan) {
         $mdDialog.show({
             controller: 'UserEditCtrl',
             templateUrl: 'user/edit.html',

@@ -1,17 +1,17 @@
+
 <section>
     <article>
-        <md-card flex md-whiteframe=5>
+        <md-card flex>
             <md-card-header class="small" layout-align="start center">
                 <h2>Companies</h2>
-                <div flex></div>
-            
-                <md-button ng-click="refresh()">
+                <div flex></div>        
+                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="edit()" class="md-primary">
-                    <md-icon class="material-icons">add_circle</md-icon>
-                    Add
+                <md-button ng-click="edit()"  class='md-primary md-raised md-icon-button '>
+                    <md-tooltip>Add new Company</md-tooltip>
+                    <md-icon class="material-icon">add</md-icon>
                 </md-button>
             </md-card-header>
             <md-card-content layout="column">

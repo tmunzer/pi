@@ -258,11 +258,11 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
                 if (promise && promise.error) console.log(promise.error);
                 else {
                     var tempList = promise;
-                    // remove the already selected devices from the list
+                    // remove the already selected and devices from the list
                     $scope.selectedDevices.forEach(function (selectedDevices) {
                         var index = -1;
                         for (var i = 0; i < tempList.length; i++) {
-                            if (selectedDevices.deviceId == tempList[i]._id) index = i;
+                            if (tempList[i].lost || selectedDevices.deviceId == tempList[i]._id) index = i;
                         }
                         if (index >= 0) tempList.splice(index, 1);
                     })
