@@ -21,7 +21,7 @@
             <md-list-item class="md-3-line md-long-text" ng-repeat="comment in object.comments | orderBy: comment.created_at : true">
                 <div class="md-list-item-text">
                     <h4>
-                        <span>Created on </span><b>{{comment.created_at | date:'medium'}}</b>
+                        <span>Created on </span><b>{{comment.created_at | date:'mediumDate'}}</b>
                         <span> by </span><b>{{comment.created_by.email}}</b>
                     </h4>
 

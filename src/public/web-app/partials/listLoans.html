@@ -31,9 +31,9 @@
                 <td md-cell ng-if="toDisplay('company')"><a href="#!/companies/{{loan.companyId._id}}" class="md-primary">{{loan.companyId.name}}</a></td>
                 <td md-cell>{{loan.deviceId.length}}</td>
                 <td md-cell ng-if="toDisplay('user')"><a href="#!/settings/accounts/{{loan.ownerId._id}}" class="md-primary">{{loan.ownerId.email}}</a></td>
-                <td md-cell>{{loan.startDate | date:'medium'}}</td>
-                <td md-cell>{{loan.estimatedEndDate | date:'medium'}}</td>
-                <td md-cell>{{loan.endDate | date:'medium'}}</td>
+                <td md-cell>{{loan.startDate | date:'mediumDate'}}</td>
+                <td md-cell>{{loan.estimatedEndDate | date:'mediumDate'}}</td>
+                <td md-cell>{{loan.endDate | date:'mediumDate'}}</td>
                 <td md-cell>
                     <span class="status small error" ng-if="checkStatus(loan) == 'overdue'">OVERDUE</span>
                     <span class="status small ok" ng-if="checkStatus(loan) == 'progress'">PROGRESS</span>

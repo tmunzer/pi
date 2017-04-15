@@ -25,8 +25,8 @@
                 <td md-cell>{{contact.name | capitalize }}</td>
                 <td md-cell>{{contact.email}}</td>
                 <td md-cell>{{contact.phone}}</td>
-                <td md-cell>{{contact.created_at | date: 'medium'}}</td>
-                <td md-cell>{{contact.updated_at | date: 'medium'}}</td>
+                <td md-cell>{{contact.created_at | date: 'mediumDate'}}</td>
+                <td md-cell>{{contact.updated_at | date: 'mediumDate'}}</td>
                 <td md-cell>
                     <md-button class="md-icon-button" ng-click="edit(contact)">
                         <md-tooltip>Edit</md-tooltip>

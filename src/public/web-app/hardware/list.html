@@ -34,8 +34,8 @@
                             <td md-cell>{{hardware.count.total}}</td>
                             <td md-cell>{{hardware.count.total - hardware.count.out - hardware.count.lost}} / {{hardware.count.out}}
                                 / {{hardware.count.lost}}</td>
-                            <td md-cell>{{hardware.created_at | date:'medium'}}</td>
-                            <td md-cell>{{hardware.updated_at | date:'medium'}}</td>
+                            <td md-cell>{{hardware.created_at | date:'mediumDate'}}</td>
+                            <td md-cell>{{hardware.updated_at | date:'mediumDate'}}</td>
                             <td md-cell>
                                 <md-button class="md-icon-button" ng-click="editHardware(hardware)">
                                     <md-tooltip>Edit</md-tooltip>

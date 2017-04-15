@@ -3,7 +3,7 @@
         <h2>{{title}}</h2>
     </md-card-header>
     <md-card-content layout="row" layout-align="space-between center" layout-padding>
-            <div><span>Created on </span><b>{{object.created_at | date:'medium'}}</b><span ng-if='object.created_by'> by <b>{{object.created_by.email}}</b></span></div>
-            <div><span>Edited on </span><b>{{object.updated_at | date:'medium'}}</b><span ng-if='object.edited_by'> by <b>{{object.edited_by.email}}</b></span></div>
+            <div><span>Created on </span><b>{{object.created_at | date:'mediumDate'}}</b><span ng-if='object.created_by'> by <b>{{object.created_by.email}}</b></span></div>
+            <div><span>Edited on </span><b>{{object.updated_at | date:'mediumDate'}}</b><span ng-if='object.edited_by'> by <b>{{object.edited_by.email}}</b></span></div>
     </md-card-content>
 </md-card>

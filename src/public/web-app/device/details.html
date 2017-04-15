@@ -32,7 +32,7 @@
                         <div layout=row><b flex=25>MAC Address:</b><span>{{device.macAddress}}</span></div>
                     </div>
                     <div layout="column" flex=50>
-                        <div layout=row><b flex=25>Received Date:</b><span>{{device.entryDate | date: 'medium'}}</span></div>
+                        <div layout=row><b flex=25>Received Date:</b><span>{{device.entryDate | date: 'mediumDate'}}</span></div>
                         <div layout=row><b flex=25>Owner:</b><span>{{device.ownerId.email}}</span></div>
                         <div layout=row><b flex=25>Origin:</b><span>{{device.origin}}</span></div>
                         <div layout=row><b flex=25>PO#:</b><span>{{device.order}}</span></div>
