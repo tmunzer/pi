@@ -16,9 +16,9 @@
     <table md-table ng-model="loans" md-progress="request">
         <thead md-head md-order="query.order">
             <tr md-row>
-                <th style="width: 13%" md-column md-order-by="customer">Company</th>
+                <th ng-if="toDisplay('company')" style="width: 13%" md-column md-order-by="customer">Company</th>
                 <th style="width: 10%" md-column md-order-by="deviceId.length"># of Devices</th>
-                <th style="width: 20%" md-column md-order-by="ownerId.name.fisrt">Owner</th>
+                <th ng-if="toDisplay('user')" style="width: 20%" md-column md-order-by="ownerId.email">Owner</th>
                 <th style="width: 10%" md-column md-order-by="startDate">Start Date</th>
                 <th style="width: 10%" md-column md-order-by="estimatedEndDate"><span>Est. End Date<span></th>
                 <th style="width: 10%" md-column md-order-by="endDate">End Date</th>
@@ -28,9 +28,9 @@
         </thead>
         <tbody md-body>
             <tr md-row ng-repeat="loan in displayedLoans | orderBy: query.order : true">
-                <td md-cell><a href="#!/companies/{{loan.companyId._id}}" class="md-primary">{{loan.companyId.name}}</a></td>
+                <td md-cell ng-if="toDisplay('company')"><a href="#!/companies/{{loan.companyId._id}}" class="md-primary">{{loan.companyId.name}}</a></td>
                 <td md-cell>{{loan.deviceId.length}}</td>
-                <td md-cell>{{loan.ownerId.name.first | capitalize}} {{loan.ownerId.name.last | capitalize}} ({{loan.ownerId.email}})</td>
+                <td md-cell ng-if="toDisplay('user')"><a href="#!/settings/accounts/{{loan.ownerId._id}}" class="md-primary">{{loan.ownerId.email}}</a></td>
                 <td md-cell>{{loan.startDate | date:'medium'}}</td>
                 <td md-cell>{{loan.estimatedEndDate | date:'medium'}}</td>
                 <td md-cell>{{loan.endDate | date:'medium'}}</td>
@@ -39,20 +39,20 @@
                     <span class="status small ok" ng-if="checkStatus(loan) == 'progress'">PROGRESS</span>
                     <span class="status small warning" ng-if="checkStatus(loan) == 'ended'">RETURNED</span>
                     <span class="status small none" ng-if="checkStatus(loan) == 'aborted'">ABORTED</span>
-                </td>
-                <td md-cell>
-                    <md-button href="#!/loans/{{loan._id}}" class="md-primary">Details</md-button>
-                    <md-button class="md-icon-button" ng-click="returnLoan(loan)" ng-disabled="loan.endDate">
-                        <md-tooltip>Mark as Returned</md-tooltip>
-                        <md-icon class="material-icons edit">assignment_returned</md-icon>
-                    </md-button>
-                    <md-button class="md-icon-button" ng-click="copyLoan(loan)">
-                        <md-tooltip>Clone</md-tooltip>
-                        <md-icon class="material-icons edit">content_copy</md-icon>
-                    </md-button>
-                </td>
+                    </td>
+                    <td md-cell>
+                        <md-button href="#!/loans/{{loan._id}}" class="md-primary">Details</md-button>
+                        <md-button class="md-icon-button" ng-click="returnLoan(loan)" ng-disabled="loan.endDate">
+                            <md-tooltip>Mark as Returned</md-tooltip>
+                            <md-icon class="material-icons edit">assignment_returned</md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="copyLoan(loan)">
+                            <md-tooltip>Clone</md-tooltip>
+                            <md-icon class="material-icons edit">content_copy</md-icon>
+                        </md-button>
+                    </td>
             </tr>
-        </tbody>
+            </tbody>
     </table>
 </md-table-container>
 <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedLoans.length}}"

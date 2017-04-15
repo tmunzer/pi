@@ -9,7 +9,7 @@ router.get("/", function (req, res, next) {
     const filters = {};
 
     if (req.query.id) filters._id = req.query.id;
-    if (req.query.ownerId) filters.ownersId = req.query.ownerId;
+    if (req.query.ownerId) filters.ownerId = req.query.ownerId;
     if (req.query.deviceId) filters.deviceId = req.query.deviceId;
     if (req.query.companyId) filters.companyId = req.query.companyId;
     if (req.query.serialNumber) filters.serialNumber = req.query.serialNumber;

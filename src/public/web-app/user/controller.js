@@ -1,4 +1,4 @@
-angular.module('User').controller('UsersListCtrl', function ($scope, $routeParams, $mdDialog, UserService) {
+angular.module('User').controller('UserListCtrl', function ($scope, $routeParams, $mdDialog, UserService) {
 
     $scope.users = [];
     $scope.displayedUsers = [];
@@ -35,12 +35,12 @@ angular.module('User').controller('UsersListCtrl', function ($scope, $routeParam
         })
     }
 
-    $scope.edit = function (loan) {
+    $scope.edit = function (user) {
         $mdDialog.show({
             controller: 'UserEditCtrl',
             templateUrl: 'user/edit.html',
             locals: {
-                items: null
+                items: user
             }
         }).then(function () {
             $scope.refresh();
@@ -59,4 +59,89 @@ angular.module('User').controller('UsersListCtrl', function ($scope, $routeParam
     }
 
     $scope.refresh();
+});
+
+
+angular.module('User').controller('UserDetailsCtrl', function ($scope, $routeParams, $mdDialog, UserService) {
+    $scope.user;
+    $scope.devices;
+    $scope.loans;
+
+    $scope.refreshRequested = false;
+    $scope.hideColumn = ['owner'];
+
+    const userId = $routeParams.user_id;
+    $scope.filters = { ownerId: userId };
+
+    function displayError(error) {
+        console.log(error);
+        $mdDialog.show({
+            controller: 'ErrorCtrl',
+            templateUrl: 'modals/error.html',
+            locals: {
+                items: error
+            }
+        });
+    }
+
+    $scope.edit = function () {
+        $mdDialog.show({
+            controller: 'UserEditCtrl',
+            templateUrl: 'user/edit.html',
+            locals: {
+                items:  $scope.user 
+            }
+        }).then(function () {
+            $scope.refresh();
+        });
+    }
+    UserService.getById(userId).then(function (promise) {
+        if (promise.error) displayError(promise);
+        else {
+            $scope.user = promise;
+            $scope.refresh();
+        }
+    });
+
+    $scope.refresh = function () {
+        console.log($scope.filters);
+        $scope.refreshRequested = true;
+    }
+});
+
+
+
+angular.module('User').controller('UserEditCtrl', function ($scope, $mdDialog, items, UserService) {
+    // items is injected in the controller, not its scope!   
+    console.log(items) 
+    if (items && items._id) {
+        $scope.action = "Edit";
+        var master = items;
+    } else {
+        $scope.action = "Add";
+        var master = { email: "", name: { first: "", last: "" }, password: "", enabled:true };
+    }
+    $scope.reset = function () {
+        $scope.user = angular.copy(master);
+    };
+
+    $scope.reset();
+
+    $scope.save = function () {
+        UserService.create($scope.user).then(function (promise) {
+            if (promise.errmsg) console.log(promise)
+            else {
+                $mdDialog.hide();
+            }
+        })
+    };
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
+    $scope.close = function () {
+        // Easily hides most recent dialog shown...
+        // no specific instance reference is needed.
+        $mdDialog.hide();
+    };
+
 });

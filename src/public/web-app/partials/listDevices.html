@@ -16,17 +16,17 @@
     <table md-table ng-model="displayedDevices" md-progress="request">
         <thead md-head md-order="query.order">
             <tr md-row>
-                <th md-column md-order-by="hardwareId.model">Model</th>
+                <th ng-if="toDisplay('hardware')" md-column md-order-by="hardwareId.model">Model</th>
                 <th md-column md-order-by="serialNumber">Serial Number</th>
                 <th md-column md-order-by="macAddress">MAC Address</th>
                 <th md-column md-order-by="status">Status</th>
-                <th md-column md-order-by="owner">Owner</th>
+                <th ng-if="toDisplay('user')" md-column md-order-by="owner">Owner</th>
                 <th md-column></th>
             </tr>
         </thead>
         <tbody md-body>
             <tr md-row ng-repeat="device in displayedDevices | orderBy: query.order">
-                <td md-cell>
+                <td md-cell ng-if="toDisplay('hardware')">
                     <a href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</a>
                 </td>
                 <td md-cell>
@@ -38,7 +38,9 @@
                     <span ng-if="!device.loanId && !device.lost">Available</span>
                     <span ng-if="!device.loanId && device.lost" style="color: red">LOST</span>
                 </td>
-                <td md-cell>{{device.ownerId.name.first | capitalize}} {{device.ownerId.name.last | capitalize}} ({{device.ownerId.email}})</td>
+                <td md-cell ng-if="toDisplay('user')">
+                    <a href="#!/settings/accounts/{{device.ownerId._id}}" class="md-primary">{{device.ownerId.email}}</a>
+                </td>
                 <td md-cell>
                     <md-button class="md-icon-button" ng-click="editDevice(device)">
                         <md-tooltip>Edit</md-tooltip>

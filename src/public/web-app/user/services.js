@@ -1,5 +1,28 @@
 
 angular.module('User').service("UserService", function ($http, $q) {
+    function create(user) {
+        let id;
+        if (user._id) id = user._id;
+        else id = "";
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/users/" + id,
+            method: "POST",
+            data: { user: user },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
+    function getById(id) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/users",
+            method: "GET",
+            params: { id: id },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
 
     function getList() {
         var canceller = $q.defer();
@@ -7,7 +30,10 @@ angular.module('User').service("UserService", function ($http, $q) {
             url: "/api/users/",
             method: "GET",
             timeout: canceller.promise
-        });
+        }); return httpReq(request);
+    }
+
+    function httpReq(request) {
         var promise = request.then(
             function (response) {
                 return response.data;
@@ -33,6 +59,8 @@ angular.module('User').service("UserService", function ($http, $q) {
     }
 
     return {
-        getList: getList
+        create: create,
+        getList: getList,
+        getById: getById
     }
 });

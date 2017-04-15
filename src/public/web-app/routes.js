@@ -31,15 +31,16 @@ angular.module('pi').config(function ($routeProvider) {
             templateUrl: "/web-app/hardware/details.html",
             controller: "HardwareDetailsCtrl"
         })
-        .when("/user", {
-            templateUrl: "/web-app/partials/user.html"
-        })
         .when("/admin", {
             templateUrl: "/web-app/partials/admin.html"
         })
         .when("/settings/accounts", {
             templateUrl: "/web-app/user/list.html",
-            controller: "UsersListCtrl"
+            controller: "UserListCtrl"
+        })
+        .when("/settings/accounts/:user_id", {
+            templateUrl: "/web-app/user/details.html",
+            controller: "UserDetailsCtrl"
         })
         .when("/companies", {
             templateUrl: "/web-app/company/list.html",

@@ -6,6 +6,7 @@ angular.module('Contact', []);
 angular.module('User', []);
 angular.module('Company', []);
 angular.module("CustomFilters", []);
+angular.module("CustomDirectives", []);
 angular.module("Modals", []);
 angular.module("Partials", []);
 var pi = angular.module("pi", [
@@ -23,6 +24,7 @@ var pi = angular.module("pi", [
     'User',
     'Company',
     'CustomFilters',
+    'CustomDirectives',
     'Modals',
     'Partials'
 ]);

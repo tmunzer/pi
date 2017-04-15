@@ -48,17 +48,17 @@
                                 <td md-cell>{{user.enabled}}</td>
                                 <td md-cell>{{user.lastLogin}}</td>
                                 <td md-cell>
-                                    <md-button class="md-icon-button" ng-click="editUser(user)">
+                                    <md-button class="md-icon-button" ng-click="edit(user)">
                                         <md-tooltip>Edit</md-tooltip>
                                         <md-icon class="material-icons edit">mode_edit</md-icon>
                                     </md-button>
-                                    <md-button class="md-icon-button" ng-click="copyUser(user)">
-                                        <md-tooltip>Clone</md-tooltip>
-                                        <md-icon class="material-icons edit">content_copy</md-icon>
+                                    <md-button ng-if="user.enabled" class="md-icon-button" ng-click="removeUser(user)">
+                                        <md-tooltip>Lock user</md-tooltip>
+                                        <md-icon class="material-icons delete">lock</md-icon>
                                     </md-button>
-                                    <md-button class="md-icon-button" ng-click="removeUser(user)">
-                                        <md-tooltip>Delete</md-tooltip>
-                                        <md-icon class="material-icons delete">delete_forever</md-icon>
+                                    <md-button ng-if="!user.enabled" class="md-icon-button" ng-click="removeUser(user)">
+                                        <md-tooltip>Unlock user</md-tooltip>
+                                        <md-icon class="material-icons delete">unlock</md-icon>
                                     </md-button>
                                 </td>
                             </tr>

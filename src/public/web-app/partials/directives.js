@@ -16,7 +16,8 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
         scope: {
             'filters': "=",
             'refresh': '=',
-            'loans': "=?"
+            'loans': "=?",
+            'source': "@?"
         },
         templateUrl: "/web-app/partials/listLoans.html",
         link: function postLink($scope) {
@@ -34,6 +35,10 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
             }
             $scope.request;
 
+            $scope.toDisplay = function (column) {
+                if ($scope.source == column) return false;
+                else return true;
+            }
 
             function displayError(error) {
                 console.log(error);
@@ -164,7 +169,9 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
         restrict: 'E',
         scope: {
             'filters': "=",
-            'refresh': "="
+            'refresh': "=",
+            'devices': "=?",
+            'source': "@?"
         },
         templateUrl: "/web-app/partials/listDevices.html",
         link: function postLink($scope) {
@@ -180,6 +187,11 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 filter: ""
             }
             $scope.request;
+
+            $scope.toDisplay = function (column) {
+                if ($scope.source == column) return false;
+                else return true;
+            }
 
             function displayError(error) {
                 console.log(error);
@@ -280,7 +292,8 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
         scope: {
             'filters': "=",
             'refresh': "=",
-            'contacts': "=?"
+            'contacts': "=?",
+            'source': "@?"
         },
         templateUrl: "/web-app/partials/listContacts.html",
         link: function postLink($scope) {
@@ -294,6 +307,10 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                 filter: ""
             }
 
+            $scope.toDisplay = function (column) {
+                if ($scope.source == column) return false;
+                else return true;
+            }
             function displayError(error) {
                 console.log(error);
                 $mdDialog.show({
@@ -377,7 +394,7 @@ angular.module('Partials').directive('listComments', function ($mdDialog) {
         templateUrl: "/web-app/partials/comments.html",
         link: function ($scope) {
             $scope.divHeight = 200;
-            $scope.divStyle = {'max-height': '200px', 'overflow': 'auto'};
+            $scope.divStyle = { 'max-height': '200px', 'overflow': 'auto' };
             $scope.more = function () {
                 $scope.divHeight += 200;
                 $scope.divStyle['max-height'] = $scope.divHeight + "px";

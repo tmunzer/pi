@@ -96,8 +96,8 @@ var companies = require('./routes/api.companies');
 app.use('/api/companies/', companies);
 var contacts = require('./routes/api.contacts');
 app.use('/api/contacts/', contacts);
-var api = require('./routes/api');
-app.use('/api/', api);
+var users = require('./routes/api.users');
+app.use('/api/users/', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

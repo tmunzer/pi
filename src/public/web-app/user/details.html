@@ -1,7 +1,9 @@
-<section>
+<div ng-include="'/web-app/settings/menu.html'"></div>
+
+<section class="settings">
     <article>
 
-        <detailed-header title="{{company.name}}" object="company"></detailed-header>
+        <detailed-header title="{{user.email}}" object="user"></detailed-header>
 
         <div layout="row" layout-align="space-between top">
             <md-card flex="33">
@@ -26,7 +28,7 @@
             </md-card>
             <md-card flex="66">
                 <md-card-header class="small" layout-align="start center">
-                    <h2>Company Information</h2>
+                    <h2>Contact Information</h2>
                     <div flex></div>
                     <md-button class="md-icon-button md-primary md-raised" ng-click="edit()">
                         <md-tooltip>Edit</md-tooltip>
@@ -34,44 +36,32 @@
                     </md-button>
                 </md-card-header>
                 <md-card-content layout="row" style="padding: 0">
-                    <div layout="column" layout-padding flex=40>
-                    <div layout="row"><b flex=50>Number of Contacts: </b><span>{{contactsTotal}}</span></div>
-                    </div>
                     <div layout="column" layout-padding flex=60>
-                    <div layout="row"><b flex=40># of overdue loans: </b><span>{{overdue}}</span></div>
-                    <div layout="row"><b flex=40># of current loans: </b><span>{{progress}}</span></div>
-                    <div layout="row"><b flex=40># of returned loans: </b><span>{{ended}}</span></div>
+                    <div layout="row"><b flex=50>Name: </b><span>{{user.name.first | capitalize}} {{user.name.last |capitalize}}</span></div>
+                    <div layout="row"><b flex=50>Email: </b><span>{{user.email}}</span></div>
+                    <div layout="row"><b flex=50># of Devices: </b><span>{{devices.length}}</span></div>
+                    <div layout="row"><b flex=50># of Loans: </b><span>{{loans.length}}</span></div>
+                    
+                    </div>
+                    <div layout="column" layout-padding flex=40>
+                        <md-button class="md-primary md-raised">Change Password</md-button>
                     </div>
                 </md-card-content>
             </md-card>
        
         </div>
+        <md-card>
+            <md-card-header class="small" layout-align="start center" class="md-toolbar-tools">
+                <h2>Loans</h2>
+            </md-card-header>
+        <list-loans filters="filters" source="user" refresh="refreshRequested" loans="loans"></list-loans>
+        </md-card>
 
         <md-card>
-            <md-card-header class="small" layout-align="center center">
-                <h2>Company Contacts</h2>
-                <div flex></div>
-                <md-button ng-click="refreshContacts()">
-                    <md-tooltip>Refresh</md-tooltip>
-                    <md-icon class="material-icons">refresh</md-icon>
-                </md-button>
+            <md-card-header class="small" layout-align="start center" class="md-toolbar-tools">
+                <h2>Devices</h2>
             </md-card-header>
-            <md-card-content>
-                <list-contacts filters="filters" refresh="refreshRequestedContacts" contacts="contacts"></list-contacts>
-            </md-card-content>
-        </md-card>
-        <md-card>
-            <md-card-header class="small" layout-align="center center">
-                <h2>Loans History</h2>
-                <div flex></div>
-                <md-button ng-click="refreshLoans()">
-                    <md-tooltip>Refresh</md-tooltip>
-                    <md-icon class="material-icons">refresh</md-icon>
-                </md-button>
-            </md-card-header>
-            <md-card-content>
-                <list-loans filters="filters" refresh="refreshRequestedLoans" loans="loans"></list-loans>
-            </md-card-content>
+        <list-devices filters="filters" source="user" refresh="refreshRequested" devices="devices"></list-devices>
         </md-card>
     </article>
 </section>

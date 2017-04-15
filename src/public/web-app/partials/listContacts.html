@@ -10,7 +10,7 @@
     <table md-table ng-model="displayedContacts" md-progress="request">
         <thead md-head md-order="query.order">
             <tr md-row>
-                <th style="width:15%" md-column md-order-by="user.name.first">Company</th>
+                <th  ng-if="toDisplay('company')" style="width:15%" md-column md-order-by="user.name.first">Company</th>
                 <th style="width:15%" md-column md-order-by="user.name.first">Name</th>
                 <th style="width:20%" md-column md-order-by="user.name.first">Email</th>
                 <th style="width:10%" md-column md-order-by="user.name.first">Phone</th>
@@ -21,7 +21,7 @@
         </thead>
         <tbody md-body>
             <tr md-row ng-repeat="contact in displayedContacts | orderBy: query.order">
-                <td md-cell><a href="#!/companies/{{contact.companyId._id}}" class="md-primary">{{contact.companyId.name | capitalize }}</a></td>
+                <td md-cell ng-if="toDisplay('company')" ><a href="#!/companies/{{contact.companyId._id}}" class="md-primary">{{contact.companyId.name | capitalize }}</a></td>
                 <td md-cell>{{contact.name | capitalize }}</td>
                 <td md-cell>{{contact.email}}</td>
                 <td md-cell>{{contact.phone}}</td>
