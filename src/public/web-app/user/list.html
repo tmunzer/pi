@@ -39,7 +39,7 @@
                         <tbody md-body>
                             <tr md-row ng-repeat="user in displayedUsers | orderBy: query.order">
                                 <td md-cell>
-                                    {{user.email}}
+                                    <a href="#!/settings/accounts/{{user._id}}" class="md-primary">{{user.email}}</a>
                                 </td>
                                 <td md-cell>
                                     {{user.name.first | capitalize }} {{user.name.last | capitalize}}

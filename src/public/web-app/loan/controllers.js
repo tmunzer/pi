@@ -33,6 +33,7 @@ angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams
 
 angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routeParams, $mdDialog, LoanService, HardwareService) {
     $scope.loan;
+    $scope.service = LoanService;
     $scope.status;
     $scope.refreshRequested = false;
     $scope.filters = {id: []};

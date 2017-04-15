@@ -327,7 +327,7 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                     refresh();
                 });
             }
-       
+
             $scope.remove = function (contact) {
                 $mdDialog.show({
                     controller: 'ConfirmCtrl',
@@ -354,7 +354,7 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                     $scope.refresh = false;
                 });
             }
-        
+
             $scope.$watch("query.filter", function () {
                 filter();
             })
@@ -362,6 +362,57 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
             $scope.$watch('refresh', function () {
                 if ($scope.refresh) refresh();
             })
+        }
+    };
+});
+
+
+angular.module('Partials').directive('listComments', function ($mdDialog) {
+    return {
+        restrict: 'E',
+        scope: {
+            'object': "=",
+            'service': "="
+        },
+        templateUrl: "/web-app/partials/comments.html",
+        link: function ($scope) {
+            $scope.divHeight = 200;
+            $scope.divStyle = {'max-height': '200px', 'overflow': 'auto'};
+            $scope.more = function () {
+                $scope.divHeight += 200;
+                $scope.divStyle['max-height'] = $scope.divHeight + "px";
+            }
+            $scope.less = function () {
+                $scope.divHeight -= 200;
+                $scope.divStyle['max-height'] = $scope.divHeight + "px";
+            }
+
+            function reload() {
+                $scope.service.getById($scope.object._id).then(function (promise) {
+                    if (promise.error) displayError(promise);
+                    else {
+                        $scope.object = promise[0];
+                    }
+                });
+            }
+
+            $scope.new = function () {
+
+
+
+                $mdDialog.show({
+                    controller: 'NewComment',
+                    templateUrl: 'modals/newComment.html',
+                    locals: {
+                        items: {
+                            object: $scope.object,
+                            service: $scope.service
+                        }
+                    }
+                }).then(function (promise) {
+                    reload();
+                });
+            }
         }
     };
 });

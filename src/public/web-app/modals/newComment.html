@@ -1,0 +1,26 @@
+<section style="min-width: 600px;">
+    <article>
+        <div class="new comment">
+            <md-toolbar>
+                </md-toolbar-tools>
+                <h4>New Comment</h4>
+                </md-toolbar-tools>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form name="newComment" layout="column">
+
+                    <md-input-container>
+                        <label>Comment</label>
+                        <textarea ng-model="comment" md-maxlength="1000" rows="5" md-select-on-focus></textarea>
+                    </md-input-container>
+
+                    <div layout="row">
+                        <md-button class="md-primary" ng-click="reset()">Reset</md-button>
+                        <md-button class="md-primary" ng-click="close()">Cancel</md-button>
+                        <md-button class="md-primary md-raised" ng-click="save()" ng-disabled="newComment.$invalid">Save</md-button>
+                    </div>
+                </form>
+            </md-content>
+        </div>
+    </article>
+</section>

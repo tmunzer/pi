@@ -1,0 +1,77 @@
+<section>
+    <article>
+
+        <detailed-header title="{{company.name}}" object="company"></detailed-header>
+
+        <div layout="row" layout-align="space-between top">
+            <md-card flex="33">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Current Loan Status</h2>
+                    <div flex></div>
+
+                    <md-button ng-if="status != 'ended' && status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="returnLoan()">
+                        <md-tooltip>See Loan</md-tooltip>
+                        <md-icon class="material-icon">remove_red_eye</md-icon>
+                    </md-button>
+
+                </md-card-header>
+                <md-card-content layout="row" layout-align="center center" style="padding-top: 50px;">
+                    <div>
+                        <span class="status error" ng-if="overdue > 0">OVERDUE</span>
+                        <span class="status ok" ng-if="overdue == 0 && progress > 0">PROGRESS</span>
+                        <span class="status warning" ng-if="overdue == 0 && progress == 0 && ended > 0">RETURNED</span>
+                        <span class="status none" ng-if="overdue == 0 && progress == 0 && ended == 0">NONE</span>
+                    </div>
+                </md-card-content>
+            </md-card>
+            <md-card flex="66">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Company Information</h2>
+                    <div flex></div>
+                    <md-button class="md-icon-button md-primary md-raised" ng-click="edit()">
+                        <md-tooltip>Edit</md-tooltip>
+                        <md-icon class="material-icon">mode_edit</md-icon>
+                    </md-button>
+                </md-card-header>
+                <md-card-content layout="row" style="padding: 0">
+                    <div layout="column" layout-padding flex=40>
+                    <div layout="row"><b flex=50>Number of Contacts: </b><span>{{contactsTotal}}</span></div>
+                    </div>
+                    <div layout="column" layout-padding flex=60>
+                    <div layout="row"><b flex=40># of overdue loans: </b><span>{{overdue}}</span></div>
+                    <div layout="row"><b flex=40># of current loans: </b><span>{{progress}}</span></div>
+                    <div layout="row"><b flex=40># of returned loans: </b><span>{{ended}}</span></div>
+                    </div>
+                </md-card-content>
+            </md-card>
+       
+        </div>
+
+        <md-card>
+            <md-card-header class="small" layout-align="center center">
+                <h2>Company Contacts</h2>
+                <div flex></div>
+                <md-button ng-click="refreshContacts()">
+                    <md-tooltip>Refresh</md-tooltip>
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+            </md-card-header>
+            <md-card-content>
+                <list-contacts filters="filters" refresh="refreshRequestedContacts" contacts="contacts"></list-contacts>
+            </md-card-content>
+        </md-card>
+        <md-card>
+            <md-card-header class="small" layout-align="center center">
+                <h2>Loans History</h2>
+                <div flex></div>
+                <md-button ng-click="refreshLoans()">
+                    <md-tooltip>Refresh</md-tooltip>
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+            </md-card-header>
+            <md-card-content>
+                <list-loans filters="filters" refresh="refreshRequestedLoans" loans="loans"></list-loans>
+            </md-card-content>
+        </md-card>
+    </article>
+</section>

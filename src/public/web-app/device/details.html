@@ -1,6 +1,5 @@
 <section>
     <article>
-
         <detailed-header title="{{device.hardwareId.model}} - S/N: {{device.serialNumber}}" object="device"></detailed-header>
 
         <div layout="row">
@@ -21,7 +20,7 @@
                     <h2>Details</h2>
                     <span flex></span>
                     <md-button class="md-icon-button md-primary md-raised" ng-click="editDevice()">
-                         <md-tooltip>Edit</md-tooltip>
+                        <md-tooltip>Edit</md-tooltip>
                         <md-icon class="material-icon">mode_edit</md-icon>
                     </md-button>
                 </md-card-header>
@@ -34,15 +33,17 @@
                     </div>
                     <div layout="column" flex=50>
                         <div layout=row><b flex=25>Received Date:</b><span>{{device.entryDate | date: 'medium'}}</span></div>
-                        <div layout=row><b flex=25>Owner:</b><span>{{device.ownerId.name.first | capitalize}} {{device.ownerId.name.last | capitalize}} - {{device.ownerId.email}}</span></div>
+                        <div layout=row><b flex=25>Owner:</b><span>{{device.ownerId.email}}</span></div>
                         <div layout=row><b flex=25>Origin:</b><span>{{device.origin}}</span></div>
                         <div layout=row><b flex=25>PO#:</b><span>{{device.order}}</span></div>
                     </div>
 
                 </md-card-content>
             </md-card>
-
         </div>
+
+        <list-comments object="device" service="service"></list-comments>
+        
         <md-card>
             <md-card-header class="small" layout-align="center center">
                 <h2>History</h2>
@@ -53,7 +54,7 @@
                 </md-button>
             </md-card-header>
             <md-card-content>
-            <list-loans filters="filters" refresh="refreshRequested"></list-loans>
+                <list-loans filters="filters" refresh="refreshRequested"></list-loans>
             </md-card-content>
         </md-card>
     </article>

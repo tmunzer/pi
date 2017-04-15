@@ -6,7 +6,9 @@ const Loan = require("../bin/models/loan");
 
 
 router.get("/", function (req, res, next) {
-    var filters = {};
+    const filters = {};
+
+    if (req.query.id) filters._id = req.query.id;
     if (req.query.ownerId) filters.ownersId = req.query.ownerId;
     if (req.query.deviceId) filters.deviceId = req.query.deviceId;
     if (req.query.companyId) filters.companyId = req.query.companyId;
@@ -57,7 +59,12 @@ router.post("/:loan_id/comment", function (req, res, next) {
         Loan.findById(req.params.loan_id, function (err, loan) {
             if (err) res.status(500).json(err);
             else {
-                loan.comment.push(comment);
+                const newComment = {
+                    created_by: req.session.passport.user.id,
+                    created_at: new Date(),
+                    comment: req.body.comment
+                };
+                loan.comments.push(newComment);
                 loan.edited_by = req.session.passport.user.id;
                 loan.save(function (err, result) {
                     if (err) res.status(500).json(err);
@@ -67,6 +74,7 @@ router.post("/:loan_id/comment", function (req, res, next) {
         })
     else res.status(400).json({ error: "missing parametesr" });
 })
+
 router.post("/:loan_id", function (req, res, next) {
     if (req.body.loan)
         Loan.findById(req.params.loan_id, function (err, loan) {

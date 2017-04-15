@@ -92,7 +92,23 @@ router.post("/:device_id", function (req, res, next) {
         });
     else res.status(400).json({ error: "missing parametesr" });
 });
-
+router.post("/:device_id/comments", function (req, res, next) {
+    if (req.body.comment) {
+        Device.findById(req.params.device_id).exec(function (err, device) {
+            const newComment = {
+                created_by: req.session.passport.user.id,
+                created_at: new Date(),
+                comment: req.body.comment
+            };
+            device.comments.push(newComment);
+            device.edited_by = req.session.passport.user.id;
+            device.save(function (err, result) {
+                if (err) res.status(500).json(err);
+                else res.json(result);
+            })
+        })
+    } else res.status(400).json({ error: "missing parametesr" });
+});
 router.delete("/:device_id", function (req, res, next) {
     Device.findById(req.params.device_id, function (err, device) {
         if (err) res.status(500).json(err);

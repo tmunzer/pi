@@ -23,6 +23,7 @@ angular.module('Device').controller('DeviceListCtrl', function ($scope, $routePa
 angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService) {
     $scope.device;
     $scope.filters;
+    $scope.service = DeviceService;
     var deviceId;
 
     function displayError(error) {

@@ -34,6 +34,17 @@ angular.module('Company').service("CompanyService", function ($http, $q) {
         return httpReq(request);
     }
 
+    function getById(id) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/companies",
+            method: "GET",
+            params: { id: id },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
+
     function remove(id) {
         var canceller = $q.defer();
         var request = $http({
@@ -76,6 +87,7 @@ angular.module('Company').service("CompanyService", function ($http, $q) {
         create: create,
         getList: getList,
         remove: remove,
-        get: get
+        get: get,
+        getById: getById
     }
 });

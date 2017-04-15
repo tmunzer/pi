@@ -13,6 +13,16 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
         });
         return httpReq(request);
     }
+    function postComment(id, comment) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/loans/" + id + "/comment",
+            method: "POST",
+            data: { comment: comment },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
 
     function getList(search) {
         var canceller = $q.defer();
@@ -34,7 +44,16 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
         });
         return httpReq(request);
     }
-
+    function getById(id) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/loans",
+            method: "GET",
+            params: { id: id },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
     function remove(id) {
         var canceller = $q.defer();
         var request = $http({
@@ -72,9 +91,11 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
 
     return {
         create: create,
+        postComment: postComment,
         getList: getList,
         remove: remove,
-        get: get
+        get: get,
+        getById: getById
     }
 });
 

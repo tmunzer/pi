@@ -12,6 +12,7 @@ router.get("/", function (req, res, next) {
             else res.json(contacts);
         })
     } else {
+        if (req.query.id) filters._id = req.query.id;
         if (req.query.companyId) filters.companyId = req.query.companyId;
         if (req.query.email) filters.email = req.query.email;
         if (req.query.name) filters.name = req.query.name;

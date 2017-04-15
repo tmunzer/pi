@@ -4,17 +4,20 @@ const Company = require("../bin/models/company");
 
 
 router.get("/", function (req, res, next) {
-    let filters;
+    const filters = {};
     if (req.query.search) {
         Company.find({ name: { "$regex": req.query.search, "$options": "i" } }, function (err, companies) {
             if (err) res.status(500).json(err);
             else res.json(companies);
         })
-    } else
+    } else {
+        if (req.query.id) filters._id = req.query.id;
         Company.load(filters, function (err, companies) {
             if (err) res.status(500).json(err);
             else res.json(companies);
         })
+    }
+
 });
 router.get("/:company_id", function (req, res, next) {
     Company.load({ _id: req.params.company_id }, function (err, companies) {

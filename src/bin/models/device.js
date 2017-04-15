@@ -13,7 +13,11 @@ const DeviceSchema = new mongoose.Schema({
     lost: Boolean,
     removed: Boolean,
     replacingDeviceId: { type: mongoose.Schema.ObjectId, ref: "Device" },
-    comment: String,
+    comments: [{
+        created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
+        created_at: { type: Date, required: true, default: new Date() },
+        comment: { type: String, required: true }
+    }],
     created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     edited_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     created_at: { type: Date },
@@ -43,6 +47,7 @@ Device.loadLoandId = function (filters, cb) {
         .populate("contactId")
         .populate("created_by")
         .populate("edited_by")
+        .populate("comments.created_by")
         .sort("serialNumber")
         .exec(function (err, devices) {
             if (err) cb(err);

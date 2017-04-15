@@ -6,15 +6,15 @@ const Loan = require("../bin/models/loan");
 
 
 router.get("/", function (req, res, next) {
-    let filters;
+    const filters = {};
     if (req.query.search)
         Hardware.find({ $or: [{ model: { "$regex": req.query.search, "$options": "i" } }, { type: { "$regex": req.query.search, "$options": "i" } }] }, function (err, hardwares) {
             if (err) res.status(500).json(err);
             else res.json(hardwares);
         });
     else {
-
-        if (req.query.type) filters = { type: req.query.type };
+        if (req.query.id) filters._id = req.query.id;
+        if (req.query.type) filters.type = req.query.type;
         Hardware.loadWithDevicesNumber(filters, function (err, hardwares) {
             if (err) res.status(500).json(err);
             else res.json(hardwares);

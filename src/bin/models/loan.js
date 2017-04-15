@@ -15,8 +15,8 @@ var loanSchema = new mongoose.Schema({
     estimatedEndDate: { type: Date, required: true },
     endDate: { type: Date, required: false, default: null },
     comments: [{
-        date: { type: Date, required: true },
-        userId: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
+        created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
+        created_at: { type: Date, required: true, default: new Date() },
         comment: { type: String, required: true }
     }],
     aborted: {type: Boolean, required: false},

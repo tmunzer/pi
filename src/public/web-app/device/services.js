@@ -54,6 +54,17 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
         return httpReq(request);
     }
 
+    function postComment(id, comment) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/devices/" + id + "/comment",
+            method: "POST",
+            data: { comment: comment },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
+
     function getList(search) {
         var canceller = $q.defer();
         var request = $http({
@@ -65,7 +76,7 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
         return httpReq(request);
     }
 
-    
+
     function get(serialNumber) {
         var canceller = $q.defer();
         var request = $http({
@@ -76,6 +87,16 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
         return httpReq(request);
     }
 
+    function getById(id) {
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/devices",
+            method: "GET",
+            params: { id: id },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
 
     function remove(id) {
         var canceller = $q.defer();
@@ -114,8 +135,10 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
     }
     return {
         create: create,
+        postComment: postComment,
         getList: getList,
         get: get,
+        getById: getById,
         remove: remove
     }
 });
