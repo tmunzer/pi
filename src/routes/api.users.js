@@ -4,7 +4,10 @@ const User = require("../bin/models/user");
 
 router.get("/", function (req, res, next) {
     if (req.query.id) {
-        User.findByIdWithoutPassword(req.query.id, function (err, user) {
+        let id;
+        if (req.query.id == "me") id = req.session.passport.user.id;
+        else id = req.query.id;
+        User.findByIdWithoutPassword(id, function (err, user) {
             if (err) res.status(500).json(err);
             else res.json(user);
         })

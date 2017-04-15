@@ -49,38 +49,38 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
     }
 
     $scope.lock = function (user) {
-            $mdDialog.show({
-                controller: 'ConfirmCtrl',
-                templateUrl: 'modals/confirmLock.html',
-                locals: {
-                    items: { action: "lock", user: user.email }
+        $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmLock.html',
+            locals: {
+                items: { action: "lock", user: user.email }
+            }
+        }).then(function () {
+            user.enabled = false;
+            UserService.create(user).then(function (promise) {
+                if (promise.errmsg) displayError(promise);
+                else {
+                    $scope.refresh();
                 }
-            }).then(function () {
-                user.enabled = false;
-                UserService.create(user).then(function (promise) {
-                    if (promise.errmsg) displayError(promise);
-                    else {
-                        $scope.refresh();
-                    }
-                });
             });
+        });
     }
     $scope.unlock = function (user) {
-            $mdDialog.show({
-                controller: 'ConfirmCtrl',
-                templateUrl: 'modals/confirmLock.html',
-                locals: {
-                    items: { action: "unlock", user: user.email }
+        $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmLock.html',
+            locals: {
+                items: { action: "unlock", user: user.email }
+            }
+        }).then(function () {
+            user.enabled = true;
+            UserService.create(user).then(function (promise) {
+                if (promise.errmsg) displayError(promise);
+                else {
+                    $scope.refresh();
                 }
-            }).then(function () {
-                user.enabled = true;
-                UserService.create(user).then(function (promise) {
-                    if (promise.errmsg) displayError(promise);
-                    else {
-                        $scope.refresh();
-                    }
-                });
             });
+        });
     }
 
     $scope.refresh = function () {
@@ -108,7 +108,7 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
     $scope.hideColumn = ['owner'];
 
     const userId = $routeParams.user_id;
-    $scope.filters = { ownerId: userId };
+    if ($routeParams.user_id == "me") $scope.me = true;
 
     function displayError(error) {
         console.log(error);
@@ -137,7 +137,7 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
             controller: 'PasswordCtrl',
             templateUrl: 'user/password.html',
             locals: {
-                items: {user: $scope.user}
+                items: { user: $scope.user }
             }
         }).then(function (user) {
             console.log(user);
@@ -147,6 +147,7 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
         if (promise.error) displayError(promise);
         else {
             $scope.user = promise;
+            $scope.filters = { ownerId: promise._id };
             $scope.refresh();
         }
     });
@@ -196,12 +197,12 @@ angular.module('User').controller('UserEditCtrl', function ($scope, $mdDialog, i
 angular.module('User').controller('PasswordCtrl', function ($scope, $mdDialog, items, UserService) {
     // items is injected in the controller, not its scope!
     $scope.user = items.user;
-    $scope.password ="";
+    $scope.password = "";
     $scope.cancel = function () {
         $mdDialog.cancel()
     };
     $scope.save = function () {
-        UserService.changePassword($scope.user._id, $scope.password).then(function(promise){
+        UserService.changePassword($scope.user._id, $scope.password).then(function (promise) {
             if (promise && promise.error) console.log(promise.error)
             else $mdDialog.hide(promise);
         })

@@ -8,21 +8,23 @@
         <div layout="row" layout-align="space-between top">
             <md-card flex="33">
                 <md-card-header class="small" layout-align="start center">
-                    <h2>Current Loan Status</h2>
+                    <h2>Current Account Status</h2>
                     <div flex></div>
 
-                    <md-button ng-if="status != 'ended' && status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="returnLoan()">
-                        <md-tooltip>See Loan</md-tooltip>
-                        <md-icon class="material-icon">remove_red_eye</md-icon>
+                    <md-button ng-if="user.enabled" ng-disabled="me" class="md-icon-button md-primary md-raised" ng-click="lock()">
+                        <md-tooltip>Lock account</md-tooltip>
+                        <md-icon class="material-icon">lock_open</md-icon>
+                    </md-button>
+                    <md-button ng-if="!user.enabled" ng-disabled="me" class="md-icon-button md-primary md-raised" ng-click="unlock()">
+                        <md-tooltip>Unlock account</md-tooltip>
+                        <md-icon class="material-icon">lock</md-icon>
                     </md-button>
 
                 </md-card-header>
                 <md-card-content layout="row" layout-align="center center" style="padding-top: 50px;">
                     <div>
-                        <span class="status error" ng-if="overdue > 0">OVERDUE</span>
-                        <span class="status ok" ng-if="overdue == 0 && progress > 0">PROGRESS</span>
-                        <span class="status warning" ng-if="overdue == 0 && progress == 0 && ended > 0">RETURNED</span>
-                        <span class="status none" ng-if="overdue == 0 && progress == 0 && ended == 0">NONE</span>
+                        <span class="status error" ng-if="user && !user.enabled">LOCKED</span>
+                        <span class="status ok" ng-if="user && user.enabled">ACTIVE</span>                        
                     </div>
                 </md-card-content>
             </md-card>
