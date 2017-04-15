@@ -92,7 +92,7 @@ router.post("/:device_id", function (req, res, next) {
         });
     else res.status(400).json({ error: "missing parametesr" });
 });
-router.post("/:device_id/comments", function (req, res, next) {
+router.post("/:device_id/comment", function (req, res, next) {
     if (req.body.comment) {
         Device.findById(req.params.device_id).exec(function (err, device) {
             const newComment = {

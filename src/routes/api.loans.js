@@ -107,20 +107,7 @@ router.delete("/:loan_id", function (req, res, next) {
         else res.json(loan.result);
     })
 });
-router.get("/replace/", function (req, res, next) {
-    if (req.query.hasOwnProperty('modelId')) {
-        Device.find({ modelId: req.query.modelId }, function (err, devices) {
-            if (err) res.status(500).json(err);
-            else {
-                var devicesList = [];
-                devices.forEach(function (device) {
-                    devicesList.push({ id: device._id, serialNumber: device.serialNumber });
-                });
-                res.json(devicesList);
-            }
-        })
-    }
-});
+
 
 
 module.exports = router;
