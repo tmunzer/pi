@@ -1,6 +1,10 @@
 
 angular.module('Device').controller('DeviceListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, DeviceService) {
-
+    $scope.query = {
+        loaned: false,
+        lost: false,
+        available: true
+    }
     $scope.refreshRequested = true;
     $scope.refresh = function () {
         $scope.refreshRequested = true;

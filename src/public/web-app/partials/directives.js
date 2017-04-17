@@ -196,7 +196,10 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
             'filters': "=",
             'refresh': "=",
             'devices': "=?",
-            'source': "@?"
+            'source': "@?",
+            'loaned': "=?",
+            'lost': "=?",
+            'available': "=?",
         },
         templateUrl: "/web-app/partials/listDevices.html",
         link: function postLink($scope) {
@@ -206,9 +209,9 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 order: "serialNumber",
                 limit: 10,
                 page: 1,
-                loaned: false,
-                lost: false,
-                available: true,
+                loaned: $scope.loaned,
+                lost: $scope.lost,
+                available: $scope.available,
                 filter: ""
             }
             $scope.request;

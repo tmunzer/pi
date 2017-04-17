@@ -37,6 +37,12 @@ angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams
 });
 
 angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routeParams, $mdDialog, LoanService, HardwareService) {
+    $scope.query = {
+        loaned: true,
+        lost: true,
+        available: true
+    }
+
     $scope.loan;
     $scope.service = LoanService;
     $scope.status;

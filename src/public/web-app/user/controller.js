@@ -102,12 +102,17 @@ angular.module('User').controller('UserDetailsCtrl', function ($scope, $routePar
     $scope.user;
     $scope.devices;
     $scope.loans;
-    $scope.query = {
+    $scope.queryLoans = {
         aborted: true,
         returned: true,
         progress: true,
         overdue: true
-    }
+    };
+    $scope.queryDevices = {
+        loaned: true,
+        lost: false,
+        available: true
+    };
     $scope.refreshRequested = false;
     $scope.hideColumn = ['owner'];
 

@@ -118,6 +118,11 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
 });
 
 angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, HardwareService) {
+    $scope.query = {
+        loaned: true,
+        lost: false,
+        available: true
+    }
     $scope.hardware;
     $scope.request;
     $scope.filters;
