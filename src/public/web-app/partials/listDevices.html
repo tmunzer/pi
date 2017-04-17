@@ -1,9 +1,12 @@
 <div layout="row" layout-align="start center" layout-margin md-whiteframe="2">
     <md-input-container>
-        <md-checkbox style="margin: 0" ng-model="query.loaned" aria-label="Only Available">Loaned devices</md-checkbox>
+        <md-checkbox style="margin: 0" ng-model="query.available" aria-label="Only Available">Available</md-checkbox>
     </md-input-container>
     <md-input-container>
-        <md-checkbox style="margin: 0" ng-model="query.lost" aria-label="Only Available">Lost devices</md-checkbox>
+        <md-checkbox style="margin: 0" ng-model="query.loaned" aria-label="Only Available">Loaned</md-checkbox>
+    </md-input-container>
+    <md-input-container>
+        <md-checkbox style="margin: 0" ng-model="query.lost" aria-label="Only Available">Lost</md-checkbox>
     </md-input-container>
     <md-input-container md-no-float="true" class="no-error">
         <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"

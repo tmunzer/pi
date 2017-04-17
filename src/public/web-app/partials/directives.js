@@ -198,8 +198,9 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 order: "serialNumber",
                 limit: 10,
                 page: 1,
-                loaned: true,
+                loaned: false,
                 lost: false,
+                available: true,
                 filter: ""
             }
             $scope.request;
@@ -235,9 +236,11 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
             function filter() {
                 $scope.displayedDevices = [];
                 $scope.devices.forEach(function (device) {
-                    if (($scope.query.loaned || !device.loanId)
-                        && ($scope.query.lost || !device.lost)
-                        && ($scope.query.filter == ""
+                    if (
+                        (($scope.query.loaned && device.loanId)
+                            || ($scope.query.lost && device.lost)
+                            || ($scope.query.available && (!device.lost && !device.loanId))
+                        ) && ($scope.query.filter == ""
                             || device.hardwareId.model.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
                             || device.serialNumber.indexOf($scope.query.filter) >= 0
                             || device.macAddress.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
@@ -288,6 +291,9 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 filter();
             })
             $scope.$watch("query.lost", function () {
+                filter();
+            })
+            $scope.$watch("query.available", function () {
                 filter();
             })
             $scope.$watch("query.filter", function () {
