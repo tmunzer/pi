@@ -124,7 +124,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                     controller: 'ConfirmReturnCtrl',
                     templateUrl: 'modals/confirmReturn.html',
                     locals: {
-                        items: { item: loan.companyId.name }
+                        items: loan
                     }
                 }).then(function (loan) {
                     LoanService.create(loan).then(function (promise) {
