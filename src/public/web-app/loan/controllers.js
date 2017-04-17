@@ -36,7 +36,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
     $scope.service = LoanService;
     $scope.status;
     $scope.refreshRequested = false;
-    $scope.filters = {id: []};
+    $scope.filters = { id: [] };
     let hardwares;
 
     function displayError(error) {
@@ -63,7 +63,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
             else {
                 $scope.loan = promise;
                 $scope.status = checkStatus();
-                $scope.loan.deviceId.forEach(function(device){
+                $scope.loan.deviceId.forEach(function (device) {
                     $scope.filters.id.push(device._id);
                 })
                 console.log($scope.filters);
@@ -117,14 +117,13 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
     }
     $scope.returnLoan = function () {
         $mdDialog.show({
-            controller: 'ConfirmCtrl',
+            controller: 'ConfirmReturnCtrl',
             templateUrl: 'modals/confirmReturn.html',
             locals: {
-                items: { item: $scope.loan.companyId.name }
+                items: angular.copy($scope.loan)
             }
-        }).then(function () {
-            $scope.loan.endDate = new Date();
-            LoanService.create($scope.loan).then(function (promise) {
+        }).then(function (loan) {
+            LoanService.create(loan).then(function (promise) {
                 if (promise && promise.error) console.log(promise.error)
                 else Load();
             })
@@ -342,7 +341,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
                 if (company_name.toLowerCase() === comp_list.name.toLowerCase) already_exists = true;
             })
             if (!already_exists)
-                CompanyService.create({name: company.trim()}).then(function (promise) {
+                CompanyService.create({ name: company.trim() }).then(function (promise) {
                     if (promise && promise.error) console.log(promise.error)
                     else {
                         $scope.company.selectedItem = promise;

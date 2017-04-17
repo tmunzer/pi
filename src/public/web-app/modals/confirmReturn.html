@@ -7,7 +7,15 @@
             </md-toolbar>
             <md-dialog-content>
                 <div class="md-dialog-content">
-                    <div>Are you sure you received all the gears from {{items.item}}?</div>
+                    <div>Are you sure you received all the gears from {{loan.item}}?</div>
+                      <div layout="row" layout-align="space-between center" class="no-error">
+                     
+                        <md-input-container>
+                            <md-datepicker placeholder="Returned Date" ng-model="loan.endDate" md-open-on-focus md-min-date="minDate" required=""></md-datepicker>
+                        </md-input-container>
+
+                     
+                    </div>
                 </div>
             </md-dialog-content>
             <md-dialog-actions layout="row">

@@ -48,19 +48,24 @@
 
 <br>
                     <div layout="row" layout-align="space-between center" class="no-error">
-                        <md-input-container flex=40>
+                        <md-input-container flex>
                             <labe>Loan Owner</labe>
                             <md-select ng-model="loan.ownerId" required="" aria-label="Owner Id">
                                 <md-option ng-repeat="user in users" value="{{user._id}}">{{user.name.first | capitalize}} {{user.name.last | capitalize}} ({{user.email}})</md-option>
                             </md-select>
                         </md-input-container>
-
-                        <md-input-container flex=25>
+                    </div>
+                     <div layout="row" layout-align="space-between center" class="no-error">
+                        <md-input-container flex=33>
                             <md-datepicker placeholder="Start Date" ng-model="loan.startDate" md-open-on-focus required=""></md-datepicker>
                         </md-input-container>
 
-                        <md-input-container flex=25>
+                        <md-input-container flex=33>
                             <md-datepicker placeholder="Estimated End Date" ng-model="loan.estimatedEndDate" md-open-on-focus required="" md-min-date="loan.startDate"></md-datepicker>
+                        </md-input-container>
+
+                        <md-input-container flex=33>
+                            <md-datepicker ng-if="loan.endDate" placeholder="End Date" ng-model="loan.endDate" md-open-on-focus required="" md-min-date="loan.startDate"></md-datepicker>
                         </md-input-container>
                     </div>
 

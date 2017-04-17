@@ -22,6 +22,18 @@ angular.module('Modals').controller('ConfirmCtrl', function ($scope, $mdDialog, 
         $mdDialog.hide();
     }
 });
+angular.module('Modals').controller('ConfirmReturnCtrl', function ($scope, $mdDialog, items) {
+    // items is injected in the controller, not its scope!
+    $scope.loan = items;
+    $scope.minDate = new Date($scope.loan.startDate);
+    $scope.loan.endDate = new Date();
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
+    $scope.confirm = function () {
+        $mdDialog.hide($scope.loan);
+    }
+});
 
 angular.module('Modals').controller('NewComment', function ($scope, $mdDialog, items) {
 

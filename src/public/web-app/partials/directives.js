@@ -108,18 +108,17 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
             }
             $scope.returnLoan = function (loan) {
                 $mdDialog.show({
-                    controller: 'ConfirmCtrl',
+                    controller: 'ConfirmReturnCtrl',
                     templateUrl: 'modals/confirmReturn.html',
                     locals: {
                         items: { item: loan.companyId.name }
                     }
-                }).then(function () {
-                    loan.endDate = new Date();
+                }).then(function (loan) {
                     LoanService.create(loan).then(function (promise) {
                         if (promise && promise.error) console.log(promise.error)
                         else refresh();
                     })
-
+                    
                 });
             }
 
