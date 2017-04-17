@@ -52,7 +52,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
 
     function checkStatus() {
         if ($scope.loan.aborted) return "aborted";
-        else if ($scope.loan.endDate) return "ended";
+        else if ($scope.loan.endDate) return "returned";
         else if (new Date($scope.loan.estimatedEndDate) > new Date()) return "progress";
         else return "overdue";
     }

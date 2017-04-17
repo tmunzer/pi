@@ -29,7 +29,9 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                 limit: 10,
                 page: 1,
                 aborted: false,
-                returned: true,
+                returned: false,
+                progress: true,
+                overdue: true,
                 filter: ""
             }
             $scope.request;
@@ -61,13 +63,24 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                     $scope.refresh = false;
                 });
             }
+
+            function checkStatus(loan) {
+                if (loan.aborted) loan.status = "aborted";
+                else if (loan.endDate) loan.status = "returned";
+                else if (new Date(loan.estimatedEndDate) > new Date()) loan.status = "progress";
+                else loan.status = "overdue";
+            }
+
             function filter() {
                 $scope.displayedLoans = [];
                 $scope.loans.forEach(function (loan) {
+                    checkStatus(loan);
                     if (
-                        ($scope.query.returned || !loan.endDate || new Date(loan.endDate).getTime() == 0)
-                        && ($scope.query.aborted || !loan.aborted)
-                        && ($scope.query.filter == ""
+                        (($scope.query.returned && loan.status == "returned")
+                            || ($scope.query.aborted && loan.status == "aborted")
+                            || ($scope.query.progress && loan.status == "progress")
+                            || ($scope.query.overdue && loan.status == "overdue")
+                        ) && ($scope.query.filter == ""
                             || loan.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
                             || loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0
                             || loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0
@@ -118,7 +131,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                         if (promise && promise.error) console.log(promise.error)
                         else refresh();
                     })
-                    
+
                 });
             }
 
@@ -149,6 +162,12 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                 filter();
             })
             $scope.$watch("query.aborted", function () {
+                filter();
+            })
+            $scope.$watch("query.progress", function () {
+                filter();
+            })
+            $scope.$watch("query.overdue", function () {
                 filter();
             })
             $scope.$watch("query.filter", function () {

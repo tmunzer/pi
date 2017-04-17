@@ -5,6 +5,12 @@
     <md-input-container>
         <md-checkbox style="margin: 0" ng-model="query.returned" aria-label="Only Available">Returned</md-checkbox>
     </md-input-container>
+    <md-input-container>
+        <md-checkbox style="margin: 0" ng-model="query.progress" aria-label="Only Available">In Progress</md-checkbox>
+    </md-input-container>
+    <md-input-container>
+        <md-checkbox style="margin: 0" ng-model="query.overdue" aria-label="Only Available">Overdue</md-checkbox>
+    </md-input-container>
     <md-input-container md-no-float="true" class="no-error">
         <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
         />
