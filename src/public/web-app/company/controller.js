@@ -52,7 +52,7 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
     $scope.refresh = function () {
         $scope.request = CompanyService.getList();
         $scope.request.then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.companies = promise;
                 filter();
@@ -128,7 +128,7 @@ angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $
 
     function loadCompany() {
         CompanyService.get($routeParams.company_id).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.company = promise;
                 companyId = promise._id;

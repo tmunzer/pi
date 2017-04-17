@@ -50,7 +50,7 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
 
     function loadDevice() {
         DeviceService.get($routeParams.serialNumber).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.device = promise;
                 deviceId = promise._id;
@@ -134,11 +134,11 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
     $scope.workInProgress = true;
 
     HardwareService.getList().then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise);
+        if (promise && promise.error) ErrorService.display(promise.error);
         else {
             $scope.hardwares = promise;
             UserService.getList().then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     $scope.users = promise.users;
                     if (master.ownerId == "") master.ownerId = promise.currentUser;
@@ -157,10 +157,8 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
     $scope.save = function (device) {
         $scope.savedDevice = device.serialNumber;
         DeviceService.create(device).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
-            else {
-                $mdDialog.hide();
-            }
+            $mdDialog.hide();
+            if (promise && promise.error) ErrorService.display(promise.error);
         })
     };
     $scope.cancel = function () {
@@ -180,7 +178,7 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
 
     $scope.loadReplacingDevice = function () {
         DeviceService.getList({ hardwareId: master.hardwareId }).then(function (promise) {
-            if (promise && promise.error) console.log(promise.error)
+            if (promise && promise.error) ErrorService.display(promise.error);
             else $scope.replacingDevices = promise;
         })
     }

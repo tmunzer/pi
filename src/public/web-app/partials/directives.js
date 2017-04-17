@@ -52,7 +52,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
             function refresh() {
                 $scope.request = LoanService.getList($scope.filters);
                 $scope.request.then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
+                    if (promise && promise.error) ErrorService.display(promise.error);
                     else {
                         $scope.loans = promise;
                         filter();
@@ -125,7 +125,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                     }
                 }).then(function (loan) {
                     LoanService.create(loan).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise);
+                        if (promise && promise.error) ErrorService.display(promise.error);
                         else refresh();
                     })
 
@@ -141,7 +141,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                     }
                 }).then(function () {
                     LoanService.remove(loan._id).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise);
+                        if (promise && promise.error) ErrorService.display(promise.error);
                         else {
                             refresh();
                         }
@@ -213,7 +213,7 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
             function refresh() {
                 $scope.request = DeviceService.getList($scope.filters)
                 $scope.request.then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
+                    if (promise && promise.error) ErrorService.display(promise.error);
                     else {
                         $scope.displayedDevices = $scope.devices = promise;
                         filter();
@@ -271,7 +271,7 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 }).then(function () {
                     $scope.savedDevice = device.model;
                     DeviceService.remove(device._id).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise);
+                        if (promise && promise.error) ErrorService.display(promise.error);
                         else refresh();
                     });
                 });
@@ -355,7 +355,7 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                     }
                 }).then(function () {
                     ContactService.remove(contact._id).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise);
+                        if (promise && promise.error) ErrorService.display(promise.error);
                         else refresh();
                     });
                 });
@@ -364,7 +364,7 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
             function refresh() {
                 $scope.request = ContactService.getList($scope.filters)
                 $scope.request.then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
+                    if (promise && promise.error) ErrorService.display(promise.error);
                     else {
                         $scope.contacts = promise;
                         filter();
@@ -407,7 +407,7 @@ angular.module('Partials').directive('listComments', function ($mdDialog, ErrorS
 
             function reload() {
                 $scope.service.getById($scope.object._id).then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
+                    if (promise && promise.error) ErrorService.display(promise.error);
                     else {
                         $scope.object = promise[0];
                     }
@@ -415,9 +415,6 @@ angular.module('Partials').directive('listComments', function ($mdDialog, ErrorS
             }
 
             $scope.new = function () {
-
-
-
                 $mdDialog.show({
                     controller: 'NewComment',
                     templateUrl: 'modals/newComment.html',

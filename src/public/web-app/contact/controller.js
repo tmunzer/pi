@@ -35,7 +35,7 @@ angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDi
     }
     if (master.companyId && master.companyId._id) master.companyId = master.companyId._id;
     CompanyService.getList().then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise);
+        if (promise && promise.error) ErrorService.display(promise.error);
         else $scope.companies = promise;
     })
 
@@ -47,10 +47,8 @@ angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDi
 
     $scope.save = function () {
         ContactService.create($scope.contact).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
-            else {
-                $mdDialog.hide();
-            }
+            $mdDialog.hide();
+            if (promise && promise.error) ErrorService.display(promise.error);
         })
     };
     $scope.cancel = function () {

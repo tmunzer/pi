@@ -48,7 +48,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
 
     function Load() {
         LoanService.get($routeParams.loanId).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.loan = promise;
                 $scope.status = checkStatus();
@@ -69,7 +69,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
         }).then(function () {
             $scope.loan.aborted = true;
             LoanService.create($scope.loan).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else Load();
             })
 
@@ -86,7 +86,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
             $scope.loan.aborted = false;
             $scope.loan.endDate = null;
             LoanService.create($scope.loan).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else Load();
             })
 
@@ -112,7 +112,7 @@ angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routePar
             }
         }).then(function (loan) {
             LoanService.create(loan).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else Load();
             })
 
@@ -214,7 +214,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
     })
     $scope.updateContact = function () {
         ContactService.create($scope.contactId).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.contactInfoSaved = true;
                 $scope.contactInfoChanged = false;
@@ -224,12 +224,12 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
 
 
     UserService.getList().then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise);
+        if (promise && promise.error) ErrorService.display(promise.error);
         else {
             $scope.users = promise.users;
             if (master.ownerId == "") master.ownerId = promise.currentUser;
             HardwareService.getList().then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(propromise.errormise);
                 else {
                     $scope.hardwares = promise;
                     $scope.reset();
@@ -242,7 +242,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
         device.choices = [];
         if ($scope.model != 0)
             DeviceService.getList({ hardwareId: device.hardwareId }).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     var tempList = promise;
                     // remove the already selected and devices from the list
@@ -279,10 +279,8 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             if (device.deviceId) $scope.loan.deviceId.push(device.deviceId);
         })
         LoanService.create($scope.loan).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
-            else {
-                $mdDialog.hide();
-            }
+            $mdDialog.hide();
+            if (promise && promise.error) ErrorService.display(promise.error);
         })
     };
     $scope.cancel = function () {
@@ -313,7 +311,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
         searchText: null,
         refresh: function refresh() {
             CompanyService.getList().then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     $scope.company.companies = promise;
                 }
@@ -330,7 +328,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             })
             if (!already_exists)
                 CompanyService.create({ name: company.trim() }).then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
+                    if (promise && promise.error) ErrorService.display(promise.error);
                     else {
                         $scope.company.selectedItem = promise;
                         $scope.company.refresh();
@@ -349,10 +347,9 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
         refresh: function refresh() {
             if ($scope.loan)
                 ContactService.getList({ companyId: $scope.loan.companyId }).then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
-                    else {
-                        $scope.contact.contacts = promise;
-                    }
+                    if (promise && promise.error) ErrorService.display(promise.error);
+                    else $scope.contact.contacts = promise;
+                    
                 })
         },
         querySearch: function querySearch(query) {
@@ -366,7 +363,7 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             })
             if (!already_exists)
                 ContactService.create({ companyId: $scope.loan.companyId, name: contact.trim() }).then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise);
+                    if (promise && promise.error) ErrorService.display(promise.error);
                     else {
                         $scope.contact.selectedItem = promise;
                         $scope.contact.refresh();

@@ -108,7 +108,7 @@ pi
 
             hardwareRequest = HardwareService.getList({ search: $scope.search })
             hardwareRequest.then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     hardwares = promise;
                     refresh();
@@ -116,7 +116,7 @@ pi
             })
             deviceRequest = DeviceService.getList({ search: $scope.search });
             deviceRequest.then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     devices = promise;
                     refresh();
@@ -124,7 +124,7 @@ pi
             })
             companyRequest = CompanyService.getList({ search: $scope.search });
             companyRequest.then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     companies = promise;
                     refresh();
@@ -132,7 +132,7 @@ pi
             })
             contactRequest = ContactService.getList({ search: $scope.search });
             contactRequest.then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     contacts = promise;
                     refresh();

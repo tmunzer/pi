@@ -49,8 +49,8 @@ angular.module('Modals').controller('NewComment', function ($scope, $mdDialog, i
 
     $scope.save = function () {
         service.postComment($scope.object._id, $scope.comment).then(function (promise) {
+            $mdDialog.hide(promise);
             if (promise && promise.error) ErrorService.display(promise.error);
-            else $mdDialog.hide(promise);
         })
     }
 

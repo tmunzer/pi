@@ -47,7 +47,7 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
         }).then(function () {
             user.enabled = false;
             UserService.create(user).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     $scope.refresh();
                 }
@@ -64,7 +64,7 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
         }).then(function () {
             user.enabled = true;
             UserService.create(user).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
+                if (promise && promise.error) ErrorService.display(promise.error);
                 else {
                     $scope.refresh();
                 }
@@ -75,7 +75,7 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
     $scope.refresh = function () {
         $scope.request = UserService.getList();
         $scope.request.then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.myId = promise.currentUser;
                 $scope.users = promise.users;
@@ -88,7 +88,7 @@ angular.module('User').controller('UserListCtrl', function ($scope, $routeParams
 });
 
 
-angular.module('User').controller('UserDetailsCtrl', function ($scope, $routeParams, $mdDialog, UserService, ErrorService) {
+angular.module('User').controller('UserDetailsCtrl', function ($scope, $routeParams, $mdDialog, UserService) {
     $scope.user;
     $scope.devices;
     $scope.loans;
@@ -165,7 +165,7 @@ angular.module('User').controller('UserEditCtrl', function ($scope, $mdDialog, i
 
     $scope.save = function () {
         UserService.create($scope.user).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $mdDialog.hide(promise);
             }
@@ -191,7 +191,7 @@ angular.module('User').controller('PasswordCtrl', function ($scope, $mdDialog, i
     };
     $scope.save = function () {
         UserService.changePassword($scope.user._id, $scope.password).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else $mdDialog.hide(promise);
         })
     }

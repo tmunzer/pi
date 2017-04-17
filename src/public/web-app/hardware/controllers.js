@@ -53,7 +53,7 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
     $scope.refresh = function () {
         $scope.request = HardwareService.getList();
         $scope.request.then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else {
                 $scope.hardwares = promise;
                 filter();
@@ -95,10 +95,9 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
         }).then(function () {
             $scope.savedDevice = hardware.model;
             HardwareService.remove(hardware._id).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise);
-                else {
-                    $scope.refresh();
-                }
+                if (promise && promise.error) ErrorService.display(promise.error);
+                else $scope.refresh();
+
             });
         });
 
@@ -131,7 +130,7 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
         });
     }
     HardwareService.get($routeParams.model).then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise);
+        if (promise && promise.error) ErrorService.display(promise.error);
         else {
             $scope.hardware = promise;
             $scope.hardwareId = promise._id;
@@ -167,10 +166,8 @@ angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdD
     $scope.save = function (hardware) {
         $scope.savedHardware = hardware.model;
         HardwareService.create(hardware).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise);
-            else {
-                $mdDialog.hide();
-            }
+            $mdDialog.hide();
+            if (promise && promise.error) ErrorService.display(promise.error);
         })
     };
     $scope.cancel = function () {
