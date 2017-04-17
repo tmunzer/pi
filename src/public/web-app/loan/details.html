@@ -12,11 +12,11 @@
                         <md-tooltip>Abort</md-tooltip>
                         <md-icon class="material-icon">close</md-icon>
                     </md-button>
-                    <md-button ng-if="status != 'ended' && status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="returnLoan()">
+                    <md-button ng-if="status != 'returned' && status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="returnLoan()">
                         <md-tooltip>Mark as Returned</md-tooltip>
                         <md-icon class="material-icon">check</md-icon>
                     </md-button>
-                    <md-button ng-if="status == 'ended' || status == 'aborted'" class="md-icon-button md-primary md-raised" ng-click="revert()">
+                    <md-button ng-if="status == 'returned' || status == 'aborted'" class="md-icon-button md-primary md-raised" ng-click="revert()">
                         <md-tooltip>Revert back to progress status</md-tooltip>
                         <md-icon class="material-icon">settings_backup_restore</md-icon>
                     </md-button>
