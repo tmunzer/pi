@@ -35,16 +35,16 @@
                 </md-card-header>
                 <md-card-content layout="row" style="padding: 0">
                     <div layout="column" layout-padding flex=40>
-                    <div layout="row"><b flex=50>Number of Contacts: </b><span>{{contactsTotal}}</span></div>
+                        <div layout="row"><b flex=50>Number of Contacts: </b><span>{{contactsTotal}}</span></div>
                     </div>
                     <div layout="column" layout-padding flex=60>
-                    <div layout="row"><b flex=40># of overdue loans: </b><span>{{overdue}}</span></div>
-                    <div layout="row"><b flex=40># of current loans: </b><span>{{progress}}</span></div>
-                    <div layout="row"><b flex=40># of returned loans: </b><span>{{ended}}</span></div>
+                        <div layout="row"><b flex=40># of overdue loans: </b><span>{{overdue}}</span></div>
+                        <div layout="row"><b flex=40># of current loans: </b><span>{{progress}}</span></div>
+                        <div layout="row"><b flex=40># of returned loans: </b><span>{{ended}}</span></div>
                     </div>
                 </md-card-content>
             </md-card>
-       
+
         </div>
 
         <md-card>
@@ -70,7 +70,8 @@
                 </md-button>
             </md-card-header>
             <md-card-content>
-                <list-loans filters="filters" source="company" refresh="refreshRequestedLoans" loans="loans"></list-loans>
+                <list-loans filters="filters" source="company" aborted='query.aborted' returned='query.returned' progress='query.progress'
+                    overdue='query.overdue' refresh="refreshRequestedLoans" loans="loans"></list-loans>
             </md-card-content>
         </md-card>
     </article>

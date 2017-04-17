@@ -1,5 +1,10 @@
 angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams, $mdDialog, LoanService) {
-
+    $scope.query = {
+        aborted: false,
+        returned: false,
+        progress: true,
+        overdue: true
+    }
 
     function displayError(error) {
         console.log(error);

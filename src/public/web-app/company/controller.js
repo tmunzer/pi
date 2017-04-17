@@ -61,9 +61,17 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
 
 angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $routeParams, $mdDialog, CompanyService) {
     $scope.company;
+
     $scope.filters;
     $scope.loans;
     $scope.contacts;
+    $scope.query = {
+        aborted: true,
+        returned: true,
+        progress: true,
+        overdue: true
+    }
+
     $scope.ended = 0;
     $scope.progress = 0;
     $scope.overdue = 0;

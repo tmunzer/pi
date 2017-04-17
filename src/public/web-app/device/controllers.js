@@ -24,6 +24,12 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
     $scope.device;
     $scope.filters;
     $scope.service = DeviceService;
+    $scope.query = {
+        aborted: true,
+        returned: true,
+        progress: true,
+        overdue: true
+    }
     var deviceId;
 
     function displayError(error) {

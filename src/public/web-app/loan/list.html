@@ -13,7 +13,8 @@
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
             </md-card-header>
-            <list-loans filters='{}' , refresh='refreshRequested'></list-loans>
+            <list-loans filters='{}'  aborted='query.aborted' returned='query.returned' progress='query.progress'
+                    overdue='query.overdue' refresh='refreshRequested'></list-loans>
         </md-card>
     </article>
 </section>

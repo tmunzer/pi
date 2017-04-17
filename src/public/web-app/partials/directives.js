@@ -17,23 +17,31 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
             'filters': "=",
             'refresh': '=',
             'loans': "=?",
-            'source': "@?"
+            'source': "@?",
+            'aborted': "=?",
+            'returned': "=?",
+            'progress': "=?",
+            'overdue': "=?"
         },
         templateUrl: "/web-app/partials/listLoans.html",
         link: function postLink($scope) {
 
             $scope.loans = [];
             $scope.displayedLoans = [];
-            $scope.query = {
-                order: "startDate",
-                limit: 10,
-                page: 1,
-                aborted: false,
-                returned: false,
-                progress: true,
-                overdue: true,
-                filter: ""
-            }
+            if ($scope.table) $scope.query = $scope.table;
+            else
+                $scope.query = {
+                    order: "startDate",
+                    limit: 10,
+                    page: 1,
+                    aborted: $scope.aborted,
+                    returned: $scope.returned,
+                    progress: $scope.progress,
+                    overdue: $scope.overdue,
+                    filter: ""
+                }
+
+
             $scope.request;
 
             $scope.toDisplay = function (column) {
