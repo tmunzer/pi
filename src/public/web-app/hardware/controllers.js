@@ -1,12 +1,54 @@
 angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, HardwareService) {
     $scope.hardwares = [];
+    $scope.displayedHardwares = [];
     $scope.query = {
         order: "model",
         limit: 10,
         page: 1,
+        ap: true,
+        sr: true,
+        br: true,
+        phyAppliance: true,
+        other: true,
+        filter: ""
     }
+
     $scope.request;
 
+    function filter() {
+        $scope.displayedHardwares = [];
+        $scope.hardwares.forEach(function (hardware) {
+            if ((
+                ($scope.query.ap && hardware.type == "Access Point")
+                || ($scope.query.sr && hardware.type == "Switch")
+                || ($scope.query.sr && hardware.type == "Branch Router")
+                || ($scope.query.sr && hardware.type == "Physical Appliance")
+                || ($scope.query.br && hardware.type == "Other")
+            ) && ($scope.query.filter == ""
+                || hardware.model.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
+                ))
+                $scope.displayedHardwares.push(hardware);
+
+        })
+    }
+    $scope.$watch("query.ap", function () {
+        filter();
+    })
+    $scope.$watch("query.sr", function () {
+        filter();
+    })
+    $scope.$watch("query.br", function () {
+        filter();
+    })
+    $scope.$watch("query.phyAppliance", function () {
+        filter();
+    })
+    $scope.$watch("query.other", function () {
+        filter();
+    })
+    $scope.$watch("query.filter", function () {
+        filter();
+    })
     function displayError(error) {
         console.log(error);
         $mdDialog.show({
@@ -24,7 +66,7 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
             if (promise.error) displayError(promise);
             else {
                 $scope.hardwares = promise;
-                $scope.hardwaresSearch = promise;
+                filter();
             }
         });
     }
