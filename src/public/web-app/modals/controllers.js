@@ -1,5 +1,7 @@
-angular.module('Modals').controller("ErrorService", function ($scope, $mdDialog, items) {
-    $scope.error = items;
+
+angular.module('Modals').controller("ErrorCtrl", function ($scope, $mdDialog, items) {
+
+    $scope.message = items;
 
     $scope.cancel = function () {
         $mdDialog.cancel()
@@ -35,21 +37,11 @@ angular.module('Modals').controller('ConfirmReturnCtrl', function ($scope, $mdDi
     }
 });
 
-angular.module('Modals').controller('NewComment', function ($scope, $mdDialog, items) {
+angular.module('Modals').controller('NewComment', function ($scope, $mdDialog, items, ErrorService) {
 
     $scope.object = items.object;
     const service = items.service;
     $scope.comment = "";
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
 
     $scope.reset = function () {
         $scope.comment = "";
@@ -57,7 +49,7 @@ angular.module('Modals').controller('NewComment', function ($scope, $mdDialog, i
 
     $scope.save = function () {
         service.postComment($scope.object._id, $scope.comment).then(function (promise) {
-            if (promise && promise.error) console.log(promise.error);
+            if (promise && promise.error) ErrorService.display(promise.error);
             else $mdDialog.hide(promise);
         })
     }

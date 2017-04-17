@@ -70,11 +70,7 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) {
-                    console.log("error");
-                    console.log(response);
-                    return ($q.reject("error"));
-                }
+                if (response.status >= 0) return { error: response.data };
             });
 
         promise.abort = function () {

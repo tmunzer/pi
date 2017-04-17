@@ -45,7 +45,7 @@
                                         <md-tooltip>Edit</md-tooltip>
                                         <md-icon class="material-icons edit">mode_edit</md-icon>
                                     </md-button>
-                                    <md-button class="md-icon-button" ng-click="remove(company)">
+                                    <md-button ng-disabled="company.contacts > 0" class="md-icon-button" ng-click="remove(company)">
                                         <md-tooltip>Delete</md-tooltip>
                                         <md-icon class="material-icons delete">delete_forever</md-icon>
                                     </md-button>

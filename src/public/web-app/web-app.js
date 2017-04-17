@@ -54,7 +54,7 @@ pi
             else $scope.selectedIndex = -1;
         })
     })
-    .controller("SearchCtrl", function ($scope, $location, $timeout, HardwareService, DeviceService, LoanService, CompanyService, ContactService) {
+    .controller("SearchCtrl", function ($scope, $location, $timeout, HardwareService, DeviceService, LoanService, CompanyService, ContactService, ErrorService) {
         $scope.search = "";
         $scope.results = [];
         $scope.selected = null;
@@ -108,7 +108,7 @@ pi
 
             hardwareRequest = HardwareService.getList({ search: $scope.search })
             hardwareRequest.then(function (promise) {
-                if (promise && promise.error) console.log(promise.error)
+                if (promise && promise.error) ErrorService.display(promise);
                 else {
                     hardwares = promise;
                     refresh();
@@ -116,7 +116,7 @@ pi
             })
             deviceRequest = DeviceService.getList({ search: $scope.search });
             deviceRequest.then(function (promise) {
-                if (promise && promise.error) console.log(promise.error)
+                if (promise && promise.error) ErrorService.display(promise);
                 else {
                     devices = promise;
                     refresh();
@@ -124,7 +124,7 @@ pi
             })
             companyRequest = CompanyService.getList({ search: $scope.search });
             companyRequest.then(function (promise) {
-                if (promise && promise.error) console.log(promise.error)
+                if (promise && promise.error) ErrorService.display(promise);
                 else {
                     companies = promise;
                     refresh();
@@ -132,7 +132,7 @@ pi
             })
             contactRequest = ContactService.getList({ search: $scope.search });
             contactRequest.then(function (promise) {
-                if (promise && promise.error) console.log(promise.error)
+                if (promise && promise.error) ErrorService.display(promise);
                 else {
                     contacts = promise;
                     refresh();

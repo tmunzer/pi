@@ -1,4 +1,4 @@
-angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, HardwareService) {
+angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, HardwareService, ErrorService) {
     $scope.hardwares = [];
     $scope.displayedHardwares = [];
     $scope.query = {
@@ -49,21 +49,11 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
     $scope.$watch("query.filter", function () {
         filter();
     })
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
 
     $scope.refresh = function () {
         $scope.request = HardwareService.getList();
         $scope.request.then(function (promise) {
-            if (promise.error) displayError(promise);
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $scope.hardwares = promise;
                 filter();
@@ -105,7 +95,7 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
         }).then(function () {
             $scope.savedDevice = hardware.model;
             HardwareService.remove(hardware._id).then(function (promise) {
-                if (promise.errmsg) displayError(promise);
+                if (promise && promise.error) ErrorService.display(promise);
                 else {
                     $scope.refresh();
                 }
@@ -117,7 +107,7 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
     $scope.refresh();
 });
 
-angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, HardwareService) {
+angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, HardwareService, ErrorService) {
     $scope.query = {
         loaned: true,
         lost: false,
@@ -129,16 +119,6 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
     $scope.refreshRequested = false;
     var hardwareId;
 
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
     $scope.edit = function () {
         $mdDialog.show({
             controller: 'DeviceEditCtrl',
@@ -151,7 +131,7 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
         });
     }
     HardwareService.get($routeParams.model).then(function (promise) {
-        if (promise.error) displayError(promise);
+        if (promise && promise.error) ErrorService.display(promise);
         else {
             $scope.hardware = promise;
             $scope.hardwareId = promise._id;
@@ -165,7 +145,7 @@ angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $
     }
 });
 
-angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdDialog, items, HardwareTypeService, HardwareService) {
+angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdDialog, items, HardwareTypeService, HardwareService, ErrorService) {
     // items is injected in the controller, not its scope!    
     if (items && items._id) {
         $scope.action = "Edit";
@@ -187,7 +167,7 @@ angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdD
     $scope.save = function (hardware) {
         $scope.savedHardware = hardware.model;
         HardwareService.create(hardware).then(function (promise) {
-            if (promise.errmsg) console.log(promise)
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $mdDialog.hide();
             }

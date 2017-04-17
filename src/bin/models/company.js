@@ -8,7 +8,7 @@ function capitalize(val) {
 
 
 const CompanySchema = new mongoose.Schema({
-    name: { type: String, required: true, set: capitalize, trim: true },
+    name: { type: String, required: true, set: capitalize, trim: true, unique: true },
     created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     edited_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
     created_at: { type: Date },

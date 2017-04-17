@@ -1,4 +1,4 @@
-angular.module('Company').controller('CompaniesListCtrl', function ($scope, $routeParams, $mdDialog, CompanyService) {
+angular.module('Company').controller('CompaniesListCtrl', function ($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
 
     $scope.companies = [];
     $scope.displayedCompanies = [];
@@ -12,16 +12,7 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
     $scope.$watch("query.filter", function () {
         filter();
     })
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
+
 
     function filter() {
         $scope.displayedCompanies = [];
@@ -44,10 +35,24 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
         });
     }
 
+    $scope.remove = function (company) {
+        $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirm.html',
+            locals: {
+                items: { item: "Comany" }
+            }
+        }).then(function () {
+            CompanyService.remove(company._id).then(function (promise) {
+                if (promise && promise.error) ErrorService.display(promise.error);
+                else $scope.refresh()
+            })
+        });
+    }
     $scope.refresh = function () {
         $scope.request = CompanyService.getList();
         $scope.request.then(function (promise) {
-            if (promise && promise.error) displayError(promise);
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $scope.companies = promise;
                 filter();
@@ -59,7 +64,7 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
 });
 
 
-angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $routeParams, $mdDialog, CompanyService) {
+angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
     $scope.company;
 
     $scope.filters;
@@ -123,7 +128,7 @@ angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $
 
     function loadCompany() {
         CompanyService.get($routeParams.company_id).then(function (promise) {
-            if (promise.error) displayError(promise);
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $scope.company = promise;
                 companyId = promise._id;
@@ -146,7 +151,7 @@ angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $
 });
 
 
-angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdDialog, items, CompanyService) {
+angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdDialog, items, CompanyService, ErrorService) {
     // items is injected in the controller, not its scope!   
     console.log(items)
     if (items && items._id) {
@@ -168,10 +173,9 @@ angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdD
 
     $scope.save = function (company) {
         CompanyService.create(company).then(function (promise) {
-            if (promise.errmsg) console.log(promise)
-            else {
-                $mdDialog.hide();
-            }
+            $mdDialog.hide();
+            if (promise && promise.error) ErrorService.display(promise.error);
+
         })
     };
     $scope.cancel = function () {

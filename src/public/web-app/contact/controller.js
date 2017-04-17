@@ -20,7 +20,7 @@ angular.module('Contact').controller('ContactListCtrl', function ($scope, $route
 });
 
 
-angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDialog, items, CompanyService, ContactService) {
+angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDialog, items, CompanyService, ContactService, ErrorService) {
     // items is injected in the controller, not its scope!   
     console.log(items)
     if (items && items._id) {
@@ -35,7 +35,7 @@ angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDi
     }
     if (master.companyId && master.companyId._id) master.companyId = master.companyId._id;
     CompanyService.getList().then(function (promise) {
-        if (promise && promise.error) console.log(promise.error);
+        if (promise && promise.error) ErrorService.display(promise);
         else $scope.companies = promise;
     })
 
@@ -47,7 +47,7 @@ angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDi
 
     $scope.save = function () {
         ContactService.create($scope.contact).then(function (promise) {
-            if (promise.errmsg) console.log(promise)
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $mdDialog.hide();
             }

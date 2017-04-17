@@ -63,15 +63,11 @@ angular.module('Company').service("CompanyService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) {
-                    console.log("error");
-                    console.log(response);
-                    return ($q.reject("error"));
-                }
+                if (response.status >= 0) return { error: response.data };
             });
 
         promise.abort = function () {
-            console.info("sqdsqCleaning up object references.");
+            console.info("Cleaning up object references.");
             canceller.resolve();
         };
         promise.finally(function () {

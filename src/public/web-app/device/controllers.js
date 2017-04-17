@@ -24,7 +24,7 @@ angular.module('Device').controller('DeviceListCtrl', function ($scope, $routePa
 
 
 
-angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService) {
+angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, ErrorService) {
     $scope.device;
     $scope.filters;
     $scope.service = DeviceService;
@@ -36,16 +36,6 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
     }
     var deviceId;
 
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
     $scope.editDevice = function () {
         $mdDialog.show({
             controller: 'DeviceEditCtrl',
@@ -60,7 +50,7 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
 
     function loadDevice() {
         DeviceService.get($routeParams.serialNumber).then(function (promise) {
-            if (promise.error) displayError(promise);
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $scope.device = promise;
                 deviceId = promise._id;
@@ -77,7 +67,7 @@ angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $rout
     }
 });
 
-angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routeParams, $mdDialog, items, HardwareService, DeviceService, DevicesToReplace, UserService) {
+angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routeParams, $mdDialog, items, HardwareService, DeviceService, DevicesToReplace, UserService, ErrorService) {
     $scope.replacingDevices = [];
     if (items && items.model) {
         $scope.action = "Add";
@@ -144,13 +134,19 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
     $scope.workInProgress = true;
 
     HardwareService.getList().then(function (promise) {
-        $scope.hardwares = promise;
-        UserService.getList().then(function (promise) {
-            $scope.users = promise.users;
-            if (master.ownerId == "") master.ownerId = promise.currentUser;
-            $scope.reset();
-            $scope.workInProgress = false;
-        });
+        if (promise && promise.error) ErrorService.display(promise);
+        else {
+            $scope.hardwares = promise;
+            UserService.getList().then(function (promise) {
+                if (promise && promise.error) ErrorService.display(promise);
+                else {
+                    $scope.users = promise.users;
+                    if (master.ownerId == "") master.ownerId = promise.currentUser;
+                    $scope.reset();
+                    $scope.workInProgress = false;
+                }
+            });
+        }
     });
 
 
@@ -161,7 +157,7 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
     $scope.save = function (device) {
         $scope.savedDevice = device.serialNumber;
         DeviceService.create(device).then(function (promise) {
-            if (promise.errors) $scope.error = true;
+            if (promise && promise.error) ErrorService.display(promise);
             else {
                 $mdDialog.hide();
             }
