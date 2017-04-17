@@ -1,4 +1,5 @@
 angular.module('Hardware', []);
+angular.module('Dashboard', []);
 angular.module('Device', []);
 angular.module('Loan', []);
 angular.module('Company', []);
@@ -16,6 +17,7 @@ var pi = angular.module("pi", [
     'ngMaterial',
     'ngMessages',
     'md.data.table',
+    'Dashboard',
     'Hardware',
     'Device',
     'Loan',
@@ -26,7 +28,8 @@ var pi = angular.module("pi", [
     'CustomFilters',
     'CustomDirectives',
     'Modals',
-    'Partials'
+    'Partials',
+    'googlechart'
 ]);
 
 

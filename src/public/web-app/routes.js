@@ -1,7 +1,9 @@
 angular.module('pi').config(function ($routeProvider) {
     $routeProvider
         .when("/dashboard", {
-            templateUrl: "/web-app/partials/dashboard.html"
+            templateUrl: "/web-app/dashboard/view.html",
+            module: "Dashboard",
+            controller: "DashboardCtrl"
         })
         .when("/devices", {
             templateUrl: "/web-app/device/list.html",

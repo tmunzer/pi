@@ -20,6 +20,8 @@
     "jquery": "^2.2.4",
     "bootstrap": "^3.3.7",
     "material-design-icons": "^3.0.1",
-    "angular-sanitize": "^1.6.4"
+    "angular-sanitize": "^1.6.4",
+    "google-chart": "^1.1.2",
+    "angular-google-chart": "^0.1.0"
   }
 }

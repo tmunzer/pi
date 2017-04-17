@@ -1,0 +1,34 @@
+
+
+<section>
+    <article>
+        <div layout="row" layout-align="start top">
+            <md-card flex="33">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Hardware Status</h2>
+                </md-card-header>
+                <md-card-content layout="column" layout-align="center center">
+                    <div google-chart chart="hardwareStatus" style="width: 100%" ></div>
+                </md-card-content>
+            </md-card>
+            <md-card flex="33">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Hardware Type</h2>
+                </md-card-header>
+                <md-card-content layout="row" layout-align="center center">
+                    <div google-chart chart="hardwareType"  style="width: 100%"></div>
+                </md-card-content>
+            </md-card>
+        </div>
+            <div layout="row" layout-align="space-between top">
+            <md-card flex="50">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Hardware Model</h2>
+                </md-card-header>
+                <md-card-content layout="row" layout-align="center center">
+                    <div google-chart chart="hardwareModel" style="width: 100%"></div>
+                </md-card-content>
+            </md-card>
+        </div>
+    </article>
+</section>
