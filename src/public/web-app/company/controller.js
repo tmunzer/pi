@@ -113,7 +113,7 @@ function companyDetailsCtrl($scope, $routeParams, CompanyService) {
 
     // functions
     function edit() {
-        CompanyService.edit().then(function () {
+        CompanyService.edit(companyDetails.company).then(function () {
             refresh();
         });
     }

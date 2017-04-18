@@ -1,6 +1,5 @@
 angular.module('Loan').service("LoanService", function ($http, $q, $mdDialog, ErrorService) {
     function edit(loan) {
-        console.log(loan)
         return $mdDialog.show({
             controller: 'LoanEditCtrl',
             controllerAs: 'loanEdit',

@@ -97,7 +97,8 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
             origin: items.origin,
             order: items.order,
             replacingDeviceId: items.replacingDeviceId,
-            comment: items.comment
+            comment: items.comment,
+            lost: items.lost
         }
     } else if (items) {
         deviceEdit.action = "Clone";
