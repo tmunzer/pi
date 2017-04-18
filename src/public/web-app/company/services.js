@@ -1,4 +1,14 @@
-angular.module('Company').factory("CompanyService", function ($http, $q) {
+angular.module('Company').factory("CompanyService", function ($http, $q, $mdDialog, ErrorService) {
+    function edit(company) {
+        return $mdDialog.show({
+            controller: 'CompanyEditCtrl',
+            controllerAs: 'companyEdit',
+            templateUrl: 'company/edit.html',
+            locals: {
+                items: company
+            }
+        })
+    }
     function create(company) {
         let id;
         if (company._id) id = company._id;
@@ -46,13 +56,21 @@ angular.module('Company').factory("CompanyService", function ($http, $q) {
     }
 
     function remove(id) {
-        var canceller = $q.defer();
-        var request = $http({
-            url: "/api/companies/" + id,
-            method: "DELETE",
-            timeout: canceller.promise
-        });
-        return httpReq(request);
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirm.html',
+            locals: {
+                items: { item: "Company" }
+            }
+        }).then(function () {
+            var canceller = $q.defer();
+            var request = $http({
+                url: "/api/companies/" + id,
+                method: "DELETE",
+                timeout: canceller.promise
+            });
+            httpReq(request);
+        })
     }
 
     function httpReq(request) {
@@ -63,7 +81,7 @@ angular.module('Company').factory("CompanyService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) return { error: response.data };
+                if (response.status >= 0) ErrorService.display(response.data);
             });
 
         promise.abort = function () {
@@ -80,6 +98,7 @@ angular.module('Company').factory("CompanyService", function ($http, $q) {
     }
 
     return {
+        edit: edit,
         create: create,
         getList: getList,
         remove: remove,

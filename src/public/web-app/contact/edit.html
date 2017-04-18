@@ -3,7 +3,7 @@
         <div class="new company">
             <md-toolbar>
                 </md-toolbar-tools>
-                <h4>{{action}} Contact</h4>
+                <h4>{{contactEdit.action}} Contact</h4>
                 </md-toolbar-tools>
             </md-toolbar>
             <md-content layout-padding>
@@ -11,28 +11,28 @@
 
                     <md-input-container>
                         <label>Company</label>
-                        <md-select name="company" ng-model="contact.companyId">
-                            <md-option ng-repeat="company in companies" value="{{company._id}}">{{company.name}}</md-option>
+                        <md-select name="company" ng-model="contactEdit.contact.companyId">
+                            <md-option ng-repeat="company in contactEdit.companies" value="{{company._id}}">{{company.name}}</md-option>
                         </md-select>
                     </md-input-container>
 
                     <md-input-container style="margin-bottom: 0;">
-                        <input placeholder="Name" type="text" ng-model="contact.name" required="">
+                        <input placeholder="Name" type="text" ng-model="contactEdit.contact.name" required="">
                     </md-input-container>
                     <div layout='row'>
                     <md-input-container style="margin-bottom: 0;" flex=50>
-                        <input placeholder="Contact Phone" type="phone" ng-model="contact.phone">
+                        <input placeholder="Contact Phone" type="phone" ng-model="contactEdit.contact.phone">
                     </md-input-container>
                     <md-input-container style="margin-bottom: 0;" flex=50>
-                        <input placeholder="Contact Email" type="email" ng-model="contact.email">
+                        <input placeholder="Contact Email" type="email" ng-model="contactEdit.contact.email">
                     </md-input-container>
                     </div>
                 </form>
 
         <div layout="row">
-            <md-button class="md-primary" ng-click="reset()">Reset</md-button>
-            <md-button class="md-primary" ng-click="close()">Cancel</md-button>
-            <md-button class="md-primary md-raised" ng-click="save(company)" ng-disabled="newCompany.$invalid">Save</md-button>
+            <md-button class="md-primary" ng-click="contactEdit.reset()">Reset</md-button>
+            <md-button class="md-primary" ng-click="contactEdit.close()">Cancel</md-button>
+            <md-button class="md-primary md-raised" ng-click="contactEdit.save(company)" ng-disabled="newCompany.$invalid">Save</md-button>
         </div>
         </form>
         </md-content>

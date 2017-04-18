@@ -4,41 +4,41 @@
             <md-card-header class="small" layout-align="start center">
                 <h2>Hardwares</h2>
                 <div flex></div>
-                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
+                <md-button ng-click="hardwareList.refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="editHardware()" class='md-primary md-raised md-icon-button '>
+                <md-button ng-click="hardwareList.edit()" class='md-primary md-raised md-icon-button '>
                     <md-tooltip>Add new Hardware</md-tooltip>
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
             </md-card-header>
             <div layout="row" layout-align="start center" layout-margin md-whiteframe="2">
                 <md-input-container>
-                    <md-checkbox style="margin: 0" ng-model="query.ap" aria-label="Only Available">AP</md-checkbox>
+                    <md-checkbox style="margin: 0" ng-model="hardwareList.query.ap" aria-label="Only Available">AP</md-checkbox>
                 </md-input-container>
                 <md-input-container>
-                    <md-checkbox style="margin: 0" ng-model="query.sr" aria-label="Only Available">SR</md-checkbox>
+                    <md-checkbox style="margin: 0" ng-model="hardwareList.query.sr" aria-label="Only Available">SR</md-checkbox>
                 </md-input-container>
                 <md-input-container>
-                    <md-checkbox style="margin: 0" ng-model="query.br" aria-label="Only Available">BR</md-checkbox>
+                    <md-checkbox style="margin: 0" ng-model="hardwareList.query.br" aria-label="Only Available">BR</md-checkbox>
                 </md-input-container>
                 <md-input-container>
-                    <md-checkbox style="margin: 0" ng-model="query.phyAppliance" aria-label="Only Available">1U</md-checkbox>
+                    <md-checkbox style="margin: 0" ng-model="hardwareList.query.phyAppliance" aria-label="Only Available">1U</md-checkbox>
                 </md-input-container>
                 <md-input-container>
-                    <md-checkbox style="margin: 0" ng-model="query.other" aria-label="Only Available">Other</md-checkbox>
+                    <md-checkbox style="margin: 0" ng-model="hardwareList.query.other" aria-label="Only Available">Other</md-checkbox>
                 </md-input-container>
                 <md-input-container md-no-float="true" class="no-error">
-                    <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
+                    <input type="text" ng-model="hardwareList.query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
                     />
                 </md-input-container>
                 <span flex></span>
-                <span>Displayed: {{displayedHardwares.length}} | Total: {{hardwares.length}}</span>
+                <span>Displayed: {{hardwareList.displayedHardwares.length}} | Total: {{hardwareList.hardwares.length}}</span>
             </div>
             <md-table-container>
-                <table md-table ng-model="hardwares" md-progress="request">
-                    <thead md-head md-order="query.order">
+                <table md-table ng-model="hardwareList.hardwares" md-progress="hardwareList.request">
+                    <thead md-head md-order="hardwareList.query.order">
                         <tr md-row>
                             <th md-column md-order-by="type">Type</th>
                             <th md-column md-order-by="model">Model</th>
@@ -50,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody md-body>
-                        <tr md-row ng-repeat="hardware in displayedHardwares | orderBy: query.order  | limitTo: query.limit: (query.page - 1) * query.limit">
+                        <tr md-row ng-repeat="hardware in hardwareList.displayedHardwares | orderBy: hardwareList.query.order  | limitTo: hardwareList.query.limit: (hardwareList.query.page - 1) * hardwareList.query.limit">
                             <td md-cell>{{hardware.type}}</td>
                             <td md-cell><a href="#!/hardwares/{{hardware.model}}" class="md-primary">{{hardware.model}}</a></td>
                             <td md-cell>{{hardware.count.total}}</td>
@@ -59,15 +59,15 @@
                             <td md-cell>{{hardware.created_at | date:'mediumDate'}}</td>
                             <td md-cell>{{hardware.updated_at | date:'mediumDate'}}</td>
                             <td md-cell>
-                                <md-button class="md-icon-button" ng-click="editHardware(hardware)">
+                                <md-button class="md-icon-button" ng-click="hardwareList.edit(hardware)">
                                     <md-tooltip>Edit</md-tooltip>
                                     <md-icon class="material-icons edit">mode_edit</md-icon>
                                 </md-button>
-                                <md-button class="md-icon-button" ng-click="copyHardware(hardware)">
+                                <md-button class="md-icon-button" ng-click="hardwareList.copy(hardware)">
                                     <md-tooltip>Clone</md-tooltip>
                                     <md-icon class="material-icons edit">content_copy</md-icon>
                                 </md-button>
-                                <md-button class="md-icon-button" ng-click="remove(hardware)" ng-disabled="hardware.numberOfDevices > 0">
+                                <md-button class="md-icon-button" ng-click="hardwareList.remove(hardware)" ng-disabled="hardware.count.total > 0">
                                     <md-tooltip>Delete</md-tooltip>
                                     <md-icon class="material-icons delete">delete_forever</md-icon>
                                 </md-button>
@@ -76,7 +76,7 @@
                     </tbody>
                 </table>
             </md-table-container>
-            <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedHardwares.length}}"
+            <md-table-pagination md-limit="hardwareList.query.limit" md-limit-options="[10, 25, 50]" md-page="hardwareList.query.page" md-total="{{hardwareList.displayedHardwares.length}}"
                 md-page-select></md-table-pagination>
         </md-card>
     </article>

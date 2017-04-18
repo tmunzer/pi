@@ -14,8 +14,17 @@ angular.module('Hardware').service("HardwareTypeService", function () {
     }
 });
 
-angular.module('Hardware').service("HardwareService", function ($http, $q) {
-
+angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDialog, ErrorService) {
+    function edit(hardware) {
+        return $mdDialog.show({
+            controller: 'HardwareEditCtrl',
+            controllerAs: 'hardwareEdit',
+            templateUrl: 'hardware/edit.html',
+            locals: {
+                items: hardware
+            }
+        })
+    }
     function create(hardware) {
         let id;
         if (hardware._id) id = hardware._id;
@@ -55,19 +64,27 @@ angular.module('Hardware').service("HardwareService", function ($http, $q) {
         var request = $http({
             url: "/api/hardwares",
             method: "GET",
-            params: {id: id},
+            params: { id: id },
             timeout: canceller.promise
         });
         return httpReq(request);
     }
     function remove(id) {
-        var canceller = $q.defer();
-        var request = $http({
-            url: "/api/hardwares/" + id,
-            method: "DELETE",
-            timeout: canceller.promise
-        });
-        return httpReq(request);
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirm.html',
+            locals: {
+                items: { item: "Hardware" }
+            }
+        }).then(function () {
+            var canceller = $q.defer();
+            var request = $http({
+                url: "/api/hardwares/" + id,
+                method: "DELETE",
+                timeout: canceller.promise
+            });
+            httpReq(request);
+        })
     }
 
     function httpReq(request) {
@@ -78,7 +95,7 @@ angular.module('Hardware').service("HardwareService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) return { error: response.data };
+                if (response.status >= 0) ErrorService.display(response.data);
             });
 
         promise.abort = function () {
@@ -94,6 +111,7 @@ angular.module('Hardware').service("HardwareService", function ($http, $q) {
     }
 
     return {
+        edit: edit,
         create: create,
         getList: getList,
         remove: remove,

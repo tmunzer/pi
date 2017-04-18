@@ -1,129 +1,90 @@
-angular.module('Loan').controller('LoanListCtrl', function ($scope, $routeParams, $mdDialog, LoanService) {
-    $scope.query = {
+angular
+    .module('Loan')
+    .controller('LoanListCtrl', loanListCtrl)
+    .controller('LoanDetailsCtrl', loanDetailsCtrl)
+    .controller('LoanEditCtrl', loanEditCtrl)
+
+function loanListCtrl(LoanService) {
+    var loanList = this;
+    // variables
+    loanList.refreshRequested = true;
+    loanList.query = {
         aborted: false,
         returned: false,
         progress: true,
         overdue: true
     }
-
-    $scope.editLoan = function (loan) {
-        $mdDialog.show({
-            controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit.html',
-            locals: {
-                items: null
-            }
-        }).then(function () {
-            $scope.refreshRequested = true;
+    // functions bindings
+    loanList.edit = edit;
+    loanList.refresh = refresh;
+    // functions
+    function edit(loan) {
+        LoanService.edit(loan).then(function () {
+            refresh()
         });
     }
-
-    $scope.refreshRequested = true;
-    $scope.refresh = function () {
-        $scope.refreshRequested = true;
+    function refresh() {
+        loanList.refreshRequested = true;
     }
-});
+};
 
-angular.module('Loan').controller('LoanDetailsCtrl', function ($scope, $routeParams, $mdDialog, LoanService, HardwareService, ErrorService) {
-    $scope.query = {
+function loanDetailsCtrl($routeParams, LoanService) {
+    var loanDetails = this;
+    // variables
+    loanDetails.query = {
         loaned: true,
         lost: true,
         available: true
     }
-
-    $scope.loan;
-    $scope.service = LoanService;
-    $scope.status;
-    $scope.refreshRequested = false;
-    $scope.filters = { id: [] };
+    loanDetails.loan;
+    loanDetails.service = LoanService;
+    loanDetails.status;
+    loanDetails.refreshRequested = false;
+    loanDetails.filters = { id: [] };
     let hardwares;
-
-
+    // functions bindings
+    loanDetails.abort = abort
+    loanDetails.revert = revert
+    loanDetails.edit = edit
+    loanDetails.returned = returned;
+    // functions
     function checkStatus() {
-        if ($scope.loan.aborted) return "aborted";
-        else if ($scope.loan.endDate) return "returned";
-        else if (new Date($scope.loan.estimatedEndDate) > new Date()) return "progress";
+        if (loanDetails.loan.aborted) return "aborted";
+        else if (loanDetails.loan.endDate) return "returned";
+        else if (new Date(loanDetails.loan.estimatedEndDate) > new Date()) return "progress";
         else return "overdue";
     }
-
-    function Load() {
+    function abort() {
+        LoanService.abort(loanDetails.loan, function () { refresh() });
+    }
+    function revert() {
+        LoanService.revert(loanDetails.loan, function () { refresh() });
+    }
+    function returned() {
+        LoanService.returned(loanDetails.loan, function () { refresh() });
+    }
+    function edit() {
+        LoanService.edit(loanDetails.loan).then(function () { refresh(); });
+    }
+    function refresh() {
         LoanService.get($routeParams.loanId).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else {
-                $scope.loan = promise;
-                $scope.status = checkStatus();
-                $scope.loan.deviceId.forEach(function (device) {
-                    $scope.filters.id.push(device._id);
-                })
-                $scope.refreshRequested = true;
-            }
-        });
-    }
-    $scope.abortLoan = function () {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirmAbort.html',
-            locals: {
-                items: { item: $scope.loan.companyId.name }
-            }
-        }).then(function () {
-            $scope.loan.aborted = true;
-            LoanService.create($scope.loan).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else Load();
+            loanDetails.loan = promise;
+            loanDetails.status = checkStatus();
+            loanDetails.filters = { id: [] };
+            loanDetails.loan.deviceId.forEach(function (device) {
+                loanDetails.filters.id.push(device._id);
             })
-
+            loanDetails.refreshRequested = true;
         });
     }
-    $scope.revert = function () {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirmRevert.html',
-            locals: {
-                items: { item: $scope.loan.companyId.name }
-            }
-        }).then(function () {
-            $scope.loan.aborted = false;
-            $scope.loan.endDate = null;
-            LoanService.create($scope.loan).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else Load();
-            })
-
-        });
-    }
-    $scope.editLoan = function () {
-        $mdDialog.show({
-            controller: 'LoanEditCtrl',
-            templateUrl: 'loan/edit.html',
-            locals: {
-                items: $scope.loan
-            }
-        }).then(function () {
-            Load();
-        });
-    }
-    $scope.returnLoan = function () {
-        $mdDialog.show({
-            controller: 'ConfirmReturnCtrl',
-            templateUrl: 'modals/confirmReturn.html',
-            locals: {
-                items: angular.copy($scope.loan)
-            }
-        }).then(function (loan) {
-            LoanService.create(loan).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else Load();
-            })
-
-        });
-    }
-
-    Load();
-});
+    // init
+    refresh();
+};
 
 
-angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, items, LoanService, UserService, HardwareService, DeviceService, CompanyService, ContactService, ErrorService) {
+function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, HardwareService, DeviceService, CompanyService, ContactService) {
+    var loanEdit = this;
+    // variables
     // if cloned or edited loan
     if (items) {
         var master = {
@@ -146,14 +107,14 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
             items.deviceId.forEach(function (dev) {
                 master_selectedDevices.push({ hardwareId: dev.hardwareId, deviceId: dev._id, choices: [{ _id: dev._id, serialNumber: dev.serialNumber }] })
             })
-            $scope.action = "Edit";
+            loanEdit.action = "Edit";
         }
         //if cloned
         else {
             master.poe = 0;
             master.other = "";
             var master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
-            $scope.action = "Clone";
+            loanEdit.action = "Clone";
         }
         //if new
     } else {
@@ -171,131 +132,113 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
         var master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
         var master_companyId = null;
         var master_contactId = null;
-        $scope.action = "Add";
+        loanEdit.action = "Add";
     }
-
-    $scope.reset = function () {
-        $scope.loan = angular.copy(master);
-        $scope.selectedDevices = master_selectedDevices;
-        $scope.companyId = master_companyId;
-        $scope.contactId = master_contactId;
-    };
-
-    $scope.users;
-    $scope.hardwares;
-    $scope.devices;
-    $scope.companyId;
-    $scope.$watch("companyId", function () {
-        if ($scope.companyId)
-            $scope.loan.companyId = $scope.companyId._id;
-        $scope.contact.refresh();
+    loanEdit.users;
+    loanEdit.hardwares;
+    loanEdit.devices;
+    loanEdit.companyId;
+    loanEdit.contactId;
+    loanEdit.contactInfoSaved = false;
+    loanEdit.contactInfoChanged = false;
+    // functions bindings
+    loanEdit.reset = reset;
+    loanEdit.updateContact = updateContact;
+    loanEdit.loadDevices = loadDevices;
+    loanEdit.removeDevice = removeDevice;
+    loanEdit.save = save;
+    loanEdit.cancel = cancel;
+    loanEdit.close = close;
+    // watchers
+    $scope.$watch("loanEdit.companyId", function () {
+        if (loanEdit.companyId)
+            loanEdit.loan.companyId = loanEdit.companyId._id;
+        loanEdit.contact.refresh();
     });
-    $scope.contactId;
-    $scope.contactInfoSaved = false;
-    $scope.contactInfoChanged = false;
-
-
-
-    $scope.$watch("contactId", function () {
-        if ($scope.contactId) {
-            $scope.loan.contactId = $scope.contactId._id;
-            master_contactId = angular.copy($scope.contactId);
-            $scope.contactInfoSaved = false;
-            $scope.contactInfoChanged = false;
+    $scope.$watch("loanEdit.contactId", function () {
+        if (loanEdit.contactId) {
+            loanEdit.loan.contactId = loanEdit.contactId._id;
+            master_contactId = angular.copy(loanEdit.contactId);
+            loanEdit.contactInfoSaved = false;
+            loanEdit.contactInfoChanged = false;
         }
     })
-    $scope.$watch("contactId.email", function () {
-        if (master_contactId && $scope.contactId)
-            $scope.contactInfoChanged = (master_contactId.phone != $scope.contactId.phone || master_contactId.email != $scope.contactId.email)
+    $scope.$watch("loanEdit.contactId.email", function () {
+        if (master_contactId && loanEdit.contactId)
+            loanEdit.contactInfoChanged = (master_contactId.phone != loanEdit.contactId.phone || master_contactId.email != loanEdit.contactId.email)
     })
-    $scope.$watch("contactId.phone", function () {
-        if (master_contactId && $scope.contactId)
-            $scope.contactInfoChanged = (master_contactId.phone != $scope.contactId.phone || master_contactId.email != $scope.contactId.email)
+    $scope.$watch("loanEdit.contactId.phone", function () {
+        if (master_contactId && loanEdit.contactId)
+            loanEdit.contactInfoChanged = (master_contactId.phone != loanEdit.contactId.phone || master_contactId.email != loanEdit.contactId.email)
     })
-    $scope.updateContact = function () {
-        ContactService.create($scope.contactId).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else {
-                $scope.contactInfoSaved = true;
-                $scope.contactInfoChanged = false;
-            }
-        })
-    }
-
-
-    UserService.getList().then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise.error);
-        else {
-            $scope.users = promise.users;
-            if (master.ownerId == "") master.ownerId = promise.currentUser;
-            HardwareService.getList().then(function (promise) {
-                if (promise && promise.error) ErrorService.display(propromise.errormise);
-                else {
-                    $scope.hardwares = promise;
-                    $scope.reset();
-                }
-            })
-        }
-    })
-
-    $scope.loadDevices = function (device) {
-        device.choices = [];
-        if ($scope.model != 0)
-            DeviceService.getList({ hardwareId: device.hardwareId }).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else {
-                    var tempList = promise;
-                    // remove the already selected and devices from the list
-                    $scope.selectedDevices.forEach(function (selectedDevices) {
-                        var index = -1;
-                        for (var i = 0; i < tempList.length; i++) {
-                            if (tempList[i].lost || selectedDevices.deviceId == tempList[i]._id) index = i;
-                        }
-                        if (index >= 0) tempList.splice(index, 1);
-                    })
-                    tempList.forEach(function (item) {
-                        if (!item.loanId) device.choices.push(item);
-                    })
-                }
-            })
-    };
-
-    $scope.$watch("selectedDevices", function () {
-        if ($scope.selectedDevices) {
+    $scope.$watch("loanEdit.selectedDevices", function () {
+        if (loanEdit.selectedDevices) {
             var newLine = false;
-            $scope.selectedDevices.forEach(function (device) {
+            loanEdit.selectedDevices.forEach(function (device) {
                 if (!device.deviceId) newLine = true;
             })
-            if (!newLine) $scope.selectedDevices.push({ hardwareId: undefined, deviceId: undefined, choices: [] });
+            if (!newLine) loanEdit.selectedDevices.push({ hardwareId: undefined, deviceId: undefined, choices: [] });
         }
     }, true)
-
-    $scope.removeDevice = function (index) {
-        $scope.selectedDevices.splice(index, 1);
-    }
-
-    $scope.save = function () {
-        $scope.selectedDevices.forEach(function (device) {
-            if (device.deviceId) $scope.loan.deviceId.push(device.deviceId);
+    // functions
+    function reset() {
+        loanEdit.loan = angular.copy(master);
+        loanEdit.selectedDevices = master_selectedDevices;
+        loanEdit.companyId = master_companyId;
+        loanEdit.contactId = master_contactId;
+    };
+    function updateContact() {
+        ContactService.create(loanEdit.contactId).then(function (promise) {
+            loanEdit.contactInfoSaved = true;
+            loanEdit.contactInfoChanged = false;
         })
-        LoanService.create($scope.loan).then(function (promise) {
-            $mdDialog.hide();
-            if (promise && promise.error) ErrorService.display(promise.error);
+    }
+    function loadDevices(device) {
+        device.choices = [];
+        if (loanEdit.model != 0)
+            DeviceService.getList({ hardwareId: device.hardwareId }).then(function (promise) {
+                var tempList = promise;
+                // remove the already selected and devices from the list
+                loanEdit.selectedDevices.forEach(function (selectedDevices) {
+                    var index = -1;
+                    for (var i = 0; i < tempList.length; i++) {
+                        if (tempList[i].lost || selectedDevices.deviceId == tempList[i]._id) index = i;
+                    }
+                    if (index >= 0) tempList.splice(index, 1);
+                })
+                tempList.forEach(function (item) {
+                    if (!item.loanId) device.choices.push(item);
+                })
+            })
+    };
+    function removeDevice(index) {
+        loanEdit.selectedDevices.splice(index, 1);
+    }
+    function save() {
+        loanEdit.selectedDevices.forEach(function (device) {
+            if (device.deviceId) loanEdit.loan.deviceId.push(device.deviceId);
+        })
+        LoanService.create(loanEdit.loan).then(function (promise) {
+            close()
         })
     };
-    $scope.cancel = function () {
+    function cancel() {
         $mdDialog.cancel()
     };
-    $scope.close = function () {
-        // Easily hides most recent dialog shown...
-        // no specific instance reference is needed.
+    function close() {
         $mdDialog.hide();
     };
-
-
-
-
-
+    function init() {
+        UserService.getList().then(function (promise) {
+            loanEdit.users = promise.users;
+            if (master.ownerId == "") master.ownerId = promise.currentUser;
+            HardwareService.getList().then(function (promise) {
+                loanEdit.hardwares = promise;
+                loanEdit.reset();
+            })
+        })
+    }
+    // autocomplete
     function createFilterFor(query) {
         var lowercaseQuery = angular.lowercase(query);
 
@@ -304,74 +247,69 @@ angular.module('Loan').controller('LoanEditCtrl', function ($scope, $mdDialog, i
         };
     }
 
-
-
-    $scope.company = {
+    loanEdit.company = {
         companies: [],
         searchText: null,
         refresh: function refresh() {
             CompanyService.getList().then(function (promise) {
                 if (promise && promise.error) ErrorService.display(promise.error);
                 else {
-                    $scope.company.companies = promise;
+                    loanEdit.company.companies = promise;
                 }
             })
         },
         querySearch: function querySearch(query) {
-            return query ? $scope.company.companies.filter(createFilterFor(query)) : $scope.company.companies;
+            return query ? loanEdit.company.companies.filter(createFilterFor(query)) : loanEdit.company.companies;
         },
         newCompany: function newCompany(company) {
             var company_name = company.trim();
             var already_exists = false;
-            $scope.company.companies.forEach(function (comp_list) {
+            loanEdit.company.companies.forEach(function (comp_list) {
                 if (company_name.toLowerCase() === comp_list.name.toLowerCase) already_exists = true;
             })
             if (!already_exists)
                 CompanyService.create({ name: company.trim() }).then(function (promise) {
                     if (promise && promise.error) ErrorService.display(promise.error);
                     else {
-                        $scope.company.selectedItem = promise;
-                        $scope.company.refresh();
+                        loanEdit.company.selectedItem = promise;
+                        loanEdit.company.refresh();
                     }
                 })
         },
     }
-    $scope.company.refresh();
 
-
-
-
-    $scope.contact = {
+    loanEdit.contact = {
         contacts: [],
         searchText: null,
         refresh: function refresh() {
-            if ($scope.loan)
-                ContactService.getList({ companyId: $scope.loan.companyId }).then(function (promise) {
+            if (loanEdit.loan)
+                ContactService.getList({ companyId: loanEdit.loan.companyId }).then(function (promise) {
                     if (promise && promise.error) ErrorService.display(promise.error);
-                    else $scope.contact.contacts = promise;
-                    
+                    else loanEdit.contact.contacts = promise;
+
                 })
         },
         querySearch: function querySearch(query) {
-            return query ? $scope.contact.contacts.filter(createFilterFor(query)) : $scope.contact.contacts;
+            return query ? loanEdit.contact.contacts.filter(createFilterFor(query)) : loanEdit.contact.contacts;
         },
         newContact: function newContact(contact) {
             var contact_name = contact.trim();
             var already_exists = false;
-            $scope.contact.contacts.forEach(function (cont_list) {
+            loanEdit.contact.contacts.forEach(function (cont_list) {
                 if (contact_name.toLowerCase() === cont_list.name.toLowerCase) already_exists = true;
             })
             if (!already_exists)
-                ContactService.create({ companyId: $scope.loan.companyId, name: contact.trim() }).then(function (promise) {
+                ContactService.create({ companyId: loanEdit.loan.companyId, name: contact.trim() }).then(function (promise) {
                     if (promise && promise.error) ErrorService.display(promise.error);
                     else {
-                        $scope.contact.selectedItem = promise;
-                        $scope.contact.refresh();
+                        loanEdit.contact.selectedItem = promise;
+                        loanEdit.contact.refresh();
                     }
                 })
         }
     }
 
-
-});
+    // init
+    init()
+};
 

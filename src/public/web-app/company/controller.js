@@ -5,7 +5,7 @@ angular
     .controller('CompanyEditCtrl', companyEditCtrl)
 
 
-function companyList($scope, $mdDialog, CompanyService, ErrorService) {
+function companyList($scope, CompanyService) {
     var companyList = this;
     // variables
     companyList.companies = [];
@@ -38,41 +38,22 @@ function companyList($scope, $mdDialog, CompanyService, ErrorService) {
     }
 
     function edit(company) {
-        $mdDialog.show({
-            controller: 'CompanyEditCtrl',
-            controllerAs: 'companyEdit',
-            templateUrl: 'company/edit.html',
-            locals: {
-                items: company
-            }
-        }).then(function () {
+        CompanyService.edit(company).then(function () {
             refresh();
         });
     }
 
     function remove(company) {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirm.html',
-            locals: {
-                items: { item: "Comany" }
-            }
-        }).then(function () {
-            CompanyService.remove(company._id).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else refresh()
-            })
-        });
+        CompanyService.remove(company._id).then(function (promise) {
+            refresh()
+        })
     }
 
     function refresh() {
         companyList.request = CompanyService.getList();
         companyList.request.then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else {
-                companyList.companies = promise;
-                filter();
-            }
+            companyList.companies = promise;
+            filter();
         });
     }
 
@@ -81,7 +62,7 @@ function companyList($scope, $mdDialog, CompanyService, ErrorService) {
 }
 
 
-function companyDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
+function companyDetailsCtrl($scope, $routeParams, CompanyService) {
     var companyDetails = this;
 
     // variables
@@ -132,28 +113,19 @@ function companyDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, Err
 
     // functions
     function edit() {
-        $mdDialog.show({
-            controller: 'CompanyEditCtrl',
-            controllerAs: 'companyEdit',
-            templateUrl: 'company/edit.html',
-            locals: {
-                items: companyDetails.company
-            }
-        }).then(function () {
-            loadCompany();
+        CompanyService.edit().then(function () {
+            refresh();
         });
     }
 
-    function loadCompany() {
+    function refresh() {
         CompanyService.get($routeParams.company_id).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else {
                 companyDetails.company = promise;
                 companyId = promise._id;
                 companyDetails.filters = { companyId: companyId };
                 refreshContacts();
                 refreshLoans();
-            }
+            
         });
     }
     function refreshLoans() {
@@ -163,12 +135,12 @@ function companyDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, Err
         companyDetails.refreshRequestedContacts = true;
     }
     // init
-    loadCompany();
+    refresh();
 
 }
 
 
-function companyEditCtrl($mdDialog, items, CompanyService, ErrorService) {
+function companyEditCtrl($mdDialog, items, CompanyService) {
     var companyEdit = this;
 
     // items is injected in the controller, not its scope!   
@@ -194,9 +166,8 @@ function companyEditCtrl($mdDialog, items, CompanyService, ErrorService) {
         companyEdit.company = angular.copy(master);
     };
     function save(company) {
-        CompanyService.create(company).then(function (promise) {
-            $mdDialog.hide();
-            if (promise && promise.error) ErrorService.display(promise.error);
+        CompanyService.create(companyEdit.company).then(function (promise) {
+            close();
         })
     };
     function cancel() {

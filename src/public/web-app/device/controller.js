@@ -1,76 +1,78 @@
 
-angular.module('Device').controller('DeviceListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, DeviceService) {
-    $scope.query = {
+angular
+    .module('Device')
+    .controller('DeviceListCtrl', deviceListCtrl)
+    .controller('DeviceDetailsCtrl', deviceDetailsCtrl)
+    .controller('DeviceEditCtrl', deviceEditCtrl)
+
+function deviceListCtrl(DeviceService) {
+    var deviceList = this;
+    // variables
+    deviceList.refreshRequested = true;
+    deviceList.query = {
         loaned: false,
         lost: false,
         available: true
     }
-    $scope.refreshRequested = true;
-    $scope.refresh = function () {
+
+    // functions bindings
+    deviceList.refresh = refresh;
+    deviceList.edit = edit;
+
+    // functions
+    function refresh() {
         $scope.refreshRequested = true;
     }
-    $scope.editDevice = function () {
-        $mdDialog.show({
-            controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit.html',
-            locals: {
-                items: $scope.device
-            }
-        }).then(function () {
-            $scope.refreshRequested = true;
-        });
+    function edit() {
+        DeviceService.edit().then(function () {
+            deviceList.refreshRequested = true;
+        })
     }
-});
+}
 
-
-
-angular.module('Device').controller('DeviceDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, ErrorService) {
-    $scope.device;
-    $scope.filters;
-    $scope.service = DeviceService;
-    $scope.query = {
+function deviceDetailsCtrl($routeParams, DeviceService) {
+    var deviceDetails = this;
+    // variables
+    deviceDetails.device;
+    deviceDetails.filters;
+    deviceDetails.service = DeviceService;
+    deviceDetails.query = {
         aborted: true,
         returned: true,
         progress: true,
         overdue: true
     }
     var deviceId;
-
-    $scope.editDevice = function () {
-        $mdDialog.show({
-            controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit.html',
-            locals: {
-                items: $scope.device
-            }
-        }).then(function () {
-            loadDevice();
+    // functions bindings
+    deviceDetails.edit = edit;
+    deviceDetails.refreshLoans = refreshLoans;
+    deviceDetails.refreshRequested = false;
+    // functions
+    function edit() {
+        DeviceService.edit(deviceDetails.device).then(function () {
+            refresh();
         });
     }
-
-    function loadDevice() {
+    function refresh() {
         DeviceService.get($routeParams.serialNumber).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else {
-                $scope.device = promise;
-                deviceId = promise._id;
-                $scope.filters = { deviceId: deviceId };
-                $scope.refresh();
-            }
+            deviceDetails.device = promise;
+            deviceId = promise._id;
+            deviceDetails.filters = { deviceId: deviceId };
+            refreshLoans();
         });
     }
-    loadDevice();
-
-    $scope.refreshRequested = false;
-    $scope.refresh = function () {
-        $scope.refreshRequested = true;
+    function refreshLoans() {
+        deviceDetails.refreshRequested = true;
     }
-});
-
-angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routeParams, $mdDialog, items, HardwareService, DeviceService, DevicesToReplace, UserService, ErrorService) {
-    $scope.replacingDevices = [];
+    // init
+    refresh();
+}
+function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService, DevicesToReplace, UserService) {
+    var deviceEdit = this;
+    // variables
+    deviceEdit.replacingDevices = [];
     if (items && items.model) {
-        $scope.action = "Add";
+        deviceEdit.action = "Add";
         var master = {
             ownerId: "",
             hardwareId: items.model,
@@ -84,7 +86,7 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
         }
     }
     else if (items && items._id) {
-        $scope.action = "Edit";
+        deviceEdit.action = "Edit";
         var master = {
             _id: items._id,
             ownerId: items.ownerId ? items.ownerId._id : "",
@@ -98,7 +100,7 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
             comment: items.comment
         }
     } else if (items) {
-        $scope.action = "Clone";
+        deviceEdit.action = "Clone";
         var master = {
             ownerId: items.ownerId._id,
             hardwareId: items.hardwareId._id,
@@ -111,7 +113,7 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
             comment: items.comment
         }
     } else {
-        $scope.action = "Add";
+        deviceEdit.action = "Add";
         var master = {
             ownerId: "",
             hardwareId: "",
@@ -124,62 +126,61 @@ angular.module('Device').controller('DeviceEditCtrl', function ($scope, $routePa
             comment: ""
         }
     }
-
-    $scope.$watch("device.hardwareId", function () {
-        if ($scope.hardwares && master.serialNumber == "")
-            $scope.hardwares.forEach(function (hardware) {
-                if (hardware._id == $scope.device.hardwareId) $scope.device.serialNumber = hardware.serialFormat;
+    // functions binding
+    deviceEdit.reset = reset;
+    deviceEdit.save = save;
+    deviceEdit.cancel = cancel;
+    deviceEdit.close = close;
+    deviceEdit.macAddressFormat = macAddressFormat;
+    deviceEdit.loadReplacingDevice = loadReplacingDevice;
+    // watchers
+    $scope.$watch("deviceEdit.device.hardwareId", function () {
+        if (deviceEdit.hardwares && master.serialNumber == "")
+            deviceEdit.hardwares.forEach(function (hardware) {
+                if (hardware._id == deviceEdit.device.hardwareId) deviceEdit.device.serialNumber = hardware.serialFormat;
             })
     })
-    $scope.workInProgress = true;
-
-    HardwareService.getList().then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise.error);
-        else {
-            $scope.hardwares = promise;
-            UserService.getList().then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else {
-                    $scope.users = promise.users;
-                    if (master.ownerId == "") master.ownerId = promise.currentUser;
-                    $scope.reset();
-                    $scope.workInProgress = false;
-                }
-            });
-        }
-    });
-
-
-    $scope.reset = function () {
-        $scope.device = angular.copy(master);
+    // functions
+    function reset() {
+        deviceEdit.device = angular.copy(master);
     };
-
-    $scope.save = function (device) {
-        $scope.savedDevice = device.serialNumber;
-        DeviceService.create(device).then(function (promise) {
+    function save() {
+        DeviceService.create(deviceEdit.device).then(function (promise) {
             $mdDialog.hide();
-            if (promise && promise.error) ErrorService.display(promise.error);
         })
     };
-    $scope.cancel = function () {
+    function macAddressFormat() {
+        if (deviceEdit.device && deviceEdit.device.macAddress) {
+            deviceEdit.device.macAddress = deviceEdit.device.macAddress.replace(/:/g, "").replace(/(.{2})/g, "$1:").substr(0, 17).toUpperCase();
+        };
+    }
+    function loadReplacingDevice() {
+        DeviceService.getList({ hardwareId: master.hardwareId }).then(function (promise) {
+            deviceEdit.replacingDevices = promise;
+        })
+    }
+
+    function load() {
+        HardwareService.getList().then(function (promise) {
+            deviceEdit.hardwares = promise;
+            UserService.getList().then(function (promise) {
+                deviceEdit.users = promise.users;
+                if (master.ownerId == "") master.ownerId = promise.currentUser;
+                reset();
+            });
+
+        });
+    }
+
+    function cancel() {
         $mdDialog.cancel()
     };
-    $scope.close = function () {
-        // Easily hides most recent dialog shown...
-        // no specific instance reference is needed.
+    function close() {
         $mdDialog.hide();
     };
 
-    $scope.macAddressFormat = function () {
-        if ($scope.device && $scope.device.macAddress) {
-            $scope.device.macAddress = $scope.device.macAddress.replace(/:/g, "").replace(/(.{2})/g, "$1:").substr(0, 17).toUpperCase();
-        };
-    }
 
-    $scope.loadReplacingDevice = function () {
-        DeviceService.getList({ hardwareId: master.hardwareId }).then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else $scope.replacingDevices = promise;
-        })
-    }
-});
+    // init
+    load()
+
+}

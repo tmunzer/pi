@@ -1,4 +1,13 @@
-angular.module('Partials').directive('detailedHeader', function () {
+
+angular
+    .module('Partials')
+    .directive('detailedHeader', detailedHeader)
+    .directive('listLoans', listLoans)
+    .directive('listDevices', listDevices)
+    .directive('listContacts', listContacts)
+    .directive('listComments', listComments)
+
+function detailedHeader() {
     return {
         restrict: 'E',
         scope: {
@@ -8,9 +17,8 @@ angular.module('Partials').directive('detailedHeader', function () {
         },
         templateUrl: "/web-app/partials/detailedHeader.html"
     };
-});
-
-angular.module('Partials').directive('listLoans', function ($mdDialog, LoanService, ErrorService) {
+};
+function listLoans(LoanService) {
     return {
         restrict: 'E',
         scope: {
@@ -25,7 +33,7 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
         },
         templateUrl: "/web-app/partials/listLoans.html",
         link: function postLink($scope) {
-
+            // variables
             $scope.loans = [];
             $scope.displayedLoans = [];
             if ($scope.table) $scope.query = $scope.table;
@@ -40,121 +48,13 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
                     overdue: $scope.overdue,
                     filter: ""
                 }
-
-
             $scope.request;
-
-            $scope.toDisplay = function (column) {
-                if ($scope.source == column) return false;
-                else return true;
-            }
-
-            function refresh() {
-                $scope.request = LoanService.getList($scope.filters);
-                $scope.request.then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise.error);
-                    else {
-                        $scope.loans = promise;
-                        filter();
-                    }
-                    $scope.refresh = false;
-                });
-            }
-
-            function checkStatus(loan) {
-                if (loan.aborted) loan.status = "aborted";
-                else if (loan.endDate) loan.status = "returned";
-                else if (new Date(loan.estimatedEndDate) > new Date()) loan.status = "progress";
-                else loan.status = "overdue";
-            }
-
-            function filter() {
-                $scope.displayedLoans = [];
-                $scope.loans.forEach(function (loan) {
-                    checkStatus(loan);
-                    if (
-                        (($scope.query.returned && loan.status == "returned")
-                            || ($scope.query.aborted && loan.status == "aborted")
-                            || ($scope.query.progress && loan.status == "progress")
-                            || ($scope.query.overdue && loan.status == "overdue")
-                        ) && ($scope.query.filter == ""
-                            || loan.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                            || loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0
-                            || loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0
-                            || loan.ownerId.name.first.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                            || loan.ownerId.name.last.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
-                        $scope.displayedLoans.push(loan);
-                })
-            }
-
-            $scope.editLoan = function (loan) {
-                var items;
-                if (loan) items = loan;
-                else items = {
-                    loanId: $scope.loan._id
-                }
-                $mdDialog.show({
-                    controller: 'LoanEditCtrl',
-                    templateUrl: 'loan/edit.html',
-                    locals: {
-                        items: items
-                    }
-                }).then(function () {
-                    refresh();
-                });
-            }
-            $scope.copyLoan = function (loan) {
-                const clonedLoan = angular.copy(loan);
-                delete clonedLoan._id;
-                $mdDialog.show({
-                    controller: 'LoanEditCtrl',
-                    templateUrl: 'loan/edit.html',
-                    locals: {
-                        items: clonedLoan
-                    }
-                }).then(function () {
-                    refresh();
-                });
-            }
-            $scope.returnLoan = function (loan) {
-                $mdDialog.show({
-                    controller: 'ConfirmReturnCtrl',
-                    templateUrl: 'modals/confirmReturn.html',
-                    locals: {
-                        items: loan
-                    }
-                }).then(function (loan) {
-                    LoanService.create(loan).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise.error);
-                        else refresh();
-                    })
-
-                });
-            }
-
-            $scope.remove = function (loan) {
-                $mdDialog.show({
-                    controller: 'ConfirmCtrl',
-                    templateUrl: 'modals/confirm.html',
-                    locals: {
-                        items: { item: "Loan" }
-                    }
-                }).then(function () {
-                    LoanService.remove(loan._id).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise.error);
-                        else {
-                            refresh();
-                        }
-                    });
-                });
-            }
-
-            $scope.checkStatus = function (loan) {
-                if (loan.aborted) return "aborted";
-                else if (loan.endDate && new Date(loan.endDate).getTime() > 0) return "ended";
-                else if (new Date(loan.estimatedEndDate) > new Date()) return "progress";
-                else return "overdue";
-            }
+            // functions bingins
+            $scope.toDisplay = toDisplay;
+            $scope.copyLoan = copyLoan;
+            $scope.returnLoan = returnLoan;
+            $scope.checkStatus = checkStatus;
+            // watchers
             $scope.$watch("query.returned", function () {
                 filter();
             })
@@ -173,12 +73,61 @@ angular.module('Partials').directive('listLoans', function ($mdDialog, LoanServi
             $scope.$watch('refresh', function () {
                 if ($scope.refresh) refresh();
             })
+            // functions
+            function toDisplay(column) {
+                if ($scope.source == column) return false;
+                else return true;
+            }
+            function copyLoan(loan) {
+                const clonedLoan = angular.copy(loan);
+                delete clonedLoan._id;
+                LoanService.edit(clonedLoan).then(function () { refresh() });
+            }
+            function returnLoan(loan) {
+                LoanService.returned(loan, function () { refresh() });
+            }
+
+            function refresh() {
+                $scope.request = LoanService.getList($scope.filters);
+                $scope.request.then(function (promise) {
+                    $scope.loans = promise;
+                    $scope.loans.forEach(function (loan) {
+                        checkStatus(loan);
+                    })
+                    filter();
+                    $scope.refresh = false;
+                });
+            }
+
+            function checkStatus(loan) {
+                if (loan.aborted) loan.status = "aborted";
+                else if (loan.endDate) loan.status = "returned";
+                else if (new Date(loan.estimatedEndDate) > new Date()) loan.status = "progress";
+                else loan.status = "overdue";
+            }
+            function filter() {
+                $scope.displayedLoans = [];
+                $scope.loans.forEach(function (loan) {
+                    if (
+                        (($scope.query.returned && loan.status == "returned")
+                            || ($scope.query.aborted && loan.status == "aborted")
+                            || ($scope.query.progress && loan.status == "progress")
+                            || ($scope.query.overdue && loan.status == "overdue")
+                        ) && ($scope.query.filter == ""
+                            || loan.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
+                            || loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0
+                            || loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0
+                            || loan.ownerId.name.first.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
+                            || loan.ownerId.name.last.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
+                        $scope.displayedLoans.push(loan);
+                })
+            }
+
         }
     };
-});
+};
 
-
-angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceService, ErrorService) {
+function listDevices(DeviceService) {
     return {
         restrict: 'E',
         scope: {
@@ -192,6 +141,7 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
         },
         templateUrl: "/web-app/partials/listDevices.html",
         link: function postLink($scope) {
+            // variables
             $scope.devices = [];
             $scope.displayedDevices = [];
             $scope.query = {
@@ -205,23 +155,40 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
             }
             $scope.request;
 
-            $scope.toDisplay = function (column) {
+            // functions bindings
+            $scope.toDisplay = toDisplay;
+            $scope.editDevice = editDevice;
+            $scope.copyDevice = copyDevice;
+            $scope.remove = remove;
+            // watchers
+            $scope.$watch("query.loaned", function () {
+                filter();
+            })
+            $scope.$watch("query.lost", function () {
+                filter();
+            })
+            $scope.$watch("query.available", function () {
+                filter();
+            })
+            $scope.$watch("query.filter", function () {
+                filter();
+            })
+            $scope.$watch('refresh', function () {
+                if ($scope.refresh) refresh();
+            })
+            // functions
+            function toDisplay(column) {
                 if ($scope.source == column) return false;
                 else return true;
             }
-
             function refresh() {
                 $scope.request = DeviceService.getList($scope.filters)
                 $scope.request.then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise.error);
-                    else {
-                        $scope.displayedDevices = $scope.devices = promise;
-                        filter();
-                    }
+                    $scope.displayedDevices = $scope.devices = promise;
+                    filter();
                     $scope.refresh = false;
                 });
             }
-
             function filter() {
                 $scope.displayedDevices = [];
                 $scope.devices.forEach(function (device) {
@@ -237,67 +204,28 @@ angular.module('Partials').directive('listDevices', function ($mdDialog, DeviceS
                 })
             }
 
-            $scope.editDevice = function (device) {
-                $mdDialog.show({
-                    controller: 'DeviceEditCtrl',
-                    templateUrl: 'device/edit.html',
-                    locals: {
-                        items: device
-                    }
-                }).then(function () {
+            function editDevice(device) {
+                DeviceService.edit(device).then(function () {
                     refresh();
                 });
             }
-            $scope.copyDevice = function (device) {
+            function copyDevice(device) {
                 const clonedDevice = angular.copy(device);
                 delete clonedDevice._id;
-                $mdDialog.show({
-                    controller: 'DeviceEditCtrl',
-                    templateUrl: 'device/edit.html',
-                    locals: {
-                        items: clonedDevice
-                    }
-                }).then(function () {
+                DeviceService.edit(clonedDevice).then(function () {
                     refresh();
                 });
             }
-            $scope.remove = function (device) {
-                $mdDialog.show({
-                    controller: 'ConfirmCtrl',
-                    templateUrl: 'modals/confirm.html',
-                    locals: {
-                        items: { item: "Device" }
-                    }
-                }).then(function () {
-                    $scope.savedDevice = device.model;
-                    DeviceService.remove(device._id).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise.error);
-                        else refresh();
-                    });
-                });
+            function remove(device) {
+                DeviceService.remove(device._id).then(function(){refresh()});             
             }
-            $scope.$watch("query.loaned", function () {
-                filter();
-            })
-            $scope.$watch("query.lost", function () {
-                filter();
-            })
-            $scope.$watch("query.available", function () {
-                filter();
-            })
-            $scope.$watch("query.filter", function () {
-                filter();
-            })
 
-            $scope.$watch('refresh', function () {
-                if ($scope.refresh) refresh();
-            })
         }
     };
-});
+};
 
 
-angular.module('Partials').directive('listContacts', function ($mdDialog, ContactService, ErrorService) {
+function listContacts(ContactService) {
     return {
         restrict: 'E',
         scope: {
@@ -308,6 +236,7 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
         },
         templateUrl: "/web-app/partials/listContacts.html",
         link: function postLink($scope) {
+            // variables
             $scope.contacts = [];
             $scope.displayedContacts = [];
             $scope.query = {
@@ -316,13 +245,24 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                 page: 1,
                 filter: ""
             }
+            // functions bindings
+            $scope.toDisplay = toDisplay;
+            $scope.edit = edit;
+            $scope.remove = remove;
+            
+            // watchers
+            $scope.$watch("query.filter", function () {
+                filter();
+            })
 
-            $scope.toDisplay = function (column) {
+            $scope.$watch('refresh', function () {
+                if ($scope.refresh) refresh();
+            })
+            // functions
+            function toDisplay(column) {
                 if ($scope.source == column) return false;
                 else return true;
             }
-
-
             function filter() {
                 $scope.displayedContacts = [];
                 $scope.contacts.forEach(function (contact) {
@@ -333,59 +273,26 @@ angular.module('Partials').directive('listContacts', function ($mdDialog, Contac
                         $scope.displayedContacts.push(contact);
                 })
             }
-
-            $scope.edit = function (contact) {
-                $mdDialog.show({
-                    controller: 'ContactsEditCtrl',
-                    templateUrl: 'contact/edit.html',
-                    locals: {
-                        items: contact
-                    }
-                }).then(function () {
-                    refresh();
-                });
+            function edit(contact) {
+                ContactService.edit(contact).then(function () { refresh() });
             }
-
-            $scope.remove = function (contact) {
-                $mdDialog.show({
-                    controller: 'ConfirmCtrl',
-                    templateUrl: 'modals/confirm.html',
-                    locals: {
-                        items: { item: "Contact" }
-                    }
-                }).then(function () {
-                    ContactService.remove(contact._id).then(function (promise) {
-                        if (promise && promise.error) ErrorService.display(promise.error);
-                        else refresh();
-                    });
-                });
+            function remove(contact) {
+                ContactService.remove(contact._id).then(function(){refresh()});
             }
-
             function refresh() {
                 $scope.request = ContactService.getList($scope.filters)
                 $scope.request.then(function (promise) {
-                    if (promise && promise.error) ErrorService.display(promise.error);
-                    else {
-                        $scope.contacts = promise;
-                        filter();
-                    }
+                    $scope.contacts = promise;
+                    filter();
                     $scope.refresh = false;
                 });
             }
-
-            $scope.$watch("query.filter", function () {
-                filter();
-            })
-
-            $scope.$watch('refresh', function () {
-                if ($scope.refresh) refresh();
-            })
         }
     };
-});
+};
 
 
-angular.module('Partials').directive('listComments', function ($mdDialog, ErrorService) {
+function listComments($mdDialog, ErrorService) {
     return {
         restrict: 'E',
         scope: {
@@ -394,13 +301,19 @@ angular.module('Partials').directive('listComments', function ($mdDialog, ErrorS
         },
         templateUrl: "/web-app/partials/comments.html",
         link: function ($scope) {
+            // variables
             $scope.divHeight = 200;
             $scope.divStyle = { 'max-height': '200px', 'overflow': 'auto' };
-            $scope.more = function () {
+            // functions binding
+            $scope.more = more;
+            $scope.less = less;
+            $scope.new = newComment;
+            // functions
+            function more() {
                 $scope.divHeight += 200;
                 $scope.divStyle['max-height'] = $scope.divHeight + "px";
             }
-            $scope.less = function () {
+            function less() {
                 $scope.divHeight -= 200;
                 $scope.divStyle['max-height'] = $scope.divHeight + "px";
             }
@@ -414,7 +327,7 @@ angular.module('Partials').directive('listComments', function ($mdDialog, ErrorS
                 });
             }
 
-            $scope.new = function () {
+            function newComment() {
                 $mdDialog.show({
                     controller: 'NewComment',
                     templateUrl: 'modals/newComment.html',
@@ -430,4 +343,4 @@ angular.module('Partials').directive('listComments', function ($mdDialog, ErrorS
             }
         }
     };
-});
+};

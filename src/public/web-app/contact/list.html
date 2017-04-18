@@ -5,11 +5,11 @@
                 <h2>Contacts</h2>
                 <div flex></div>
 
-                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
+                <md-button ng-click="contactList.refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="edit()" class='md-primary md-raised md-icon-button '>
+                <md-button ng-click="contactList.edit()" class='md-primary md-raised md-icon-button '>
                     <md-tooltip>Add new Contact</md-tooltip>
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
@@ -18,7 +18,7 @@
 
 
 
-                <list-contacts filters="filters" refresh="refreshRequested"></list-contacts>
+                <list-contacts filters="contactList.filters" refresh="contactList.refreshRequested"></list-contacts>
 
             </md-card-content>
         </md-card>

@@ -41,10 +41,10 @@
                 <td md-cell>{{loan.estimatedEndDate | date:'mediumDate'}}</td>
                 <td md-cell>{{loan.endDate | date:'mediumDate'}}</td>
                 <td md-cell>
-                    <span class="status small error" ng-if="checkStatus(loan) == 'overdue'">OVERDUE</span>
-                    <span class="status small ok" ng-if="checkStatus(loan) == 'progress'">PROGRESS</span>
-                    <span class="status small warning" ng-if="checkStatus(loan) == 'ended'">RETURNED</span>
-                    <span class="status small none" ng-if="checkStatus(loan) == 'aborted'">ABORTED</span>
+                    <span class="status small error" ng-if="loan.status == 'overdue'">OVERDUE</span>
+                    <span class="status small ok" ng-if="loan.status == 'progress'">PROGRESS</span>
+                    <span class="status small warning" ng-if="loan.status == 'ended'">RETURNED</span>
+                    <span class="status small none" ng-if="loan.status == 'aborted'">ABORTED</span>
                     </td>
                     <td md-cell>
                         <md-button href="#!/loans/{{loan._id}}" class="md-primary">Details</md-button>

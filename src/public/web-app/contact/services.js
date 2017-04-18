@@ -1,4 +1,14 @@
-angular.module('Contact').service("ContactService", function ($http, $q) {
+angular.module('Contact').service("ContactService", function ($http, $q, $mdDialog, ErrorService) {
+    function edit(contact) {
+        return $mdDialog.show({
+            controller: 'ContactEditCtrl',
+            controllerAs: 'contactEdit',
+            templateUrl: 'contact/edit.html',
+            locals: {
+                items: contact
+            }
+        })
+    }
     function create(contact) {
         let id;
         if (contact._id) id = contact._id;
@@ -44,13 +54,22 @@ angular.module('Contact').service("ContactService", function ($http, $q) {
         return httpReq(request);
     }
     function remove(id) {
-        var canceller = $q.defer();
-        var request = $http({
-            url: "/api/contacts/" + id,
-            method: "DELETE",
-            timeout: canceller.promise
-        });
-        return httpReq(request);
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirm.html',
+            locals: {
+                items: { item: "Contact" }
+            }
+        }).then(function () {
+            var canceller = $q.defer();
+            var request = $http({
+                url: "/api/contacts/" + id,
+                method: "DELETE",
+                timeout: canceller.promise
+            });
+            httpReq(request);
+        })
+
     }
 
     function httpReq(request) {
@@ -61,7 +80,7 @@ angular.module('Contact').service("ContactService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) return { error: response.data };
+                if (response.status >= 0) ErrorService.display(response.data);
             });
 
         promise.abort = function () {
@@ -77,6 +96,7 @@ angular.module('Contact').service("ContactService", function ($http, $q) {
     }
 
     return {
+        edit: edit,
         create: create,
         getList: getList,
         remove: remove,

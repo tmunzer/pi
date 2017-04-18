@@ -1,6 +1,6 @@
 <section>
     <article>
-        <detailed-header title="{{device.hardwareId.model}} - S/N: {{device.serialNumber}}" object="device"></detailed-header>
+        <detailed-header title="{{deviceDetails.device.hardwareId.model}} - S/N: {{deviceDetails.device.serialNumber}}" object="deviceDetails.device"></detailed-header>
 
         <div layout="row">
             <md-card flex=25 layout=column>
@@ -9,9 +9,9 @@
                 </md-card-header>
                 <md-card-content layout="row" layout-align="center center" flex>
                     <div>
-                        <span class="status error" ng-if="device.lost">LOST</span>
-                        <span class="status warning" ng-if="device.loanId">LOANED</span>
-                        <span class="status ok" ng-if="device && !device.lost && !device.loanId">IN STOCK</span>
+                        <span class="status error" ng-if="deviceDetails.device.lost">LOST</span>
+                        <span class="status warning" ng-if="deviceDetails.device.loanId">LOANED</span>
+                        <span class="status ok" ng-if="deviceDetails.device && !deviceDetails.device.lost && !deviceDetails.device.loanId">IN STOCK</span>
                     </div>
                 </md-card-content>
             </md-card>
@@ -19,43 +19,43 @@
                 <md-card-header class="small" layout-align="center center">
                     <h2>Details</h2>
                     <span flex></span>
-                    <md-button class="md-icon-button md-primary md-raised" ng-click="editDevice()">
+                    <md-button class="md-icon-button md-primary md-raised" ng-click="deviceDetails.edit()">
                         <md-tooltip>Edit</md-tooltip>
                         <md-icon class="material-icon">mode_edit</md-icon>
                     </md-button>
                 </md-card-header>
                 <md-card-content layout="row" layout-padding>
                     <div layout="column" flex=50>
-                        <div layout=row><b flex=25>Type:</b><span>{{device.hardwareId.type}}</span></div>
-                        <div layout=row><b flex=25>Model:</b><span><a href="#!/hardwares/{{device.hardwareId.model}}" class="md-primary">{{device.hardwareId.model}}</a></span></div>
-                        <div layout=row><b flex=25>Serial Number:</b><span>{{device.serialNumber}}</span></div>
-                        <div layout=row><b flex=25>MAC Address:</b><span>{{device.macAddress}}</span></div>
+                        <div layout=row><b flex=25>Type:</b><span>{{deviceDetails.device.hardwareId.type}}</span></div>
+                        <div layout=row><b flex=25>Model:</b><span><a href="#!/hardwares/{{deviceDetails.device.hardwareId.model}}" class="md-primary">{{deviceDetails.device.hardwareId.model}}</a></span></div>
+                        <div layout=row><b flex=25>Serial Number:</b><span>{{deviceDetails.device.serialNumber}}</span></div>
+                        <div layout=row><b flex=25>MAC Address:</b><span>{{deviceDetails.device.macAddress}}</span></div>
                     </div>
                     <div layout="column" flex=50>
-                        <div layout=row><b flex=25>Received Date:</b><span>{{device.entryDate | date: 'mediumDate'}}</span></div>
-                        <div layout=row><b flex=25>Owner:</b><span>{{device.ownerId.email}}</span></div>
-                        <div layout=row><b flex=25>Origin:</b><span>{{device.origin}}</span></div>
-                        <div layout=row><b flex=25>PO#:</b><span>{{device.order}}</span></div>
+                        <div layout=row><b flex=25>Received Date:</b><span>{{deviceDetails.device.entryDate | date: 'mediumDate'}}</span></div>
+                        <div layout=row><b flex=25>Owner:</b><span>{{deviceDetails.device.ownerId.email}}</span></div>
+                        <div layout=row><b flex=25>Origin:</b><span>{{deviceDetails.device.origin}}</span></div>
+                        <div layout=row><b flex=25>PO#:</b><span>{{deviceDetails.device.order}}</span></div>
                     </div>
 
                 </md-card-content>
             </md-card>
         </div>
 
-        <list-comments object="device" service="service"></list-comments>
+        <list-comments object="deviceDetails.device" service="deviceDetails.service"></list-comments>
         
         <md-card>
             <md-card-header class="small" layout-align="center center">
                 <h2>History</h2>
                 <div flex></div>
-                <md-button ng-click="refresh()">
+                <md-button ng-click="deviceDetails.refreshLoans()">
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
             </md-card-header>
             <md-card-content>
-                <list-loans filters="filters" aborted='query.aborted' returned='query.returned' progress='query.progress'
-                    overdue='query.overdue' refresh="refreshRequested"></list-loans>
+                <list-loans filters="deviceDetails.filters" aborted='deviceDetails.query.aborted' returned='deviceDetails.query.returned' progress='deviceDetails.query.progress'
+                    overdue='deviceDetails.query.overdue' refresh="deviceDetails.refreshRequested"></list-loans>
             </md-card-content>
         </md-card>
     </article>

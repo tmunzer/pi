@@ -1,5 +1,5 @@
 
-angular.module('User').service("UserService", function ($http, $q) {
+angular.module('User').service("UserService", function ($http, $q, ErrorService) {
     function create(user) {
         let id;
         if (user._id) id = user._id;
@@ -49,7 +49,7 @@ angular.module('User').service("UserService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) return { error: response.data };
+                if (response.status >= 0) ErrorService.display(response.data);
             });
 
         promise.abort = function () {

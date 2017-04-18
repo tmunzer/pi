@@ -4,17 +4,17 @@
             <md-card-header class="small" layout-align="start center">
                 <h2>Loans</h2>
                 <div flex></div>
-                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
+                <md-button ng-click="loanList.refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="editLoan()" class='md-primary md-raised md-icon-button '>
+                <md-button ng-click="loanList.edit()" class='md-primary md-raised md-icon-button '>
                     <md-tooltip>Add new Loan</md-tooltip>
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
             </md-card-header>
-            <list-loans filters='{}'  aborted='query.aborted' returned='query.returned' progress='query.progress'
-                    overdue='query.overdue' refresh='refreshRequested'></list-loans>
+            <list-loans filters='{}'  aborted='loanList.query.aborted' returned='loanList.query.returned' progress='loanList.query.progress'
+                    overdue='loanList.query.overdue' refresh='loanList.refreshRequested'></list-loans>
         </md-card>
     </article>
 </section>

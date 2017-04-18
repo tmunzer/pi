@@ -4,16 +4,17 @@
             <md-card-header class="small" layout-align="start center">
                 <h2>Devices</h2>
                 <div flex></div>
-                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
+                <md-button ng-click="deviceList.refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="editDevice()" class='md-primary md-raised md-icon-button '>
+                <md-button ng-click="deviceList.edit()" class='md-primary md-raised md-icon-button '>
                     <md-tooltip>Add new Device</md-tooltip>
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
             </md-card-header>
-            <list-devices filters="filters" loaned="query.loaned" lost="query.lost" available="query.available" refresh="refreshRequested"></list-devices>
+            <list-devices filters="deviceList.filters" loaned="deviceList.query.loaned" lost="deviceList.query.lost" available="deviceList.query.available"
+                refresh="deviceList.refreshRequested"></list-devices>
         </md-card>
     </article>
 </section>

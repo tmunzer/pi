@@ -1,32 +1,32 @@
 <section>
     <article>
 
-        <detailed-header title="{{loan.deviceId.length}} Device(s) loaned to {{loan.companyId.name}}" object="loan" edit="edit()"></detailed-header>
+        <detailed-header title="{{loanDetails.loan.deviceId.length}} Device(s) loaned to {{loanDetails.loan.companyId.name}}" object="loan" edit="loanDetails.edit()"></detailed-header>
 
         <div layout="row" layout-align="space-between top">
             <md-card flex="33">
                 <md-card-header class="small" layout-align="start center">
                     <h2>Current Status</h2>
                     <div flex></div>
-                    <md-button ng-if="status != 'aborted'" class="md-icon-button md-primary" ng-click="abortLoan()">
+                    <md-button ng-if="loanDetails.status != 'aborted'" class="md-icon-button md-primary" ng-click="loanDetails.abort()">
                         <md-tooltip>Abort</md-tooltip>
                         <md-icon class="material-icon">close</md-icon>
                     </md-button>
-                    <md-button ng-if="status != 'returned' && status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="returnLoan()">
+                    <md-button ng-if="loanDetails.status != 'returned' && loanDetails.status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="loanDetails.returned()">
                         <md-tooltip>Mark as Returned</md-tooltip>
                         <md-icon class="material-icon">check</md-icon>
                     </md-button>
-                    <md-button ng-if="status == 'returned' || status == 'aborted'" class="md-icon-button md-primary md-raised" ng-click="revert()">
+                    <md-button ng-if="loanDetails.status == 'returned' || loanDetails.status == 'aborted'" class="md-icon-button md-primary md-raised" ng-click="loanDetails.revert()">
                         <md-tooltip>Revert back to progress status</md-tooltip>
                         <md-icon class="material-icon">settings_backup_restore</md-icon>
                     </md-button>
                 </md-card-header>
                 <md-card-content layout="row" layout-align="center center" style="padding-top: 50px;">
                     <div>
-                        <span class="status error" ng-if="status == 'overdue'">OVERDUE</span>
-                        <span class="status ok" ng-if="status == 'progress'">PROGRESS</span>
-                        <span class="status warning" ng-if="status == 'returned'">RETURNED</span>
-                        <span class="status none" ng-if="status == 'aborted'">ABORTED</span>
+                        <span class="status error" ng-if="loanDetails.status == 'overdue'">OVERDUE</span>
+                        <span class="status ok" ng-if="loanDetails.status == 'progress'">PROGRESS</span>
+                        <span class="status warning" ng-if="loanDetails.status == 'returned'">RETURNED</span>
+                        <span class="status none" ng-if="loanDetails.status == 'aborted'">ABORTED</span>
                     </div>
                 </md-card-content>
             </md-card>
@@ -35,38 +35,38 @@
                     <h2>Contact Information</h2>
                 </md-card-header>
                 <md-card-content layout="column" layout-padding flex>
-                    <div layout="row"><b flex=25>Company: </b><span>{{loan.companyId.name}}</span></div>
-                    <div layout="row"><b flex=25>Contact: </b><span>{{loan.contactId.name}}</span></div>
-                    <div layout="row"><b flex=25>Phone: </b><span>{{loan.contactId.phone}}</span></div>
-                    <div layout="row"><b flex=25>Email: </b><span>{{loan.contactId.email}}</span></div>
+                    <div layout="row"><b flex=25>Company: </b><span><a href="#!/companies/{{loanDetails.loan.companyId._id}}" class="md-primary">{{loanDetails.loan.companyId.name}}</a></span></div>
+                    <div layout="row"><b flex=25>Contact: </b><span>{{loanDetails.loan.contactId.name}}</span></div>
+                    <div layout="row"><b flex=25>Phone: </b><span>{{loanDetails.loan.contactId.phone}}</span></div>
+                    <div layout="row"><b flex=25>Email: </b><span>{{loanDetails.loan.contactId.email}}</span></div>
                 </md-card-content>
             </md-card>
             <md-card flex=33>
                 <md-card-header class="small" layout-align="start center" class="md-toolbar-tools">
                     <h2>Loan Details</h2>
                     <div flex></div>
-                    <md-button class="md-icon-button md-primary md-raised" ng-click="editLoan()">
+                    <md-button class="md-icon-button md-primary md-raised" ng-click="loanDetails.edit()">
                         <md-tooltip>Edit</md-tooltip>
                         <md-icon class="material-icon">mode_edit</md-icon>
                     </md-button>
                 </md-card-header>
                 <md-card-content layout="column" layout-padding>
-                    <div layout="row"><b flex=33>Start Date: </b><span>{{loan.startDate | date:'mediumDate'}}</span></div>
-                    <div layout="row"><b flex=33>Est. End Date: </b><span>{{loan.estimatedEndDate | date:'mediumDate'}}</span></div>
-                    <div layout="row"><b flex=33>End Date: </b><span>{{loan.endDate | date:'mediumDate'}}</span></div>
-                    <div layout="row"><b flex=33># of POE injectors: </b><span>{{loan.poe}}</span></div>
-                    <div layout="row"><b flex=33>Other gears: </b><span>{{loan.other}}</span></div>
+                    <div layout="row"><b flex=33>Start Date: </b><span>{{loanDetails.loan.startDate | date:'mediumDate'}}</span></div>
+                    <div layout="row"><b flex=33>Est. End Date: </b><span>{{loanDetails.loan.estimatedEndDate | date:'mediumDate'}}</span></div>
+                    <div layout="row"><b flex=33>End Date: </b><span>{{loanDetails.loan.endDate | date:'mediumDate'}}</span></div>
+                    <div layout="row"><b flex=33># of POE injectors: </b><span>{{loanDetails.loan.poe}}</span></div>
+                    <div layout="row"><b flex=33>Other gears: </b><span>{{loanDetails.loan.other}}</span></div>
                 </md-card-content>
             </md-card>
         </div>
-        <list-comments object="loan" service="service"></list-comments>
+        <list-comments object="loanDetails.loan" service="loanDetails.service"></list-comments>
 
         <md-card md-whiteframe="5">
             <md-card-header class="small" layout-align="start center" class="md-toolbar-toos">
                 <h2>Devices Loaned</h2>
             </md-card-header>
             <md-card-content>
-                <list-devices filters='filters' loaned="query.loaned" lost="query.lost" available="query.available" refresh="refreshRequested"></list-devices>
+                <list-devices filters='loanDetails.filters' loaned="loanDetails.query.loaned" lost="loanDetails.query.lost" available="loanDetails.query.available" refresh="loanDetails.refreshRequested"></list-devices>
             </md-card-content>
         </md-card>
     </article>

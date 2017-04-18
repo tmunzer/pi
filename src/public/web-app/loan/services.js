@@ -1,5 +1,50 @@
-angular.module('Loan').service("LoanService", function ($http, $q) {
-
+angular.module('Loan').service("LoanService", function ($http, $q, $mdDialog, ErrorService) {
+    function edit(loan) {
+        return $mdDialog.show({
+            controller: 'LoanEditCtrl',
+            controllerAs: 'loanEdit',
+            templateUrl: 'loan/edit.html',
+            locals: {
+                items: loan
+            }
+        })
+    }
+    function abort(loan, cb) {
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmAbort.html',
+            locals: {
+                items: { item: loan.companyId.name }
+            }
+        }).then(function () {
+            loan.aborted = true;
+            create(loan).then(cb);
+        });
+    }
+    function revert(loan, cb) {
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmRevert.html',
+            locals: {
+                items: { item: loan.companyId.name }
+            }
+        }).then(function () {
+            loan.aborted = false;
+            loan.endDate = null;
+            create(loan).then(cb);
+        });
+    }
+    function returned(loan, cb) {
+        return $mdDialog.show({
+            controller: 'ConfirmReturnCtrl',
+            templateUrl: 'modals/confirmReturn.html',
+            locals: {
+                items: angular.copy(loan)
+            }
+        }).then(function (loan) {
+            create(loan).then(cb);
+        });
+    }
     function create(loan) {
         let id;
         if (loan._id) id = loan._id;
@@ -70,7 +115,8 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) return { error: response.data };
+                console.log(response);
+                if (response.status >= 0) ErrorService.display(response);
             });
 
         promise.abort = function () {
@@ -86,6 +132,10 @@ angular.module('Loan').service("LoanService", function ($http, $q) {
     }
 
     return {
+        edit: edit,
+        abort: abort,
+        revert: revert,
+        returned: returned,
         create: create,
         postComment: postComment,
         getList: getList,

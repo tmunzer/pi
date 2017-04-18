@@ -34,8 +34,17 @@ angular.module('Device').service("DevicesToReplace", function ($http, $q) {
 });
 
 
-angular.module('Device').service("DeviceService", function ($http, $q) {
-
+angular.module('Device').service("DeviceService", function ($http, $q, $mdDialog, ErrorService) {
+    function edit(device) {
+        return $mdDialog.show({
+            controller: 'DeviceEditCtrl',
+            controllerAs: 'deviceEdit',
+            templateUrl: 'device/edit.html',
+            locals: {
+                items: device
+            }
+        })
+    }
     function create(device) {
         let id;
         if (device._id) id = device._id;
@@ -95,14 +104,24 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
     }
 
     function remove(id) {
-        var canceller = $q.defer();
-        var request = $http({
-            url: "/api/devices/" + id,
-            method: "DELETE",
-            timeout: canceller.promise
-        });
-        return httpReq(request);
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirm.html',
+            locals: {
+                items: { item: "Device" }
+            }
+        }).then(function () {
+            var canceller = $q.defer();
+            var request = $http({
+                url: "/api/devices/" + id,
+                method: "DELETE",
+                timeout: canceller.promise
+            });
+            httpReq(request);
+        })
     }
+
+    
     function httpReq(request) {
         var canceller = $q.defer();
         request.timout = canceller.promise;
@@ -111,7 +130,7 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
                 return response.data;
             },
             function (response) {
-                if (response.status >= 0) return { error: response.data };
+                if (response.status >= 0) ErrorService.display(response.data);
             });
 
         promise.abort = function () {
@@ -126,6 +145,7 @@ angular.module('Device').service("DeviceService", function ($http, $q) {
         return promise;
     }
     return {
+        edit: edit,
         create: create,
         postComment: postComment,
         getList: getList,

@@ -1,7 +1,15 @@
-angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $routeParams, $mdDialog, HardwareTypeService, HardwareService, ErrorService) {
-    $scope.hardwares = [];
-    $scope.displayedHardwares = [];
-    $scope.query = {
+angular
+    .module('Hardware')
+    .controller('HardwareListCtrl', hardwareListCtrl)
+    .controller('HardwareDetailsCtrl', hardwareDetailsCtrl)
+    .controller('HardwareEditCtrl', hardwareEditCtrl)
+
+function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
+    var hardwareList = this;
+    // variables
+    hardwareList.hardwares = [];
+    hardwareList.displayedHardwares = [];
+    hardwareList.query = {
         order: "model",
         limit: 10,
         page: 1,
@@ -12,171 +20,149 @@ angular.module('Hardware').controller('HardwareListCtrl', function ($scope, $rou
         other: true,
         filter: ""
     }
-
-    $scope.request;
-
+    hardwareList.request;
+    // functions binding
+    hardwareList.refresh = refresh;
+    hardwareList.edit = edit;
+    hardwareList.copy = copy;
+    hardwareList.remove = remove;
+    // watchers
+    $scope.$watch("hardwareList.query.ap", function () {
+        filter();
+    })
+    $scope.$watch("hardwareList.query.sr", function () {
+        filter();
+    })
+    $scope.$watch("hardwareList.query.br", function () {
+        filter();
+    })
+    $scope.$watch("hardwareList.query.phyAppliance", function () {
+        filter();
+    })
+    $scope.$watch("hardwareList.query.other", function () {
+        filter();
+    })
+    $scope.$watch("hardwareList.query.filter", function () {
+        filter();
+    })
+    // functions
     function filter() {
-        $scope.displayedHardwares = [];
-        $scope.hardwares.forEach(function (hardware) {
+        hardwareList.displayedHardwares = [];
+        hardwareList.hardwares.forEach(function (hardware) {
             if ((
-                ($scope.query.ap && hardware.type == "Access Point")
-                || ($scope.query.sr && hardware.type == "Switch")
-                || ($scope.query.sr && hardware.type == "Branch Router")
-                || ($scope.query.sr && hardware.type == "Physical Appliance")
-                || ($scope.query.br && hardware.type == "Other")
-            ) && ($scope.query.filter == ""
-                || hardware.model.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
+                (hardwareList.query.ap && hardware.type == "Access Point")
+                || (hardwareList.query.sr && hardware.type == "Switch")
+                || (hardwareList.query.sr && hardware.type == "Branch Router")
+                || (hardwareList.query.sr && hardware.type == "Physical Appliance")
+                || (hardwareList.query.br && hardware.type == "Other")
+            ) && (hardwareList.query.filter == ""
+                || hardware.model.toLowerCase().indexOf($hardwareList.query.filter.toLowerCase()) >= 0
                 ))
-                $scope.displayedHardwares.push(hardware);
+                hardwareList.displayedHardwares.push(hardware);
 
         })
     }
-    $scope.$watch("query.ap", function () {
-        filter();
-    })
-    $scope.$watch("query.sr", function () {
-        filter();
-    })
-    $scope.$watch("query.br", function () {
-        filter();
-    })
-    $scope.$watch("query.phyAppliance", function () {
-        filter();
-    })
-    $scope.$watch("query.other", function () {
-        filter();
-    })
-    $scope.$watch("query.filter", function () {
-        filter();
-    })
-
-    $scope.refresh = function () {
-        $scope.request = HardwareService.getList();
-        $scope.request.then(function (promise) {
-            if (promise && promise.error) ErrorService.display(promise.error);
-            else {
-                $scope.hardwares = promise;
-                filter();
-            }
+    function refresh() {
+        hardwareList.request = HardwareService.getList();
+        hardwareList.request.then(function (promise) {
+            hardwareList.hardwares = promise;
+            filter();
         });
     }
-
-    $scope.editHardware = function (hardware) {
-        $mdDialog.show({
-            controller: 'HardwareEditCtrl',
-            templateUrl: 'hardware/edit.html',
-            locals: {
-                items: hardware
-            }
-        }).then(function () {
-            $scope.refresh();
+    function edit(hardware) {
+        HardwareService.edit(hardware).then(function () {
+            refresh();
         });
     }
-    $scope.copyHardware = function (hardware) {
+    function copy(hardware) {
         const clonedHardware = angular.copy(hardware);
         delete clonedHardware._id;
-        $mdDialog.show({
-            controller: 'HardwareEditCtrl',
-            templateUrl: 'hardware/edit.html',
-            locals: {
-                items: clonedHardware
-            }
-        }).then(function () {
-            $scope.refresh();
+        HardwareService.edit(clonedHardware).then(function () {
+            refresh();
         });
     }
-    $scope.remove = function (hardware) {
-        $mdDialog.show({
-            controller: 'ConfirmCtrl',
-            templateUrl: 'modals/confirm.html',
-            locals: {
-                items: { item: "Hardware" }
-            }
-        }).then(function () {
-            $scope.savedDevice = hardware.model;
-            HardwareService.remove(hardware._id).then(function (promise) {
-                if (promise && promise.error) ErrorService.display(promise.error);
-                else $scope.refresh();
-
-            });
+    function remove(hardware) {
+        HardwareService.remove(hardware._id).then(function (promise) {
+            refresh();
         });
-
     }
+    // init
+    refresh();
+}
 
-    $scope.refresh();
-});
-
-angular.module('Hardware').controller('HardwareDetailsCtrl', function ($scope, $routeParams, $mdDialog, DeviceService, HardwareService, ErrorService) {
-    $scope.query = {
+function hardwareDetailsCtrl($routeParams, DeviceService, HardwareService) {
+    var hardwareDetails = this;
+    // variables
+    hardwareDetails.query = {
         loaned: true,
         lost: false,
         available: true
     }
-    $scope.hardware;
-    $scope.request;
-    $scope.filters;
-    $scope.refreshRequested = false;
+    hardwareDetails.hardware;
+    hardwareDetails.request;
+    hardwareDetails.filters;
+    hardwareDetails.refreshRequested = false;
     var hardwareId;
-
-    $scope.edit = function () {
-        $mdDialog.show({
-            controller: 'DeviceEditCtrl',
-            templateUrl: 'device/edit.html',
-            locals: {
-                items: { model: $scope.hardware._id }
-            }
-        }).then(function () {
-            $scope.refresh();
+    // functions bindings
+    hardwareDetails.edit = edit;
+    hardwareDetails.refreshDevices = refreshDevices;
+    // functions
+    function edit() {
+        DeviceService.edit({ model: hardwareDetails.hardware._id }).then(function () {
+            refresh();
         });
     }
-    HardwareService.get($routeParams.model).then(function (promise) {
-        if (promise && promise.error) ErrorService.display(promise.error);
-        else {
-            $scope.hardware = promise;
-            $scope.hardwareId = promise._id;
-            $scope.filters = { hardwareId: $scope.hardwareId };
-            $scope.refresh();
-        }
-    });
-
-    $scope.refresh = function () {
-        $scope.refreshRequested = true;
+    function refresh() {
+        HardwareService.get($routeParams.model).then(function (promise) {
+            hardwareDetails.hardware = promise;
+            hardwareDetails.hardwareId = promise._id;
+            hardwareDetails.filters = { hardwareId: hardwareDetails.hardwareId };
+            refreshDevices();
+        });
     }
-});
+    function refreshDevices() {
+        hardwareDetails.refreshRequested = true;
+    }
+    // init
+    refresh()
+}
 
-angular.module('Hardware').controller('HardwareEditCtrl', function ($scope, $mdDialog, items, HardwareTypeService, HardwareService, ErrorService) {
-    // items is injected in the controller, not its scope!    
+function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService) {
+    // items is injected in the controller, not its scope!  
+    var  hardwareEdit = this;
+    console.log(items)
+    // variables
     if (items && items._id) {
-        $scope.action = "Edit";
+        hardwareEdit.action = "Edit";
         var master = items;
     } else if (items) {
-        $scope.action = "Clone";
+        hardwareEdit.action = "Clone";
         var master = items;
     } else {
-        $scope.action = "Add";
+        hardwareEdit.action = "Add";
         var master = { type: "", model: "", serial: "" };
     }
-    $scope.hardwareType = HardwareTypeService.getHardwareType();
-    $scope.reset = function () {
-        $scope.hardware = angular.copy(master);
+    hardwareEdit.hardwareType = HardwareTypeService.getHardwareType();
+    // functions bindings
+    hardwareEdit.reset = reset;
+    hardwareEdit.save =  save;
+    hardwareEdit.cancel = cancel;
+    hardwareEdit.close = close;
+    //functions
+    function reset () {
+        hardwareEdit.hardware = angular.copy(master);
     };
-
-    $scope.reset();
-
-    $scope.save = function (hardware) {
-        $scope.savedHardware = hardware.model;
-        HardwareService.create(hardware).then(function (promise) {
-            $mdDialog.hide();
-            if (promise && promise.error) ErrorService.display(promise.error);
+    function save() {
+        HardwareService.create(hardwareEdit.hardware).then(function (promise) {
+            close();
         })
     };
-    $scope.cancel = function () {
+    function cancel() {
         $mdDialog.cancel()
     };
-    $scope.close = function () {
-        // Easily hides most recent dialog shown...
-        // no specific instance reference is needed.
+    function close() {
         $mdDialog.hide();
     };
-
-});
+    // init
+    reset();
+}
