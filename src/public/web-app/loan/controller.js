@@ -99,6 +99,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
         var master_contactId = items.contactId;
         // if edited
         if (items._id) {
+            master.aborted = items.aborted;
             master._id = items._id;
             master.poe = items.poe;
             master.other = items.other;
@@ -310,6 +311,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     }
 
     // init
-    init()
+    loanEdit.company.refresh();
+    init();
 };
 

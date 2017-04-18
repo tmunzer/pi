@@ -1,7 +1,8 @@
 <section>
     <article>
 
-        <detailed-header title="{{loanDetails.loan.deviceId.length}} Device(s) loaned to {{loanDetails.loan.companyId.name}}" object="loan" edit="loanDetails.edit()"></detailed-header>
+        <detailed-header title="{{loanDetails.loan.deviceId.length}} Device(s) loaned to {{loanDetails.loan.companyId.name}}" object="loanDetails.loan"
+            edit="loanDetails.edit()"></detailed-header>
 
         <div layout="row" layout-align="space-between top">
             <md-card flex="33">
@@ -12,11 +13,13 @@
                         <md-tooltip>Abort</md-tooltip>
                         <md-icon class="material-icon">close</md-icon>
                     </md-button>
-                    <md-button ng-if="loanDetails.status != 'returned' && loanDetails.status != 'aborted'" class="md-icon-button md-primary md-raised" ng-click="loanDetails.returned()">
+                    <md-button ng-if="loanDetails.status != 'returned' && loanDetails.status != 'aborted'" class="md-icon-button md-primary md-raised"
+                        ng-click="loanDetails.returned()">
                         <md-tooltip>Mark as Returned</md-tooltip>
                         <md-icon class="material-icon">check</md-icon>
                     </md-button>
-                    <md-button ng-if="loanDetails.status == 'returned' || loanDetails.status == 'aborted'" class="md-icon-button md-primary md-raised" ng-click="loanDetails.revert()">
+                    <md-button ng-if="loanDetails.status == 'returned' || loanDetails.status == 'aborted'" class="md-icon-button md-primary md-raised"
+                        ng-click="loanDetails.revert()">
                         <md-tooltip>Revert back to progress status</md-tooltip>
                         <md-icon class="material-icon">settings_backup_restore</md-icon>
                     </md-button>
@@ -44,11 +47,6 @@
             <md-card flex=33>
                 <md-card-header class="small" layout-align="start center" class="md-toolbar-tools">
                     <h2>Loan Details</h2>
-                    <div flex></div>
-                    <md-button class="md-icon-button md-primary md-raised" ng-click="loanDetails.edit()">
-                        <md-tooltip>Edit</md-tooltip>
-                        <md-icon class="material-icon">mode_edit</md-icon>
-                    </md-button>
                 </md-card-header>
                 <md-card-content layout="column" layout-padding>
                     <div layout="row"><b flex=33>Start Date: </b><span>{{loanDetails.loan.startDate | date:'mediumDate'}}</span></div>
@@ -66,7 +64,8 @@
                 <h2>Devices Loaned</h2>
             </md-card-header>
             <md-card-content>
-                <list-devices filters='loanDetails.filters' loaned="loanDetails.query.loaned" lost="loanDetails.query.lost" available="loanDetails.query.available" refresh="loanDetails.refreshRequested"></list-devices>
+                <list-devices filters='loanDetails.filters' loaned="loanDetails.query.loaned" lost="loanDetails.query.lost" available="loanDetails.query.available"
+                    refresh="loanDetails.refreshRequested"></list-devices>
             </md-card-content>
         </md-card>
     </article>
