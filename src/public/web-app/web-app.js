@@ -10,7 +10,7 @@ angular.module("CustomFilters", []);
 angular.module("CustomDirectives", []);
 angular.module("Modals", []);
 angular.module("Partials", []);
-var pi = angular.module("pi", [
+angular.module("pi", [
     "ngRoute",
     'ui.bootstrap',
     'ngSanitize',
@@ -30,11 +30,7 @@ var pi = angular.module("pi", [
     'Modals',
     'Partials',
     'googlechart'
-]);
-
-
-pi
-    .config(function ($mdThemingProvider) {
+]).config(function ($mdThemingProvider) {
         $mdThemingProvider
             .theme('default')
             .primaryPalette('deep-orange')

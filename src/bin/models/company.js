@@ -32,6 +32,8 @@ Company.load = function (filters, cb) {
     let done = 0;
     this.find(filters)
         .sort('name')
+        .populate("created_by")
+        .populate("edited_by")
         .exec(function (err, companies) {
             if (err) cb(err);
             else {

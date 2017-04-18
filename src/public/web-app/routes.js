@@ -3,7 +3,8 @@ angular.module('pi').config(function ($routeProvider) {
         .when("/dashboard", {
             templateUrl: "/web-app/dashboard/view.html",
             module: "Dashboard",
-            controller: "DashboardCtrl"
+            controller: "DashboardCtrl",
+            controllerAs: 'dashboard'
         })
         .when("/devices", {
             templateUrl: "/web-app/device/list.html",
@@ -46,11 +47,13 @@ angular.module('pi').config(function ($routeProvider) {
         })
         .when("/companies", {
             templateUrl: "/web-app/company/list.html",
-            controller: "CompaniesListCtrl"
+            controller: "CompaniesListCtrl",
+            controllerAs: "companiesList"
         })
         .when("/companies/:company_id", {
             templateUrl: "/web-app/company/details.html",
-            controller: "CompaniesDetailsCtrl"
+            controller: "CompaniesDetailsCtrl",
+            controllerAs: "companiesDetails"
         })
         .when("/contacts", {
             templateUrl: "/web-app/contact/list.html",

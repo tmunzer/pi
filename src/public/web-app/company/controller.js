@@ -1,41 +1,56 @@
-angular.module('Company').controller('CompaniesListCtrl', function ($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
+angular
+    .module('Company')
+    .controller('CompaniesListCtrl', companiesListCtrl)
+    .controller('CompaniesDetailsCtrl', companiesDetailsCtrl)
+    .controller('CompaniesEditCtrl', companiesEditCtrl)
 
-    $scope.companies = [];
-    $scope.displayedCompanies = [];
-    $scope.query = {
+
+function companiesListCtrl($scope, $mdDialog, CompanyService, ErrorService) {
+    var companiesList = this;
+    // variables
+    companiesList.companies = [];
+    companiesList.displayedCompanies = [];
+    companiesList.query = {
         order: "name",
         limit: 10,
         page: 1,
         filter: ""
     }
-    $scope.request;
-    $scope.$watch("query.filter", function () {
+    companiesList.request;
+    // functions bindings
+    companiesList.edit = edit;
+    companiesList.remove = remove;
+    companiesList.refresh = refresh;
+
+    // watchers
+    $scope.$watch("companiesList.query.filter", function () {
         filter();
     })
 
-
+    //functions
     function filter() {
-        $scope.displayedCompanies = [];
-        $scope.companies.forEach(function (company) {
-            if ($scope.query.filter == ""
-                || company.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0)
-                $scope.displayedCompanies.push(company);
+        companiesList.displayedCompanies = [];
+        companiesList.companies.forEach(function (company) {
+            if (companiesList.query.filter == ""
+                || company.name.toLowerCase().indexOf(companiesList.query.filter.toLowerCase()) >= 0)
+                companiesList.displayedCompanies.push(company);
         })
     }
 
-    $scope.edit = function (company) {
+    function edit(company) {
         $mdDialog.show({
             controller: 'CompaniesEditCtrl',
+            controllerAs: 'companiesEdit',
             templateUrl: 'company/edit.html',
             locals: {
                 items: company
             }
         }).then(function () {
-            $scope.refresh();
+            refresh();
         });
     }
 
-    $scope.remove = function (company) {
+    function remove(company) {
         $mdDialog.show({
             controller: 'ConfirmCtrl',
             templateUrl: 'modals/confirm.html',
@@ -45,84 +60,87 @@ angular.module('Company').controller('CompaniesListCtrl', function ($scope, $rou
         }).then(function () {
             CompanyService.remove(company._id).then(function (promise) {
                 if (promise && promise.error) ErrorService.display(promise.error);
-                else $scope.refresh()
+                else refresh()
             })
         });
     }
-    $scope.refresh = function () {
-        $scope.request = CompanyService.getList();
-        $scope.request.then(function (promise) {
+
+    function refresh() {
+        companiesList.request = CompanyService.getList();
+        companiesList.request.then(function (promise) {
             if (promise && promise.error) ErrorService.display(promise.error);
             else {
-                $scope.companies = promise;
+                companiesList.companies = promise;
                 filter();
             }
         });
     }
 
-    $scope.refresh();
-});
+    //init
+    refresh();
+}
 
 
-angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
-    $scope.company;
+function companiesDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
+    var companiesDetails = this;
 
-    $scope.filters;
-    $scope.loans;
-    $scope.contacts;
-    $scope.query = {
+    // variables
+    companiesDetails.company;
+    companiesDetails.filters;
+    companiesDetails.loans;
+    companiesDetails.contacts;
+    companiesDetails.query = {
         aborted: true,
         returned: true,
         progress: true,
         overdue: true
     }
+    companiesDetails.loansStatus = {};
+    companiesDetails.contactsTotal = 0;
+    companiesDetails.refreshRequestedLoans = false;
+    companiesDetails.refreshRequestedContacts = false;
 
-    $scope.ended = 0;
-    $scope.progress = 0;
-    $scope.overdue = 0;
-    $scope.aborted = 0;
-    $scope.loansTotal = 0;
-    $scope.contactsTotal = 0;
-    $scope.$watch("loans", function () {
-        if ($scope.loans && $scope.loans.length > 0) {
-            $scope.ended = 0;
-            $scope.progress = 0;
-            $scope.overdue = 0;
-            $scope.aborted = 0;
-            $scope.loansTotal = 0;
-            $scope.loans.forEach(function (loan) {
-                if (loan.aborted) $scope.aborted++;
-                else if (loan.endDate) $scope.ended++;
-                else if (new Date(loan.estimatedEndDate) < new Date()) $scope.overdue++;
-                else $scope.progress++
-                $scope.loansTotal++
+    var companyId;
+    // functions bindings
+    companiesDetails.edit = edit;
+    companiesDetails.refreshLoans = refreshLoans;
+    companiesDetails.refreshContacts = refreshContacts;
+
+    // watchers
+    $scope.$watch("contacts", function () {
+        if (companiesDetails.contacts) companiesDetails.contactsTotal = companiesDetails.contacts.length;
+    })
+    $scope.$watch("companiesDetails.loans", function () {
+        if (companiesDetails.loans && companiesDetails.loans.length > 0) {
+            companiesDetails.loansStatus = {
+                ended: 0,
+                progress: 0,
+                overdue: 0,
+                aborted: 0,
+                total: 0
+            };
+            companiesDetails.loans.forEach(function (loan) {
+                if (loan.aborted) companiesDetails.loansStatus.aborted++;
+                else if (loan.endDate) companiesDetails.loansStatus.ended++;
+                else if (new Date(loan.estimatedEndDate) < new Date()) companiesDetails.loansStatus.overdue++;
+                else companiesDetails.loansStatus.progress++
+                companiesDetails.loansStatus.total++
             })
         }
     })
-    $scope.$watch("contacts", function () {
-        if ($scope.contacts) $scope.contactsTotal = $scope.contacts.length;
-    })
-    var companyId;
 
-    function displayError(error) {
-        console.log(error);
-        $mdDialog.show({
-            controller: 'ErrorCtrl',
-            templateUrl: 'modals/error.html',
-            locals: {
-                items: error
-            }
-        });
-    }
-    $scope.edit = function () {
+
+    // functions
+    function edit() {
         $mdDialog.show({
             controller: 'CompaniesEditCtrl',
+            controllerAs: 'companiesEdit',
             templateUrl: 'company/edit.html',
             locals: {
-                items: $scope.company
+                items: companiesDetails.company
             }
         }).then(function () {
-            loadDevice();
+            loadCompany();
         });
     }
 
@@ -130,61 +148,64 @@ angular.module('Company').controller('CompaniesDetailsCtrl', function ($scope, $
         CompanyService.get($routeParams.company_id).then(function (promise) {
             if (promise && promise.error) ErrorService.display(promise.error);
             else {
-                $scope.company = promise;
+                companiesDetails.company = promise;
                 companyId = promise._id;
-                $scope.filters = { companyId: companyId };
-                $scope.refreshContacts();
-                $scope.refreshLoans();
+                companiesDetails.filters = { companyId: companyId };
+                refreshContacts();
+                refreshLoans();
             }
         });
     }
+    function refreshLoans() {
+        companiesDetails.refreshRequestedLoans = true;
+    }
+    function refreshContacts() {
+        companiesDetails.refreshRequestedContacts = true;
+    }
+    // init
     loadCompany();
 
-    $scope.refreshRequestedLoans = false;
-    $scope.refreshLoans = function () {
-        $scope.refreshRequestedLoans = true;
-    }
-    $scope.refreshRequestedContacts = false;
-    $scope.refreshContacts = function () {
-        $scope.refreshRequestedContacts = true;
-    }
-});
+}
 
 
-angular.module('Company').controller('CompaniesEditCtrl', function ($scope, $mdDialog, items, CompanyService, ErrorService) {
+function companiesEditCtrl($mdDialog, items, CompanyService, ErrorService) {
+    var companiesEdit = this;
+
     // items is injected in the controller, not its scope!   
-    console.log(items)
     if (items && items._id) {
-        $scope.action = "Edit";
+        companiesEdit.action = "Edit";
         var master = items;
     } else if (items) {
-        $scope.action = "Clone";
+        companiesEdit.action = "Clone";
         var master = items;
     } else {
-        $scope.action = "Add";
+        companiesEdit.action = "Add";
         var master = { name: "" };
     }
 
-    $scope.reset = function () {
-        $scope.company = angular.copy(master);
+    // functions bindings
+    companiesEdit.reset = reset;
+    companiesEdit.save = save;
+    companiesEdit.cancel = cancel;
+    companiesEdit.close = close;
+
+    //functions
+    function reset() {
+        companiesEdit.company = angular.copy(master);
     };
-
-    $scope.reset();
-
-    $scope.save = function (company) {
+    function save(company) {
         CompanyService.create(company).then(function (promise) {
             $mdDialog.hide();
             if (promise && promise.error) ErrorService.display(promise.error);
-
         })
     };
-    $scope.cancel = function () {
+    function cancel() {
         $mdDialog.cancel()
     };
-    $scope.close = function () {
-        // Easily hides most recent dialog shown...
-        // no specific instance reference is needed.
+    function close() {
         $mdDialog.hide();
     };
 
-});
+    //init
+    reset();
+}

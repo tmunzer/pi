@@ -5,11 +5,11 @@
             <md-card-header class="small" layout-align="start center">
                 <h2>Companies</h2>
                 <div flex></div>        
-                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
+                <md-button ng-click="companiesList.refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
-                <md-button ng-click="edit()"  class='md-primary md-raised md-icon-button '>
+                <md-button ng-click="companiesList.edit()"  class='md-primary md-raised md-icon-button '>
                     <md-tooltip>Add new Company</md-tooltip>
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
@@ -17,15 +17,15 @@
             <md-card-content layout="column">
                 <div layout="row" layout-align="start center" layout-margin md-whiteframe="2">
                     <md-input-container md-no-float="true" class="no-error">
-                        <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
+                        <input type="text" ng-model="companiesList.query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
                         />
                     </md-input-container>
                     <span flex></span>
-                    <span>Displayed: {{displayedCompanies.length}} | Total: {{companies.length}}</span>
+                    <span>Displayed: {{companiesList.displayedCompanies.length}} | Total: {{companiesList.companies.length}}</span>
                 </div>
                 <md-table-container>
-                    <table md-table md-progress="request">
-                        <thead md-head md-order="query.order">
+                    <table md-table md-progress="companiesList.request">
+                        <thead md-head md-order="companiesList.query.order">
                             <tr md-row>
                                 <th style="width:30%" md-column md-order-by="user.name.first">Name</th>
                                 <th style="width:5%" md-column md-order-by="user.name.first"># of Contacts</th>
@@ -35,17 +35,17 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row ng-repeat="company in displayedCompanies | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
+                            <tr md-row ng-repeat="company in companiesList.displayedCompanies | orderBy: companiesList.query.order | limitTo: companiesList.query.limit: (companiesList.query.page - 1) * companiesList.query.limit">
                                 <td md-cell><a href="#!/companies/{{company._id}}" class="md-primary">{{company.name | capitalize }}</a></td>
                                 <td md-cell>{{company.contacts }}</td>
                                 <td md-cell>{{company.created_at | date: 'mediumDate'}}</td>
                                 <td md-cell>{{company.updated_at | date: 'mediumDate'}}</td>
                                 <td md-cell>
-                                    <md-button class="md-icon-button" ng-click="edit(company)">
+                                    <md-button class="md-icon-button" ng-click="companiesList.edit(company)">
                                         <md-tooltip>Edit</md-tooltip>
                                         <md-icon class="material-icons edit">mode_edit</md-icon>
                                     </md-button>
-                                    <md-button ng-disabled="company.contacts > 0" class="md-icon-button" ng-click="remove(company)">
+                                    <md-button ng-disabled="company.contacts > 0" class="md-icon-button" ng-click="companiesList.remove(company)">
                                         <md-tooltip>Delete</md-tooltip>
                                         <md-icon class="material-icons delete">delete_forever</md-icon>
                                     </md-button>
@@ -54,7 +54,7 @@
                         </tbody>
                     </table>
                 </md-table-container>
-                <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedCompanies.length}}"
+                <md-table-pagination md-limit="companiesList.query.limit" md-limit-options="[10, 25, 50]" md-page="companiesList.query.page" md-total="{{companiesList.displayedCompanies.length}}"
                     md-page-select></md-table-pagination>
             </md-card-content>
         </md-card>

@@ -1,4 +1,4 @@
-angular.module('Company').service("CompanyService", function ($http, $q) {
+angular.module('Company').factory("CompanyService", function ($http, $q) {
     function create(company) {
         let id;
         if (company._id) id = company._id;

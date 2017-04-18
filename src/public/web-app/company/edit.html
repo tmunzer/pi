@@ -3,7 +3,7 @@
         <div class="new company">
             <md-toolbar>
                 </md-toolbar-tools>
-                <h4>{{action}} Company</h4>
+                <h4>{{companiesEdit.action}} Company</h4>
                 </md-toolbar-tools>
             </md-toolbar>
             <md-content layout-padding>
@@ -11,13 +11,13 @@
 
                     <md-input-container>
                         <label for="name">Name: </label>
-                        <input type="text" name="name" ng-model="company.name" required="">
+                        <input type="text" name="name" ng-model="companiesEdit.company.name" required="">
                     </md-input-container>
 
                     <div layout="row">
-                        <md-button class="md-primary" ng-click="reset()">Reset</md-button>
-                        <md-button class="md-primary" ng-click="close()">Cancel</md-button>
-                        <md-button class="md-primary md-raised" ng-click="save(company)" ng-disabled="newCompany.$invalid">Save</md-button>
+                        <md-button class="md-primary" ng-click="companiesEdit.reset()">Reset</md-button>
+                        <md-button class="md-primary" ng-click="companiesEdit.close()">Cancel</md-button>
+                        <md-button class="md-primary md-raised" ng-click="companiesEdit.save(company)" ng-disabled="newCompany.$invalid">Save</md-button>
                     </div>
                 </form>
             </md-content>
