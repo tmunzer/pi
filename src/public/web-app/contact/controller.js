@@ -1,8 +1,13 @@
-angular.module('Contact').controller('ContactListCtrl', function ($scope, $routeParams, $mdDialog, ContactService) {
-
+angular
+.module('Contact')
+.controller('ContactListCtrl', ContactListCtrl)
+.controller('ContactsEditCtrl',ContactsEditCtrl)
+ function ContactListCtrl(ContactService) {
+var contactList = this;
     $scope.edit = function () {
         $mdDialog.show({
             controller: 'ContactsEditCtrl',
+            controllerAs: 'contactsEdit',
             templateUrl: 'contact/edit.html',
             locals: {
                 items: null
@@ -17,10 +22,10 @@ angular.module('Contact').controller('ContactListCtrl', function ($scope, $route
         $scope.refreshRequested = true;
     }
 
-});
 
 
-angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDialog, items, CompanyService, ContactService, ErrorService) {
+
+function ContactsEditCtrl($scope, $mdDialog, items, CompanyService, ContactService, ErrorService) {
     // items is injected in the controller, not its scope!   
     console.log(items)
     if (items && items._id) {
@@ -60,4 +65,3 @@ angular.module('Contact').controller('ContactsEditCtrl', function ($scope, $mdDi
         $mdDialog.hide();
     };
 
-});

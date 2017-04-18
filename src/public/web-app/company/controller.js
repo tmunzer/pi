@@ -1,46 +1,46 @@
 angular
     .module('Company')
-    .controller('CompaniesListCtrl', companiesListCtrl)
-    .controller('CompaniesDetailsCtrl', companiesDetailsCtrl)
-    .controller('CompaniesEditCtrl', companiesEditCtrl)
+    .controller('CompanyListCtrl', companyList)
+    .controller('CompanyDetailsCtrl', companyDetailsCtrl)
+    .controller('CompanyEditCtrl', companyEditCtrl)
 
 
-function companiesListCtrl($scope, $mdDialog, CompanyService, ErrorService) {
-    var companiesList = this;
+function companyList($scope, $mdDialog, CompanyService, ErrorService) {
+    var companyList = this;
     // variables
-    companiesList.companies = [];
-    companiesList.displayedCompanies = [];
-    companiesList.query = {
+    companyList.companies = [];
+    companyList.displayedCompanies = [];
+    companyList.query = {
         order: "name",
         limit: 10,
         page: 1,
         filter: ""
     }
-    companiesList.request;
+    companyList.request;
     // functions bindings
-    companiesList.edit = edit;
-    companiesList.remove = remove;
-    companiesList.refresh = refresh;
+    companyList.edit = edit;
+    companyList.remove = remove;
+    companyList.refresh = refresh;
 
     // watchers
-    $scope.$watch("companiesList.query.filter", function () {
+    $scope.$watch("companyList.query.filter", function () {
         filter();
     })
 
     //functions
     function filter() {
-        companiesList.displayedCompanies = [];
-        companiesList.companies.forEach(function (company) {
-            if (companiesList.query.filter == ""
-                || company.name.toLowerCase().indexOf(companiesList.query.filter.toLowerCase()) >= 0)
-                companiesList.displayedCompanies.push(company);
+        companyList.displayedCompanies = [];
+        companyList.companies.forEach(function (company) {
+            if (companyList.query.filter == ""
+                || company.name.toLowerCase().indexOf(companyList.query.filter.toLowerCase()) >= 0)
+                companyList.displayedCompanies.push(company);
         })
     }
 
     function edit(company) {
         $mdDialog.show({
-            controller: 'CompaniesEditCtrl',
-            controllerAs: 'companiesEdit',
+            controller: 'CompanyEditCtrl',
+            controllerAs: 'companyEdit',
             templateUrl: 'company/edit.html',
             locals: {
                 items: company
@@ -66,11 +66,11 @@ function companiesListCtrl($scope, $mdDialog, CompanyService, ErrorService) {
     }
 
     function refresh() {
-        companiesList.request = CompanyService.getList();
-        companiesList.request.then(function (promise) {
+        companyList.request = CompanyService.getList();
+        companyList.request.then(function (promise) {
             if (promise && promise.error) ErrorService.display(promise.error);
             else {
-                companiesList.companies = promise;
+                companyList.companies = promise;
                 filter();
             }
         });
@@ -81,50 +81,50 @@ function companiesListCtrl($scope, $mdDialog, CompanyService, ErrorService) {
 }
 
 
-function companiesDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
-    var companiesDetails = this;
+function companyDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, ErrorService) {
+    var companyDetails = this;
 
     // variables
-    companiesDetails.company;
-    companiesDetails.filters;
-    companiesDetails.loans;
-    companiesDetails.contacts;
-    companiesDetails.query = {
+    companyDetails.company;
+    companyDetails.filters;
+    companyDetails.loans;
+    companyDetails.contacts;
+    companyDetails.query = {
         aborted: true,
         returned: true,
         progress: true,
         overdue: true
     }
-    companiesDetails.loansStatus = {};
-    companiesDetails.contactsTotal = 0;
-    companiesDetails.refreshRequestedLoans = false;
-    companiesDetails.refreshRequestedContacts = false;
+    companyDetails.loansStatus = {};
+    companyDetails.contactsTotal = 0;
+    companyDetails.refreshRequestedLoans = false;
+    companyDetails.refreshRequestedContacts = false;
 
     var companyId;
     // functions bindings
-    companiesDetails.edit = edit;
-    companiesDetails.refreshLoans = refreshLoans;
-    companiesDetails.refreshContacts = refreshContacts;
+    companyDetails.edit = edit;
+    companyDetails.refreshLoans = refreshLoans;
+    companyDetails.refreshContacts = refreshContacts;
 
     // watchers
     $scope.$watch("contacts", function () {
-        if (companiesDetails.contacts) companiesDetails.contactsTotal = companiesDetails.contacts.length;
+        if (companyDetails.contacts) companyDetails.contactsTotal = companyDetails.contacts.length;
     })
-    $scope.$watch("companiesDetails.loans", function () {
-        if (companiesDetails.loans && companiesDetails.loans.length > 0) {
-            companiesDetails.loansStatus = {
+    $scope.$watch("companyDetails.loans", function () {
+        if (companyDetails.loans && companyDetails.loans.length > 0) {
+            companyDetails.loansStatus = {
                 ended: 0,
                 progress: 0,
                 overdue: 0,
                 aborted: 0,
                 total: 0
             };
-            companiesDetails.loans.forEach(function (loan) {
-                if (loan.aborted) companiesDetails.loansStatus.aborted++;
-                else if (loan.endDate) companiesDetails.loansStatus.ended++;
-                else if (new Date(loan.estimatedEndDate) < new Date()) companiesDetails.loansStatus.overdue++;
-                else companiesDetails.loansStatus.progress++
-                companiesDetails.loansStatus.total++
+            companyDetails.loans.forEach(function (loan) {
+                if (loan.aborted) companyDetails.loansStatus.aborted++;
+                else if (loan.endDate) companyDetails.loansStatus.ended++;
+                else if (new Date(loan.estimatedEndDate) < new Date()) companyDetails.loansStatus.overdue++;
+                else companyDetails.loansStatus.progress++
+                companyDetails.loansStatus.total++
             })
         }
     })
@@ -133,11 +133,11 @@ function companiesDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, E
     // functions
     function edit() {
         $mdDialog.show({
-            controller: 'CompaniesEditCtrl',
-            controllerAs: 'companiesEdit',
+            controller: 'CompanyEditCtrl',
+            controllerAs: 'companyEdit',
             templateUrl: 'company/edit.html',
             locals: {
-                items: companiesDetails.company
+                items: companyDetails.company
             }
         }).then(function () {
             loadCompany();
@@ -148,19 +148,19 @@ function companiesDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, E
         CompanyService.get($routeParams.company_id).then(function (promise) {
             if (promise && promise.error) ErrorService.display(promise.error);
             else {
-                companiesDetails.company = promise;
+                companyDetails.company = promise;
                 companyId = promise._id;
-                companiesDetails.filters = { companyId: companyId };
+                companyDetails.filters = { companyId: companyId };
                 refreshContacts();
                 refreshLoans();
             }
         });
     }
     function refreshLoans() {
-        companiesDetails.refreshRequestedLoans = true;
+        companyDetails.refreshRequestedLoans = true;
     }
     function refreshContacts() {
-        companiesDetails.refreshRequestedContacts = true;
+        companyDetails.refreshRequestedContacts = true;
     }
     // init
     loadCompany();
@@ -168,30 +168,30 @@ function companiesDetailsCtrl($scope, $routeParams, $mdDialog, CompanyService, E
 }
 
 
-function companiesEditCtrl($mdDialog, items, CompanyService, ErrorService) {
-    var companiesEdit = this;
+function companyEditCtrl($mdDialog, items, CompanyService, ErrorService) {
+    var companyEdit = this;
 
     // items is injected in the controller, not its scope!   
     if (items && items._id) {
-        companiesEdit.action = "Edit";
+        companyEdit.action = "Edit";
         var master = items;
     } else if (items) {
-        companiesEdit.action = "Clone";
+        companyEdit.action = "Clone";
         var master = items;
     } else {
-        companiesEdit.action = "Add";
+        companyEdit.action = "Add";
         var master = { name: "" };
     }
 
     // functions bindings
-    companiesEdit.reset = reset;
-    companiesEdit.save = save;
-    companiesEdit.cancel = cancel;
-    companiesEdit.close = close;
+    companyEdit.reset = reset;
+    companyEdit.save = save;
+    companyEdit.cancel = cancel;
+    companyEdit.close = close;
 
     //functions
     function reset() {
-        companiesEdit.company = angular.copy(master);
+        companyEdit.company = angular.copy(master);
     };
     function save(company) {
         CompanyService.create(company).then(function (promise) {

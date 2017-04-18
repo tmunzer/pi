@@ -47,13 +47,13 @@ angular.module('pi').config(function ($routeProvider) {
         })
         .when("/companies", {
             templateUrl: "/web-app/company/list.html",
-            controller: "CompaniesListCtrl",
-            controllerAs: "companiesList"
+            controller: "CompanyListCtrl",
+            controllerAs: "companyList"
         })
         .when("/companies/:company_id", {
             templateUrl: "/web-app/company/details.html",
-            controller: "CompaniesDetailsCtrl",
-            controllerAs: "companiesDetails"
+            controller: "CompanyDetailsCtrl",
+            controllerAs: "companyDetails"
         })
         .when("/contacts", {
             templateUrl: "/web-app/contact/list.html",
