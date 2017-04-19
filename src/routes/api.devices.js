@@ -22,7 +22,7 @@ function xfilters(field, values) {
 router.get("/", function (req, res, next) {
     let filters;
     if (req.query.search)
-        Device.find({ $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }, function (err, devices) {
+        Device.find({removed: {$ne: true}, $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }, function (err, devices) {
             if (err) res.status(500).json(err);
             else res.json(devices);
         });
@@ -32,7 +32,7 @@ router.get("/", function (req, res, next) {
         if (req.query.hardwareId) filters = xfilters('hardwareId', req.query.hardwareId);
         if (req.query.serialNumber) filters = xfilters('serialNumber', req.query.serialNumber);
         if (req.query.macAddress) filters = xfilters('macAddress', req.query.macAddress);
-
+        filters.removed = {$ne : true};
 
         Device.loadLoandId(filters, function (err, devices) {
             if (err) res.status(500).json(err);
@@ -62,7 +62,26 @@ router.post("/", function (req, res, next) {
         device.created_by = req.session.passport.user.id;
         device.edited_by = req.session.passport.user.id;
         Device(device).save(function (err, device) {
-            if (err) res.status(500).json(err);
+            if (err && err.message.indexOf("serialNumber_1 dup key:") > 0) {
+                Device.findOne({ serialNumber: req.body.device.serialNumber }, function (err, device) {
+                    if (err) res.status(500).json(err);
+                    else {
+                        device.ownerId = req.body.device.ownerId;
+                        device.hardwareId = req.body.device.hardwareId;
+                        device.macAddress = req.body.device.macAddress;
+                        device.entryDate = req.body.device.entryDate;
+                        device.origin = req.body.device.origin;
+                        device.order = req.body.device.order;
+                        device.lost = req.body.device.lost;
+                        device.removed = req.body.device.removed;
+                        device.edited_by = req.session.passport.user.id;
+                        device.save(function (err, dev) {
+                            if (err) res.status(500).json(err);
+                            else res.json(dev);
+                        })
+                    }
+                })
+            } else if (err) res.status(500).json(err);
             else res.json(device);
         });
     } else res.status(400).json({ error: "missing parametesr" });
