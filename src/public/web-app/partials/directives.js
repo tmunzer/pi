@@ -116,9 +116,8 @@ function listLoans(LoanService) {
                         ) && ($scope.query.filter == ""
                             || loan.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
                             || loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0
-                            || loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0
-                            || loan.ownerId.name.first.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                            || loan.ownerId.name.last.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
+                            || (loan.contactId.email && loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0)
+                            || loan.ownerId.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))                            
                         $scope.displayedLoans.push(loan);
                 })
             }
@@ -217,7 +216,7 @@ function listDevices(DeviceService) {
                 });
             }
             function remove(device) {
-                DeviceService.remove(device._id).then(function(){refresh()});             
+                DeviceService.remove(device._id).then(function () { refresh() });
             }
 
         }
@@ -249,7 +248,7 @@ function listContacts(ContactService) {
             $scope.toDisplay = toDisplay;
             $scope.edit = edit;
             $scope.remove = remove;
-            
+
             // watchers
             $scope.$watch("query.filter", function () {
                 filter();
@@ -277,7 +276,7 @@ function listContacts(ContactService) {
                 ContactService.edit(contact).then(function () { refresh() });
             }
             function remove(contact) {
-                ContactService.remove(contact._id).then(function(){refresh()});
+                ContactService.remove(contact._id).then(function () { refresh() });
             }
             function refresh() {
                 $scope.request = ContactService.getList($scope.filters)
