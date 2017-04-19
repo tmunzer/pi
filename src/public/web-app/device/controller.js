@@ -145,11 +145,7 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
     function reset() {
         deviceEdit.device = angular.copy(master);
     };
-    function save() {
-        DeviceService.create(deviceEdit.device).then(function (promise) {
-            $mdDialog.hide();
-        })
-    };
+
     function macAddressFormat() {
         if (deviceEdit.device && deviceEdit.device.macAddress) {
             deviceEdit.device.macAddress = deviceEdit.device.macAddress.replace(/:/g, "").replace(/(.{2})/g, "$1:").substr(0, 17).toUpperCase();
@@ -172,7 +168,11 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
 
         });
     }
-
+    function save() {
+        DeviceService.create(deviceEdit.device).then(function (promise) {
+            if (promuise) close();
+        })
+    };
     function cancel() {
         $mdDialog.cancel()
     };

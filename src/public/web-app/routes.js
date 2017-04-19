@@ -55,16 +55,15 @@ angular.module('pi').config(function ($routeProvider) {
             controller: "HardwareDetailsCtrl",
             controllerAs: "hardwareDetails"
         })
-        .when("/admin", {
-            templateUrl: "/web-app/partials/admin.html"
-        })
         .when("/settings/accounts", {
             templateUrl: "/web-app/user/list.html",
-            controller: "UserListCtrl"
+            controller: "UserListCtrl",
+            controllerAs: "userList"
         })
         .when("/settings/accounts/:user_id", {
             templateUrl: "/web-app/user/details.html",
-            controller: "UserDetailsCtrl"
+            controller: "UserDetailsCtrl",
+            controllerAs: "userDetails"
         })
 
         .otherwise({

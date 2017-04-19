@@ -154,7 +154,7 @@ function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService
     };
     function save() {
         HardwareService.create(hardwareEdit.hardware).then(function (promise) {
-            close();
+            if (promise) close();
         })
     };
     function cancel() {

@@ -1,5 +1,59 @@
 
-angular.module('User').service("UserService", function ($http, $q, ErrorService) {
+angular.module('User').service("UserService", function ($http, $q, $mdDialog, ErrorService) {
+    function lock(user, cb) {
+        user = angular.copy(user);
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmLock.html',
+            locals: {
+                items: { action: "lock", user: user.email }
+            }
+        }).then(function () {
+            user.enabled = false;
+            create(user).then(function (promise) {
+                if (promise) cb();
+            });
+        });
+    }
+    function unlock(user, cb) {
+        user = angular.copy(user);
+        return $mdDialog.show({
+            controller: 'ConfirmCtrl',
+            templateUrl: 'modals/confirmLock.html',
+            locals: {
+                items: { action: "unlock", user: user.email }
+            }
+        }).then(function () {
+            user.enabled = true;
+            create(user).then(function (promise) {
+                if (promise) cb();
+            });
+        });
+    }
+    function edit(user, cb) {
+        user = angular.copy(user);
+        return $mdDialog.show({
+            controller: 'UserEditCtrl',
+            controllerAs: 'userEdit',
+            templateUrl: 'user/edit.html',
+            locals: {
+                items: user
+            }
+        }).then(function (promise) {
+            cb();
+        });
+    }
+    function password(user) {
+        user = angular.copy(user);
+        return $mdDialog.show({
+            controller: 'PasswordCtrl',
+            controllerAs: 'password',
+            templateUrl: 'user/password.html',
+            locals: {
+                items: { user: user }
+            }
+        });
+    }
     function create(user) {
         let id;
         if (user._id) id = user._id;
@@ -65,6 +119,10 @@ angular.module('User').service("UserService", function ($http, $q, ErrorService)
     }
 
     return {
+        lock: lock,
+        unlock: unlock,
+        edit: edit,
+        password: password,
         create: create,
         changePassword: changePassword,
         getList: getList,

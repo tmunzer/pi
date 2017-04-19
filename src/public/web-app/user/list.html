@@ -7,12 +7,12 @@
                 <h2>Accounts</h2>
                 <div flex></div>
 
-                <md-button ng-click="refresh()" class='md-primary md-icon-button '>
+                <md-button ng-click="userList.refresh()" class='md-primary md-icon-button '>
                     <md-tooltip>Refresh</md-tooltip>
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
 
-                <md-button ng-click="edit()" class='md-primary md-raised md-icon-button '>
+                <md-button ng-click="userList.edit()" class='md-primary md-raised md-icon-button '>
                     <md-tooltip>Add new User</md-tooltip>
                     <md-icon class="material-icon">add</md-icon>
                 </md-button>
@@ -20,15 +20,15 @@
             <md-card-content layout="column">
                 <div layout="row" layout-align="start center" layout-margin md-whiteframe="2">
                     <md-input-container md-no-float="true" class="no-error">
-                        <input type="text" ng-model="query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
+                        <input type="text" ng-model="userList.query.filter" ng-model-options="{ debounce: 250 }" placeholder="Filter" style="min-width: 400px"
                         />
                     </md-input-container>
                     <span flex></span>
-                    <span>Displayed: {{displayedUsers.length}} | Total: {{users.length}}</span>
+                    <span>Displayed: {{userList.displayedUsers.length}} | Total: {{userList.users.length}}</span>
                 </div>
                 <md-table-container>
-                    <table md-table ng-model="displayedUsers" md-progress="request">
-                        <thead md-head md-order="query.order">
+                    <table md-table ng-model="userList.displayedUsers" md-progress="request">
+                        <thead md-head md-order="userList.query.order">
                             <tr md-row>
                                 <th style="width:25%" md-column md-order-by="user.name.first">Email</th>
                                 <th style="width:25%" md-column md-order-by="user.email">Name</th>
@@ -38,7 +38,7 @@
                             </tr>
                         </thead>
                         <tbody md-body>
-                            <tr md-row ng-repeat="user in displayedUsers | orderBy: query.order  | limitTo: query.limit: (query.page - 1) * query.limit">
+                            <tr md-row ng-repeat="user in userList.displayedUsers | orderBy: userList.query.order  | limitTo: userList.query.limit: (userList.query.page - 1) * userList.query.limit">
                                 <td md-cell>
                                     <a href="#!/settings/accounts/{{user._id}}" class="md-primary">{{user.email}}</a>
                                 </td>
@@ -48,15 +48,15 @@
                                 <td md-cell>{{user.enabled}}</td>
                                 <td md-cell>{{user.lastLogin}}</td>
                                 <td md-cell>
-                                    <md-button class="md-icon-button" ng-click="edit(user)">
+                                    <md-button class="md-icon-button" ng-click="userList.edit(user)">
                                         <md-tooltip>Edit</md-tooltip>
                                         <md-icon class="material-icons edit">mode_edit</md-icon>
                                     </md-button>
-                                    <md-button ng-disabled="user._id == myId" ng-if="user.enabled" class="md-icon-button" ng-click="lock(user)">
+                                    <md-button ng-disabled="user._id == userList.myId" ng-if="user.enabled" class="md-icon-button" ng-click="userList.lock(user)">
                                         <md-tooltip>Lock User</md-tooltip>
                                         <md-icon class="material-icons delete">lock_open</md-icon>
                                     </md-button>
-                                    <md-button ng-if="!user.enabled" class="md-icon-button" ng-click="unlock(user)">
+                                    <md-button ng-if="!user.enabled" class="md-icon-button" ng-click="userList.unlock(user)">
                                         <md-tooltip>Unlock User</md-tooltip>
                                         <md-icon class="material-icons edit">lock</md-icon>
                                     </md-button>
@@ -65,7 +65,7 @@
                         </tbody>
                     </table>
                 </md-table-container>
-                <md-table-pagination md-limit="query.limit" md-limit-options="[10, 25, 50]" md-page="query.page" md-total="{{displayedUsers.length}}"
+                <md-table-pagination md-limit="userList.query.limit" md-limit-options="[10, 25, 50]" md-page="userList.query.page" md-total="{{userList.displayedUsers.length}}"
                     md-page-select></md-table-pagination>
             </md-card-content>
         </md-card>

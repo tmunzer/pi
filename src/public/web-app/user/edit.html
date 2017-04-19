@@ -3,43 +3,42 @@
         <div class="new company">
             <md-toolbar>
                 </md-toolbar-tools>
-                <h4>{{action}} Company</h4>
+                <h4>{{userEdit.action}} Company</h4>
                 </md-toolbar-tools>
             </md-toolbar>
             <md-content layout-padding>
                 <form name="newUser" layout="column">
 
-
                     <div layout='row'>
                         <md-input-container style="margin-bottom: 0;" flex=50>
-                            <input placeholder="First Name" type="text" ng-model="user.name.first" required="">
+                            <input placeholder="First Name" type="text" ng-model="userEdit.user.name.first" required="">
                         </md-input-container>
                         <md-input-container style="margin-bottom: 0;" flex=50>
-                            <input placeholder="Last Name" type="text" ng-model="user.name.last" required="">
+                            <input placeholder="Last Name" type="text" ng-model="userEdit.user.name.last" required="">
                         </md-input-container>
                     </div>
                     <md-input-container style="margin-bottom: 0;">
-                        <input placeholder="Email" type="email" ng-model="user.email" required="">
+                        <input placeholder="Email" type="email" ng-model="userEdit.user.email" required="">
                     </md-input-container>
-                    <div layout="row" ng-if="!user._id">
+                    <div layout="row" ng-if="!userEdit.user._id">
                         <md-input-container style="margin-bottom: 0;" flex=50>
-                            <input placeholder="Password" type="password" ng-model="user.password" ng-minlength="8" required="">
+                            <input placeholder="Password" type="password" ng-model="userEdit.user.password" ng-minlength="8" required="">
                         </md-input-container>
                         <md-input-container style="margin-bottom: 0;" flex=50>
-                            <input type="password" name="confirmPassword" placeholder="Confirm Password" ng-model="confirmPassword" required compare-to="user.password"
+                            <input type="password" name="confirmPassword" placeholder="Confirm Password" ng-model="confirmPassword" required compare-to="userEdit.user.password"
                             />
                         </md-input-container>
                     </div>
                     <md-input-container style="margin: 0">
-                        <md-checkbox ng-model="user.enabled">User enabled</md-checkbox>
+                        <md-checkbox ng-model="userEdit.user.enabled">User enabled</md-checkbox>
                     </md-input-container>
 
                 </form>
 
                 <div layout="row">
-                    <md-button class="md-primary" ng-click="reset()">Reset</md-button>
-                    <md-button class="md-primary" ng-click="close()">Cancel</md-button>
-                    <md-button class="md-primary md-raised" ng-click="save(company)" ng-disabled="newUser.$invalid">Save</md-button>
+                    <md-button class="md-primary" ng-click="userEdit.reset()">Reset</md-button>
+                    <md-button class="md-primary" ng-click="userEdit.close()">Cancel</md-button>
+                    <md-button class="md-primary md-raised" ng-click="userEdit.save()" ng-disabled="newUser.$invalid">Save</md-button>
                 </div>
                 </form>
             </md-content>

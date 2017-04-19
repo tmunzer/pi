@@ -55,7 +55,7 @@ function contactEditCtrl($mdDialog, items, CompanyService, ContactService) {
     };
     function save() {
         ContactService.create(contactEdit.contact).then(function (promise) {
-            $mdDialog.hide();
+            if (promise) close();
         })
     };
     function cancel() {

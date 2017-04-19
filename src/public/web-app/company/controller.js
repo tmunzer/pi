@@ -167,7 +167,7 @@ function companyEditCtrl($mdDialog, items, CompanyService) {
     };
     function save(company) {
         CompanyService.create(companyEdit.company).then(function (promise) {
-            close();
+            if (promise) close();
         })
     };
     function cancel() {

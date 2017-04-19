@@ -220,7 +220,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
             if (device.deviceId) loanEdit.loan.deviceId.push(device.deviceId);
         })
         LoanService.create(loanEdit.loan).then(function (promise) {
-            close()
+            if (promise) close()
         })
     };
     function cancel() {
