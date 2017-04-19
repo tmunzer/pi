@@ -21,7 +21,7 @@ function deviceListCtrl(DeviceService) {
 
     // functions
     function refresh() {
-        $scope.refreshRequested = true;
+        deviceList.refreshRequested = true;
     }
     function edit() {
         DeviceService.edit().then(function () {

@@ -56,7 +56,7 @@ function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
                 || (hardwareList.query.sr && hardware.type == "Physical Appliance")
                 || (hardwareList.query.br && hardware.type == "Other")
             ) && (hardwareList.query.filter == ""
-                || hardware.model.toLowerCase().indexOf($hardwareList.query.filter.toLowerCase()) >= 0
+                || hardware.model.toLowerCase().indexOf(hardwareList.query.filter.toLowerCase()) >= 0
                 ))
                 hardwareList.displayedHardwares.push(hardware);
 
