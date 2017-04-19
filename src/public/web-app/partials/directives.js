@@ -117,7 +117,7 @@ function listLoans(LoanService) {
                             || loan.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
                             || loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0
                             || (loan.contactId.email && loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0)
-                            || loan.ownerId.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))                            
+                            || loan.ownerId.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
                         $scope.displayedLoans.push(loan);
                 })
             }
@@ -262,9 +262,10 @@ function listContacts(ContactService) {
                 $scope.displayedContacts = [];
                 $scope.contacts.forEach(function (contact) {
                     if ($scope.query.filter == ""
+                        || contact.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
                         || contact.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                        || contact.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                        || contact.phone.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0)
+                        || (contact.email && contact.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0)
+                        || (contact.phone && contact.phone.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
                         $scope.displayedContacts.push(contact);
                 })
             }

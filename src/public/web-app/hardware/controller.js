@@ -84,7 +84,7 @@ function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
     refresh();
 }
 
-function hardwareDetailsCtrl($routeParams, DeviceService, HardwareService) {
+function hardwareDetailsCtrl($routeParams, $location, DeviceService, HardwareService) {
     var hardwareDetails = this;
     // variables
     hardwareDetails.query = {
@@ -99,10 +99,16 @@ function hardwareDetailsCtrl($routeParams, DeviceService, HardwareService) {
     var hardwareId;
     // functions bindings
     hardwareDetails.edit = edit;
+    hardwareDetails.addEvice = addEvice;
     hardwareDetails.refreshDevices = refreshDevices;
     // functions
     function edit() {
-        DeviceService.edit({ model: hardwareDetails.hardware._id }, refresh);
+        HardwareService.edit(hardwareDetails.hardware, function (promise) {
+            $location.path('/hardwares/'+promise.model)
+        });
+    }
+    function addEvice() {
+        DeviceService.edit({ model: hardwareDetails.hardware._id }, refreshDevices);
     }
     function refresh() {
         HardwareService.get($routeParams.model).then(function (promise) {
@@ -121,7 +127,7 @@ function hardwareDetailsCtrl($routeParams, DeviceService, HardwareService) {
 
 function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService) {
     // items is injected in the controller, not its scope!  
-    var  hardwareEdit = this;
+    var hardwareEdit = this;
     // variables
     if (items && items._id) {
         hardwareEdit.action = "Edit";
@@ -136,23 +142,23 @@ function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService
     hardwareEdit.hardwareType = HardwareTypeService.getHardwareType();
     // functions bindings
     hardwareEdit.reset = reset;
-    hardwareEdit.save =  save;
+    hardwareEdit.save = save;
     hardwareEdit.cancel = cancel;
     hardwareEdit.close = close;
     //functions
-    function reset () {
+    function reset() {
         hardwareEdit.hardware = angular.copy(master);
     };
     function save() {
         HardwareService.create(hardwareEdit.hardware).then(function (promise) {
-            if (promise) close();
+            if (promise) close(promise);
         })
     };
     function cancel() {
         $mdDialog.cancel()
     };
-    function close() {
-        $mdDialog.hide();
+    function close(promise) {
+        $mdDialog.hide(promise);
     };
     // init
     reset();

@@ -84,15 +84,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     var loanEdit = this;
     // variables
     // if cloned or edited loan
-    if (items) {
-        var master = {
-            deviceId: [],
-            companyId: items.companyId,
-            contactId: items.contactId,
-            ownerId: items.ownerId._id,
-            startDate: new Date(items.startDate),
-            estimatedEndDate: new Date(items.estimatedEndDate)
-        };
+    if (items && items.contactId) {
         var master_companyId = items.companyId;
         var master_contactId = items.contactId;
         // if edited
@@ -108,6 +100,16 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
             })
             loanEdit.action = "Edit";
         }
+        // if cloned
+        else if (items.onwerId)
+            var master = {
+                deviceId: [],
+                companyId: items.companyId,
+                contactId: items.contactId,
+                ownerId: items.ownerId._id,
+                startDate: new Date(items.startDate),
+                estimatedEndDate: new Date(items.estimatedEndDate)
+            };
         //if cloned
         else {
             master.poe = 0;
@@ -116,7 +118,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
             loanEdit.action = "Clone";
         }
         //if new
-    } else {
+    } else {        
         var master = {
             deviceId: [],
             companyId: null,
@@ -129,7 +131,8 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
 
         };
         var master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
-        var master_companyId = null;
+        if (items && items.companyId) var master_companyId = items.companyId;
+        else var master_companyId = null;
         var master_contactId = null;
         loanEdit.action = "Add";
     }

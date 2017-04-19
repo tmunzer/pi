@@ -7,9 +7,7 @@ angular.module('Contact').service("ContactService", function ($http, $q, $mdDial
             locals: {
                 items: contact
             }
-        }).then(function () {
-            cb();
-        });
+        }).then(function () { cb(); });
     }
     function create(contact) {
         let id;
@@ -55,7 +53,7 @@ angular.module('Contact').service("ContactService", function ($http, $q, $mdDial
         });
         return httpReq(request);
     }
-    function remove(id) {
+    function remove(id, cb) {
         return $mdDialog.show({
             controller: 'ConfirmCtrl',
             templateUrl: 'modals/confirm.html',
@@ -69,7 +67,7 @@ angular.module('Contact').service("ContactService", function ($http, $q, $mdDial
                 method: "DELETE",
                 timeout: canceller.promise
             });
-            httpReq(request);
+            httpReq(request).then(function () { cb() });
         })
 
     }

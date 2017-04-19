@@ -16,7 +16,7 @@ angular.module('Hardware').service("HardwareTypeService", function () {
 
 angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDialog, ErrorService) {
     function edit(hardware, cb) {
-        hardware = angular.copy(hardware);
+        hardware = angular.copy(hardware)
         return $mdDialog.show({
             controller: 'HardwareEditCtrl',
             controllerAs: 'hardwareEdit',
@@ -24,8 +24,8 @@ angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDi
             locals: {
                 items: hardware
             }
-        }).then(function () {
-            cb();
+        }).then(function (promise) {
+            cb(promise);
         });
     }
     function create(hardware) {

@@ -58,7 +58,7 @@ function companyList($scope, CompanyService) {
 }
 
 
-function companyDetailsCtrl($scope, $routeParams, CompanyService) {
+function companyDetailsCtrl($scope, $routeParams, CompanyService, ContactService, LoanService) {
     var companyDetails = this;
 
     // variables
@@ -82,7 +82,8 @@ function companyDetailsCtrl($scope, $routeParams, CompanyService) {
     companyDetails.edit = edit;
     companyDetails.refreshLoans = refreshLoans;
     companyDetails.refreshContacts = refreshContacts;
-
+    companyDetails.newContact = newContact;
+    companyDetails.newLoan = newLoan;
     // watchers
     $scope.$watch("contacts", function () {
         if (companyDetails.contacts) companyDetails.contactsTotal = companyDetails.contacts.length;
@@ -108,6 +109,12 @@ function companyDetailsCtrl($scope, $routeParams, CompanyService) {
     // functions
     function edit() {
         CompanyService.edit(companyDetails.company, refresh);
+    }
+    function newContact(){
+        ContactService.edit({companyId: companyId}, refreshContacts);
+    }
+    function newLoan(){
+        LoanService.edit({companyId: companyDetails.company}, refreshLoans);
     }
     function refreshLoans() {
         companyDetails.refreshRequestedLoans = true;

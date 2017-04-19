@@ -20,7 +20,7 @@ function xfilters(field, values) {
 }
 
 router.get("/", function (req, res, next) {
-    let filters;
+    let filters = {};
     if (req.query.search)
         Device.find({removed: {$ne: true}, $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }, function (err, devices) {
             if (err) res.status(500).json(err);
