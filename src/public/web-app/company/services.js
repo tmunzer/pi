@@ -1,5 +1,6 @@
 angular.module('Company').factory("CompanyService", function ($http, $q, $mdDialog, ErrorService) {
-    function edit(company) {
+    function edit(company, cb) {
+        company = angular.copy(company);
         return $mdDialog.show({
             controller: 'CompanyEditCtrl',
             controllerAs: 'companyEdit',
@@ -7,7 +8,9 @@ angular.module('Company').factory("CompanyService", function ($http, $q, $mdDial
             locals: {
                 items: company
             }
-        })
+        }).then(function () {
+            cb();
+        });
     }
     function create(company) {
         let id;
@@ -55,7 +58,7 @@ angular.module('Company').factory("CompanyService", function ($http, $q, $mdDial
         return httpReq(request);
     }
 
-    function remove(id) {
+    function remove(id, cb) {
         return $mdDialog.show({
             controller: 'ConfirmCtrl',
             templateUrl: 'modals/confirm.html',
@@ -69,7 +72,9 @@ angular.module('Company').factory("CompanyService", function ($http, $q, $mdDial
                 method: "DELETE",
                 timeout: canceller.promise
             });
-            httpReq(request);
+            httpReq(request).then(function (promise) {
+              cb();
+            });
         })
     }
 

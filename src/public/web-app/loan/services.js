@@ -1,5 +1,5 @@
 angular.module('Loan').service("LoanService", function ($http, $q, $mdDialog, ErrorService) {
-    function edit(loan) {
+    function edit(loan, cb) {
         return $mdDialog.show({
             controller: 'LoanEditCtrl',
             controllerAs: 'loanEdit',
@@ -7,7 +7,9 @@ angular.module('Loan').service("LoanService", function ($http, $q, $mdDialog, Er
             locals: {
                 items: loan
             }
-        })
+        }).then(function () {
+            cb()
+        });
     }
     function abort(loan, cb) {
         return $mdDialog.show({

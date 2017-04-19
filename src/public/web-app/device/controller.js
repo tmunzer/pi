@@ -20,13 +20,11 @@ function deviceListCtrl(DeviceService) {
     deviceList.edit = edit;
 
     // functions
+    function edit() {
+        DeviceService.edit(null, refresh);
+    }
     function refresh() {
         deviceList.refreshRequested = true;
-    }
-    function edit() {
-        DeviceService.edit().then(function () {
-            deviceList.refreshRequested = true;
-        })
     }
 }
 
@@ -49,9 +47,10 @@ function deviceDetailsCtrl($routeParams, DeviceService) {
     deviceDetails.refreshRequested = false;
     // functions
     function edit() {
-        DeviceService.edit(deviceDetails.device).then(function () {
-            refresh();
-        });
+        DeviceService.edit(deviceDetails.device, refresh);
+    }
+    function refreshLoans() {
+        deviceDetails.refreshRequested = true;
     }
     function refresh() {
         DeviceService.get($routeParams.serialNumber).then(function (promise) {
@@ -60,9 +59,6 @@ function deviceDetailsCtrl($routeParams, DeviceService) {
             deviceDetails.filters = { deviceId: deviceId };
             refreshLoans();
         });
-    }
-    function refreshLoans() {
-        deviceDetails.refreshRequested = true;
     }
     // init
     refresh();
@@ -170,7 +166,7 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
     }
     function save() {
         DeviceService.create(deviceEdit.device).then(function (promise) {
-            if (promuise) close();
+            if (promise) close();
         })
     };
     function cancel() {
@@ -179,9 +175,6 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
     function close() {
         $mdDialog.hide();
     };
-
-
     // init
     load()
-
 }

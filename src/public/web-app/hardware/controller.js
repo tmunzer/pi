@@ -70,21 +70,15 @@ function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
         });
     }
     function edit(hardware) {
-        HardwareService.edit(hardware).then(function () {
-            refresh();
-        });
+        HardwareService.edit(hardware, refresh);
     }
     function copy(hardware) {
         const clonedHardware = angular.copy(hardware);
         delete clonedHardware._id;
-        HardwareService.edit(clonedHardware).then(function () {
-            refresh();
-        });
+        HardwareService.edit(clonedHardware, refresh)
     }
     function remove(hardware) {
-        HardwareService.remove(hardware._id).then(function (promise) {
-            refresh();
-        });
+        HardwareService.remove(hardware._id, refresh)
     }
     // init
     refresh();
@@ -108,9 +102,7 @@ function hardwareDetailsCtrl($routeParams, DeviceService, HardwareService) {
     hardwareDetails.refreshDevices = refreshDevices;
     // functions
     function edit() {
-        DeviceService.edit({ model: hardwareDetails.hardware._id }).then(function () {
-            refresh();
-        });
+        DeviceService.edit({ model: hardwareDetails.hardware._id }, refresh);
     }
     function refresh() {
         HardwareService.get($routeParams.model).then(function (promise) {
@@ -130,7 +122,6 @@ function hardwareDetailsCtrl($routeParams, DeviceService, HardwareService) {
 function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService) {
     // items is injected in the controller, not its scope!  
     var  hardwareEdit = this;
-    console.log(items)
     // variables
     if (items && items._id) {
         hardwareEdit.action = "Edit";

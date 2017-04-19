@@ -1,5 +1,5 @@
 angular.module('Contact').service("ContactService", function ($http, $q, $mdDialog, ErrorService) {
-    function edit(contact) {
+    function edit(contact, cb) {
         return $mdDialog.show({
             controller: 'ContactEditCtrl',
             controllerAs: 'contactEdit',
@@ -7,7 +7,9 @@ angular.module('Contact').service("ContactService", function ($http, $q, $mdDial
             locals: {
                 items: contact
             }
-        })
+        }).then(function () {
+            cb();
+        });
     }
     function create(contact) {
         let id;

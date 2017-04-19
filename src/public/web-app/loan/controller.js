@@ -19,9 +19,7 @@ function loanListCtrl(LoanService) {
     loanList.refresh = refresh;
     // functions
     function edit(loan) {
-        LoanService.edit(loan).then(function () {
-            refresh()
-        });
+        LoanService.edit(loan, refresh)
     }
     function refresh() {
         loanList.refreshRequested = true;
@@ -55,16 +53,16 @@ function loanDetailsCtrl($routeParams, LoanService) {
         else return "overdue";
     }
     function abort() {
-        LoanService.abort(loanDetails.loan, function () { refresh() });
+        LoanService.abort(loanDetails.loan, refresh);
     }
     function revert() {
-        LoanService.revert(loanDetails.loan, function () { refresh() });
+        LoanService.revert(loanDetails.loan, refresh);
     }
     function returned() {
-        LoanService.returned(loanDetails.loan, function () { refresh() });
+        LoanService.returned(loanDetails.loan, refresh);
     }
     function edit() {
-        LoanService.edit(loanDetails.loan).then(function () { refresh(); });
+        LoanService.edit(loanDetails.loan, refresh);
     }
     function refresh() {
         LoanService.get($routeParams.loanId).then(function (promise) {
@@ -184,9 +182,9 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     // functions
     function reset() {
         loanEdit.loan = angular.copy(master);
-        loanEdit.selectedDevices = master_selectedDevices;
-        loanEdit.companyId = master_companyId;
-        loanEdit.contactId = master_contactId;
+        loanEdit.selectedDevices = angular.copy(master_selectedDevices);
+        loanEdit.companyId = angular.copy(master_companyId);
+        loanEdit.contactId = angular.copy(master_contactId);
     };
     function updateContact() {
         ContactService.create(loanEdit.contactId).then(function (promise) {

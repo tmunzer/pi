@@ -38,15 +38,11 @@ function companyList($scope, CompanyService) {
     }
 
     function edit(company) {
-        CompanyService.edit(company).then(function () {
-            refresh();
-        });
+        CompanyService.edit(company, refresh);
     }
 
     function remove(company) {
-        CompanyService.remove(company._id).then(function (promise) {
-            refresh()
-        })
+        CompanyService.remove(company._id, refresh)
     }
 
     function refresh() {
@@ -109,15 +105,16 @@ function companyDetailsCtrl($scope, $routeParams, CompanyService) {
             })
         }
     })
-
-
     // functions
     function edit() {
-        CompanyService.edit(companyDetails.company).then(function () {
-            refresh();
-        });
+        CompanyService.edit(companyDetails.company, refresh);
     }
-
+    function refreshLoans() {
+        companyDetails.refreshRequestedLoans = true;
+    }
+    function refreshContacts() {
+        companyDetails.refreshRequestedContacts = true;
+    }
     function refresh() {
         CompanyService.get($routeParams.company_id).then(function (promise) {
                 companyDetails.company = promise;
@@ -128,15 +125,8 @@ function companyDetailsCtrl($scope, $routeParams, CompanyService) {
             
         });
     }
-    function refreshLoans() {
-        companyDetails.refreshRequestedLoans = true;
-    }
-    function refreshContacts() {
-        companyDetails.refreshRequestedContacts = true;
-    }
     // init
     refresh();
-
 }
 
 

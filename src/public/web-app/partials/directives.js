@@ -81,10 +81,10 @@ function listLoans(LoanService) {
             function copyLoan(loan) {
                 const clonedLoan = angular.copy(loan);
                 delete clonedLoan._id;
-                LoanService.edit(clonedLoan).then(function () { refresh() });
+                LoanService.edit(clonedLoan, refresh);
             }
             function returnLoan(loan) {
-                LoanService.returned(loan, function () { refresh() });
+                LoanService.returned(loan, refresh);
             }
 
             function refresh() {
@@ -204,19 +204,15 @@ function listDevices(DeviceService) {
             }
 
             function editDevice(device) {
-                DeviceService.edit(device).then(function () {
-                    refresh();
-                });
+                DeviceService.edit(device, refresh);
             }
             function copyDevice(device) {
                 const clonedDevice = angular.copy(device);
                 delete clonedDevice._id;
-                DeviceService.edit(clonedDevice).then(function () {
-                    refresh();
-                });
+                DeviceService.edit(clonedDevice, refresh);
             }
             function remove(device) {
-                DeviceService.remove(device._id).then(function () { refresh() });
+                DeviceService.remove(device._id, refresh);
             }
 
         }
@@ -273,10 +269,10 @@ function listContacts(ContactService) {
                 })
             }
             function edit(contact) {
-                ContactService.edit(contact).then(function () { refresh() });
+                ContactService.edit(contact, refresh);
             }
             function remove(contact) {
-                ContactService.remove(contact._id).then(function () { refresh() });
+                ContactService.remove(contact._id, refresh);
             }
             function refresh() {
                 $scope.request = ContactService.getList($scope.filters)

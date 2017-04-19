@@ -35,7 +35,7 @@ angular.module('Device').service("DevicesToReplace", function ($http, $q) {
 
 
 angular.module('Device').service("DeviceService", function ($http, $q, $mdDialog, ErrorService) {
-    function edit(device) {
+    function edit(device, cb) {
         return $mdDialog.show({
             controller: 'DeviceEditCtrl',
             controllerAs: 'deviceEdit',
@@ -43,6 +43,8 @@ angular.module('Device').service("DeviceService", function ($http, $q, $mdDialog
             locals: {
                 items: device
             }
+        }).then(function () {
+            cb();
         })
     }
     function create(device) {
@@ -103,7 +105,7 @@ angular.module('Device').service("DeviceService", function ($http, $q, $mdDialog
         return httpReq(request);
     }
 
-    function remove(id) {
+    function remove(id, cb) {
         return $mdDialog.show({
             controller: 'ConfirmCtrl',
             templateUrl: 'modals/confirm.html',
@@ -117,11 +119,13 @@ angular.module('Device').service("DeviceService", function ($http, $q, $mdDialog
                 method: "DELETE",
                 timeout: canceller.promise
             });
-            httpReq(request);
+            httpReq(request).then(function () {
+            cb();
+        });
         })
     }
 
-    
+
     function httpReq(request) {
         var canceller = $q.defer();
         request.timout = canceller.promise;

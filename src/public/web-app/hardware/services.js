@@ -15,7 +15,8 @@ angular.module('Hardware').service("HardwareTypeService", function () {
 });
 
 angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDialog, ErrorService) {
-    function edit(hardware) {
+    function edit(hardware, cb) {
+        hardware = angular.copy(hardware);
         return $mdDialog.show({
             controller: 'HardwareEditCtrl',
             controllerAs: 'hardwareEdit',
@@ -23,7 +24,9 @@ angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDi
             locals: {
                 items: hardware
             }
-        })
+        }).then(function () {
+            cb();
+        });
     }
     function create(hardware) {
         let id;
@@ -69,7 +72,7 @@ angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDi
         });
         return httpReq(request);
     }
-    function remove(id) {
+    function remove(id, cb) {
         return $mdDialog.show({
             controller: 'ConfirmCtrl',
             templateUrl: 'modals/confirm.html',
@@ -83,7 +86,9 @@ angular.module('Hardware').service("HardwareService", function ($http, $q, $mdDi
                 method: "DELETE",
                 timeout: canceller.promise
             });
-            httpReq(request);
+            httpReq(request).then(function (promise) {
+                cb();
+            });;
         })
     }
 

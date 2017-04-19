@@ -14,11 +14,8 @@ function contactListCtrl(ContactService) {
 
     // function
     function edit() {
-        ContactService.edit().then(function () {
-            refresh();
-        });
+        ContactService.edit(null, refresh);
     }
-
     function refresh() {
         contactList.refreshRequested = true;
     }
