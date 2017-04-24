@@ -22,7 +22,7 @@ function xfilters(field, values) {
 router.get("/", function (req, res, next) {
     let filters = {};
     if (req.query.search)
-        Device.find({removed: {$ne: true}, $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }, function (err, devices) {
+        Device.find({ removed: { $ne: true }, $or: [{ serialNumber: { "$regex": req.query.search } }, { macAddress: { "$regex": req.query.search, "$options": "i" } }] }, function (err, devices) {
             if (err) res.status(500).json(err);
             else res.json(devices);
         });
@@ -32,7 +32,7 @@ router.get("/", function (req, res, next) {
         if (req.query.hardwareId) filters = xfilters('hardwareId', req.query.hardwareId);
         if (req.query.serialNumber) filters = xfilters('serialNumber', req.query.serialNumber);
         if (req.query.macAddress) filters = xfilters('macAddress', req.query.macAddress);
-        filters.removed = {$ne : true};
+        filters.removed = { $ne: true };
 
         Device.loadLoandId(filters, function (err, devices) {
             if (err) res.status(500).json(err);
@@ -72,6 +72,7 @@ router.post("/", function (req, res, next) {
                         device.entryDate = req.body.device.entryDate;
                         device.origin = req.body.device.origin;
                         device.order = req.body.device.order;
+                        device.returned = req.body.device.returned;
                         device.lost = req.body.device.lost;
                         device.removed = req.body.device.removed;
                         device.edited_by = req.session.passport.user.id;
@@ -100,6 +101,7 @@ router.post("/:device_id", function (req, res, next) {
                 device.order = req.body.device.order;
                 device.replacingDeviceId = req.body.device.replacingDeviceId;
                 device.comment = req.body.device.comment;
+                device.returned = req.body.device.returned;
                 device.lost = req.body.device.lost;
                 device.removed = req.body.device.removed;
                 device.edited_by = req.session.passport.user.id;

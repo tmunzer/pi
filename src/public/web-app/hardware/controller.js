@@ -90,6 +90,7 @@ function hardwareDetailsCtrl($routeParams, $location, DeviceService, HardwareSer
     hardwareDetails.query = {
         loaned: true,
         lost: false,
+        returned: false,
         available: true
     }
     hardwareDetails.hardware;

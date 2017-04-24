@@ -138,6 +138,7 @@ function listDevices(DeviceService) {
             'source': "@?",
             'loaned': "=?",
             'lost': "=?",
+            'returned': "=?",
             'available': "=?",
         },
         templateUrl: "/web-app/partials/listDevices.html",
@@ -151,6 +152,7 @@ function listDevices(DeviceService) {
                 page: 1,
                 loaned: $scope.loaned,
                 lost: $scope.lost,
+                returned: $scope.returned,
                 available: $scope.available,
                 filter: ""
             }
@@ -166,6 +168,9 @@ function listDevices(DeviceService) {
                 filter();
             })
             $scope.$watch("query.lost", function () {
+                filter();
+            })
+            $scope.$watch("query.returned", function () {
                 filter();
             })
             $scope.$watch("query.available", function () {
@@ -196,7 +201,8 @@ function listDevices(DeviceService) {
                     if (
                         (($scope.query.loaned && device.loanId)
                             || ($scope.query.lost && device.lost)
-                            || ($scope.query.available && (!device.lost && !device.loanId))
+                            || ($scope.query.returned && device.returned)
+                            || ($scope.query.available && (!device.lost && !device.loanId && !device.returned))
                         ) && ($scope.query.filter == ""
                             || device.hardwareId.model.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
                             || device.serialNumber.indexOf($scope.query.filter) >= 0

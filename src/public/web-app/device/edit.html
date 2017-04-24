@@ -51,7 +51,9 @@
                         <label for="order">PO#: </label>
                         <input type="text" name="order" ng-model="deviceEdit.device.order" required="">
                     </md-input-container>
-
+                   <md-input-container ng-show="deviceEdit.device._id" style="margin: 0">
+                        <md-checkbox ng-model="deviceEdit.device.returned">Returned Device?</md-checkbox>
+                    </md-input-container>
                     <md-input-container ng-show="deviceEdit.device._id" style="margin: 0">
                         <md-checkbox ng-model="deviceEdit.device.lost">Lost Device?</md-checkbox>
                     </md-input-container>

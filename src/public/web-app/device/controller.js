@@ -12,6 +12,7 @@ function deviceListCtrl(DeviceService) {
     deviceList.query = {
         loaned: false,
         lost: false,
+        returned: false,
         available: true
     }
 
@@ -94,6 +95,7 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
             order: items.order,
             replacingDeviceId: items.replacingDeviceId,
             comment: items.comment,
+            returned: items.returned,
             lost: items.lost
         }
     } else if (items) {

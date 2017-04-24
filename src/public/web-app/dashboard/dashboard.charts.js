@@ -2,8 +2,8 @@
     angular.module("Dashboard").factory("Charts", charts);
 
     function charts(HardwareService, ErrorService) {
-        const colors = ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'];
-        const status = { out: 0, lost: 0, available: 0, total: 0 };
+        const colors = ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'];        
+        const status = { out: 0, lost: 0, available: 0, returned: 0, total: 0 };
         const type = { ap: 0, sr: 0, br: 0, pa: 0, other: 0 };
         $scope.hardwareStatus = {
             type: "PieChart",
@@ -30,12 +30,13 @@
         const hardwareModelRows = []
 
         function hwStatus(hardware) {
-            const available = hardware.count.total - hardware.count.out - hardware.count.lost;
+            const available = hardware.count.total - hardware.count.out - hardware.count.lost - hardware.count.returned;
             status.out += hardware.count.out;
             status.lost += hardware.count.lost;
+            status.returned += hardware.count.returned;
             status.total += hardware.count.total;
             status.available += available;
-            hardwareModelRows.push({ c: [{ v: hardware.model }, { v: available }, { v: hardware.count.out }, { v: hardware.count.lost }] });
+            hardwareModelRows.push({ c: [{ v: hardware.model }, { v: available }, { v: hardware.count.out }, { v: hardware.count.lost }, { v: hardware.count.returned }] });
         }
         function hwType(hardware) {
             switch (hardware.type) {
@@ -74,6 +75,7 @@
                     ], "rows": [
                         { c: [{ v: "Loaned" }, { v: status.out }] },
                         { c: [{ v: "Lost" }, { v: status.lost }] },
+                        { c: [{ v: "Lost" }, { v: status.returned }] },
                         { c: [{ v: "Available" }, { v: status.available }] },
                     ]
                 };

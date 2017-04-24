@@ -11,6 +11,7 @@ const DeviceSchema = new mongoose.Schema({
     origin: String,
     order: String,
     lost: Boolean,
+    returned: Boolean,
     removed: Boolean,
     replacingDeviceId: { type: mongoose.Schema.ObjectId, ref: "Device" },
     comments: [{
@@ -73,6 +74,7 @@ function countDeviceStatus(devices, cb) {
     const Loan = require("./loan");
     let lost = 0;
     let out = 0;
+    let returned = 0;
     Loan
         .find({ 'endDate': null, aborted: { $ne: true } })
         .exec(function (err, loans) {
@@ -83,12 +85,13 @@ function countDeviceStatus(devices, cb) {
             else
                 devices.forEach(function (device) {
                     if (device.lost) lost++;
+                    else if (device.returned) returned++;
                     else
                         loans.forEach(function (loan) {
                             if (loan.deviceId.indexOf(device._id) >= 0) out++;
                         })
                 })
-            cb(out, lost);
+            cb(out, lost, returned);
         })
 }
 
@@ -101,11 +104,13 @@ Device.countStatus = function (filters, cb) {
                 count.total = 'error';
                 count.out = 'error';
                 count.lost = 'error';
+                count.returned = 'error';
             } else {
                 count.total = devices.length;
-                countDeviceStatus(devices, function (out, lost) {
+                countDeviceStatus(devices, function (out, lost, returned) {
                     count.out = out;
                     count.lost = lost;
+                    count.returned = returned;
                     cb(count);
                 })
             }

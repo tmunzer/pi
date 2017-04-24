@@ -32,6 +32,7 @@ function loanDetailsCtrl($routeParams, LoanService) {
     loanDetails.query = {
         loaned: true,
         lost: true,
+        returned: true,
         available: true
     }
     loanDetails.loan;
@@ -201,7 +202,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
                 loanEdit.selectedDevices.forEach(function (selectedDevices) {
                     var index = -1;
                     for (var i = 0; i < tempList.length; i++) {
-                        if (tempList[i].lost || selectedDevices.deviceId == tempList[i]._id) index = i;
+                        if (tempList[i].lost || tempList[i].returned || selectedDevices.deviceId == tempList[i]._id) index = i;
                     }
                     if (index >= 0) tempList.splice(index, 1);
                 })

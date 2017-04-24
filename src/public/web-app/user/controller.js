@@ -76,6 +76,7 @@ function userDetailsCtrl($scope, $routeParams, $mdDialog, UserService) {
     };
     userDetails.queryDevices = {
         loaned: true,
+        returned: false,
         lost: false,
         available: true
     };

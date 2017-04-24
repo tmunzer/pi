@@ -11,8 +11,9 @@
                 <md-card-content layout="row" layout-align="center center" flex>
                     <div>
                         <span class="status error" ng-if="deviceDetails.device.lost">LOST</span>
+                        <span class="status error" ng-if="deviceDetails.device.returned">RETURNED</span>
                         <span class="status warning" ng-if="deviceDetails.device.loanId">LOANED</span>
-                        <span class="status ok" ng-if="deviceDetails.device && !deviceDetails.device.lost && !deviceDetails.device.loanId">IN STOCK</span>
+                        <span class="status ok" ng-if="deviceDetails.device && !deviceDetails.device.lost && !deviceDetails.device.loanId && !deviceDetails.device.returned ">IN STOCK</span>
                     </div>
                 </md-card-content>
             </md-card>

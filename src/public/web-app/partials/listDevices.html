@@ -6,6 +6,9 @@
         <md-checkbox style="margin: 0" ng-model="query.loaned" aria-label="Only Available">Loaned</md-checkbox>
     </md-input-container>
     <md-input-container>
+        <md-checkbox style="margin: 0" ng-model="query.returned" aria-label="Only Available">Returned</md-checkbox>
+    </md-input-container>
+    <md-input-container>
         <md-checkbox style="margin: 0" ng-model="query.lost" aria-label="Only Available">Lost</md-checkbox>
     </md-input-container>
     <md-input-container md-no-float="true" class="no-error">
@@ -37,9 +40,10 @@
                 </td>
                 <td md-cell>{{device.macAddress}}</td>
                 <td md-cell style="text-align: left;">
-                    <a ng-if="device.loanId && !device.lost" class="md-icon-button md-primary" href="#!/loans/{{device.loanId}}">OUT</a>
-                    <span ng-if="!device.loanId && !device.lost">Available</span>
-                    <span ng-if="!device.loanId && device.lost" style="color: red">LOST</span>
+                    <a ng-if="device.loanId && !device.lost && !device.returned" class="md-icon-button md-primary" href="#!/loans/{{device.loanId}}">OUT</a>
+                    <span ng-if="!device.loanId && !device.lost && !device.returned">Available</span>
+                    <span ng-if="!device.loanId && !device.lost && device.returned">Returned</span>
+                    <span ng-if="!device.loanId && device.lost && !device.returned" style="color: red">LOST</span>
                 </td>
                 <td md-cell ng-if="toDisplay('user')">
                     <a href="#!/settings/accounts/{{device.ownerId._id}}" class="md-primary">{{device.ownerId.email}}</a>
