@@ -88,17 +88,19 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
         var master_companyId = items.companyId;
         var master_contactId = items.contactId;
         var master = {};
+        var master_selectedDevices = [];
         master.companyId = items.companyId;
         master.contactId = items.contactId;
         master.ownerId = items.ownerId._id;
+        master.startDate = new Date(items.startDate);
+        master.estimatedEndDate = new Date(items.estimatedEndDate);
         // if edited
         if (items._id) {
             master.aborted = items.aborted | false;
             master._id = items._id;
             master.poe = items.poe;
             master.other = items.other;
-            if (items.endDate) master.endDate = new Date(items.endDate);
-            var master_selectedDevices = [];
+            if (items.endDate) master.endDate = new Date(items.endDate);      
             items.deviceId.forEach(function (dev) {
                 master_selectedDevices.push({ hardwareId: dev.hardwareId, deviceId: dev._id, choices: [{ _id: dev._id, serialNumber: dev.serialNumber }] })
             })
@@ -107,11 +109,9 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
         // if cloned
         else {
             master.deviceId = [];
-            master.startDate = new Date(items.startDate);
-            master.estimatedEndDate = new Date(items.estimatedEndDate);
             master.poe = 0;
             master.other = "";
-            var master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
+            master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
             loanEdit.action = "Clone";
         }
         //if new
@@ -214,6 +214,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
         loanEdit.selectedDevices.splice(index, 1);
     }
     function save() {
+        if (!loanEdit.loan.deviceId) loanEdit.loan.deviceId = [];
         loanEdit.selectedDevices.forEach(function (device) {
             if (device.deviceId) loanEdit.loan.deviceId.push(device.deviceId);
         })
