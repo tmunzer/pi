@@ -50,9 +50,7 @@
                     New Contact
                 </md-button>
             </md-card-header>
-            <md-card-content>
                 <list-contacts filters="companyDetails.filters" source="company" refresh="companyDetails.refreshRequestedContacts" contacts="companyDetails.contacts"></list-contacts>
-            </md-card-content>
         </md-card>
         <md-card>
             <md-card-header class="small" layout-align="center center">
@@ -67,11 +65,9 @@
                     New Loan
                 </md-button>
             </md-card-header>
-            <md-card-content>
                 <list-loans filters="companyDetails.filters" source="company" aborted='companyDetails.query.aborted' returned='companyDetails.query.returned'
                     progress='companyDetails.query.progress' overdue='companyDetails.query.overdue' refresh="companyDetails.refreshRequestedLoans"
                     loans="companyDetails.loans"></list-loans>
-            </md-card-content>
         </md-card>
     </article>
 </section>

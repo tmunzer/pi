@@ -49,10 +49,8 @@
                     <md-icon class="material-icons">refresh</md-icon>
                 </md-button>
             </md-card-header>
-            <md-card-content>
-                <list-loans filters="deviceDetails.filters" aborted='deviceDetails.query.aborted' returned='deviceDetails.query.returned'
-                    progress='deviceDetails.query.progress' overdue='deviceDetails.query.overdue' refresh="deviceDetails.refreshRequested"></list-loans>
-            </md-card-content>
+            <list-loans filters="deviceDetails.filters" aborted='deviceDetails.query.aborted' returned='deviceDetails.query.returned'
+                progress='deviceDetails.query.progress' overdue='deviceDetails.query.overdue' refresh="deviceDetails.refreshRequested"></list-loans>
         </md-card>
     </article>
 

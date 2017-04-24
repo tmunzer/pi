@@ -183,10 +183,10 @@ table button:not([disabled]) .edit:hover{
 }
 td.md-cell:first-child,
 td.md-cell:last-child {
-    padding: 0 20px !important;
+    padding: 0 10px !important;
 }
 td.md-cell {
-    padding: 0 20px 0 0 !important;
+    padding: 0 0 0 0 !important;
 }
 td.md-cell button {
     padding: 0 !important;
