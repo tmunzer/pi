@@ -115,9 +115,11 @@ function listLoans(LoanService) {
                             || ($scope.query.overdue && loan.status == "overdue")
                         ) && ($scope.query.filter == ""
                             || loan.companyId.name.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0
-                            || (loan.contactId && loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0)
-                            || (loan.contactId.email && loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0)
-                            || loan.ownerId.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0))
+                            || (loan.contactId && (
+                                (loan.contactId.name && loan.contactId.name.toLowerCase().indexOf($scope.query.filter) >= 0)
+                                || (loan.contactId.email && loan.contactId.email.toLowerCase().indexOf($scope.query.filter) >= 0))
+                            )
+                            || (loan.ownerId && loan.ownerId.email.toLowerCase().indexOf($scope.query.filter.toLowerCase()) >= 0)))
                         $scope.displayedLoans.push(loan);
                 })
             }

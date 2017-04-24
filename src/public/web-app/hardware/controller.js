@@ -104,7 +104,7 @@ function hardwareDetailsCtrl($routeParams, $location, DeviceService, HardwareSer
     // functions
     function edit() {
         HardwareService.edit(hardwareDetails.hardware, function (promise) {
-            $location.path('/hardwares/'+promise.model)
+            if (promise) $location.path('/hardwares/'+promise.model)
         });
     }
     function addEvice() {

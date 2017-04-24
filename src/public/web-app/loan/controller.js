@@ -84,12 +84,16 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     var loanEdit = this;
     // variables
     // if cloned or edited loan
-    if (items && items.contactId) {
+    if (items && items.startDate) {
         var master_companyId = items.companyId;
         var master_contactId = items.contactId;
+        var master = {};
+        master.companyId = items.companyId;
+        master.contactId = items.contactId;
+        master.ownerId = items.ownerId._id;
         // if edited
         if (items._id) {
-            master.aborted = items.aborted;
+            master.aborted = items.aborted | false;
             master._id = items._id;
             master.poe = items.poe;
             master.other = items.other;
@@ -101,24 +105,17 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
             loanEdit.action = "Edit";
         }
         // if cloned
-        else if (items.onwerId)
-            var master = {
-                deviceId: [],
-                companyId: items.companyId,
-                contactId: items.contactId,
-                ownerId: items.ownerId._id,
-                startDate: new Date(items.startDate),
-                estimatedEndDate: new Date(items.estimatedEndDate)
-            };
-        //if cloned
         else {
+            master.deviceId = [];
+            master.startDate = new Date(items.startDate);
+            master.estimatedEndDate = new Date(items.estimatedEndDate);
             master.poe = 0;
             master.other = "";
             var master_selectedDevices = [{ hardwareId: undefined, deviceId: undefined, choices: [] }];
             loanEdit.action = "Clone";
         }
         //if new
-    } else {        
+    } else {
         var master = {
             deviceId: [],
             companyId: null,
@@ -153,12 +150,12 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     loanEdit.close = close;
     // watchers
     $scope.$watch("loanEdit.companyId", function () {
-        if (loanEdit.companyId)
+        if (loanEdit.loan && loanEdit.companyId)
             loanEdit.loan.companyId = loanEdit.companyId._id;
         loanEdit.contact.refresh();
     });
     $scope.$watch("loanEdit.contactId", function () {
-        if (loanEdit.contactId) {
+        if (loanEdit.loan && loanEdit.contactId) {
             loanEdit.loan.contactId = loanEdit.contactId._id;
             master_contactId = angular.copy(loanEdit.contactId);
             loanEdit.contactInfoSaved = false;
@@ -233,12 +230,12 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     function init() {
         UserService.getList().then(function (promise) {
             loanEdit.users = promise.users;
-            if (master.ownerId == "") master.ownerId = promise.currentUser;
+            if (this.master.ownerId == "") this.master.ownerId = promise.currentUser;
             HardwareService.getList().then(function (promise) {
                 loanEdit.hardwares = promise;
                 loanEdit.reset();
             })
-        })
+        }.bind({ master: master }))
     }
     // autocomplete
     function createFilterFor(query) {
@@ -313,6 +310,6 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
 
     // init
     loanEdit.company.refresh();
-    init();
+    init(master);
 };
 
