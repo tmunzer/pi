@@ -98,7 +98,9 @@ var contacts = require('./routes/api.contacts');
 app.use('/api/contacts/', contacts);
 var users = require('./routes/api.users');
 app.use('/api/users/', users);
-
+app.use('/', function(req, res){
+    res.redirect('/web-app/');
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
