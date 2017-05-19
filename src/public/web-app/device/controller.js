@@ -146,7 +146,10 @@ function deviceEditCtrl($scope, $mdDialog, items, HardwareService, DeviceService
 
     function macAddressFormat() {
         if (deviceEdit.device && deviceEdit.device.macAddress) {
-            deviceEdit.device.macAddress = deviceEdit.device.macAddress.replace(/:/g, "").replace(/(.{2})/g, "$1:").substr(0, 17).toUpperCase();
+            let mac = deviceEdit.device.macAddress.replace(/:/g, "").replace(/(.{2})/g, "$1:").substr(0, 17).toUpperCase();
+            if (mac.substr(mac.length - 1, 1) == ":")
+                mac = mac.substr(0, mac.length - 1)
+            deviceEdit.device.macAddress = mac;
         };
     }
     function loadReplacingDevice() {

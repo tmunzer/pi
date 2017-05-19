@@ -5,6 +5,7 @@ var path = require('path');
 //===============MONGODB=================
 var mongoConfig = require('./config').mongoConfig;
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 global. db = mongoose.connection;
 
 db.on('error', console.error);

@@ -13,7 +13,7 @@
                 <md-card-content layout="row" layout-align="center center" style="padding-top: 50px;">
                     <div>
                         <span class="status error" ng-if="ocompanyDetails.loansStatus.verdue > 0">OVERDUE</span>
-                        <span class="status ok" ng-if="companyDetails.loansStatus.overdue == 0 && companyDetails.loansStatus.progress > 0">PROGRESS</span>
+                        <span class="status ok" ng-if="companyDetails.loansStatus.overdue == 0 && companyDetails.loansStatus.progress > 0">IN PROGRESS</span>
                         <span class="status warning" ng-if="companyDetails.loansStatus.overdue == 0 && companyDetails.loansStatus.progress == 0 && companyDetails.loansStatus.ended > 0">RETURNED</span>
                         <span class="status none" ng-if="companyDetails.loansStatus.overdue == 0 && companyDetails.loansStatus.progress == 0 && companyDetails.loansStatus.ended == 0">NONE</span>
                     </div>
