@@ -70,7 +70,7 @@ function contactDetailsCtrl($scope, $routeParams, ContactService, LoanService) {
 
     function newLoan() {
         LoanService.edit({
-            companyId: contactDetails.company_id
+            contactId: contactDetails.contact._id
         }, refreshLoans);
     }
 
@@ -81,11 +81,10 @@ function contactDetailsCtrl($scope, $routeParams, ContactService, LoanService) {
     function refresh() {
         ContactService.get($routeParams.contact_id).then(function (promise) {
             contactDetails.contact = promise;
-            contact_id = promise._id;
+            contactId = promise._id;
             contactDetails.filters = {
                 contactId: contactId
             };
-            console.log(contactDetails);
             refreshLoans();
 
         });

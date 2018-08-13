@@ -1,4 +1,3 @@
-
 <section>
     <article>
         <div layout="row" layout-align="start top">
@@ -7,7 +6,7 @@
                     <h2>Hardware Status</h2>
                 </md-card-header>
                 <md-card-content layout="column" layout-align="center center">
-                    <div google-chart chart="dashboard.hardwareStatus" style="width: 100%" ></div>
+                    <div google-chart chart="dashboard.hardwareStatus" style="width: 100%"></div>
                 </md-card-content>
             </md-card>
             <md-card flex="33">
@@ -15,17 +14,27 @@
                     <h2>Hardware Type</h2>
                 </md-card-header>
                 <md-card-content layout="row" layout-align="center center">
-                    <div google-chart chart="dashboard.hardwareType"  style="width: 100%"></div>
+                    <div google-chart chart="dashboard.hardwareType" style="width: 100%"></div>
                 </md-card-content>
             </md-card>
         </div>
-            <div layout="row" layout-align="space-between top">
+        <div layout="row" layout-align="space-between top">
             <md-card flex="50">
                 <md-card-header class="small" layout-align="start center">
                     <h2>Hardware Model</h2>
                 </md-card-header>
                 <md-card-content layout="row" layout-align="center center">
                     <div google-chart chart="dashboard.hardwareModel" style="width: 100%"></div>
+                </md-card-content>
+            </md-card>
+        </div>
+        <div layout="row" layout-align="space-between top">
+            <md-card flex="100">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Loan history</h2>
+                </md-card-header>
+                <md-card-content layout="row" layout-align="center center">
+                    <div google-chart chart="dashboard.loanHistory" style="width: 100%"></div>
                 </md-card-content>
             </md-card>
         </div>
