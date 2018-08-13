@@ -10,8 +10,9 @@ User
         else if (!users)
             new User({ email: "admin@aerohive.com", password: "aerohive", enabled: true }).save(function (err) {
                 if (err) console.log(err);
-            })        
-    })
+                else console.log("Default User created: admin@aerohive.com / aerohive");
+            });        
+    });
 
 /* GET home page. */
 router.get('/login/', function (req, res, next) {

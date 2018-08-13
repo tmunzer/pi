@@ -21,6 +21,11 @@ angular.module('pi').config(function ($routeProvider) {
             controller: "ContactListCtrl",
             controllerAs: "contactList"
         })
+        .when("/contacts/:contact_id", {
+            templateUrl: "/web-app/contact/details.html",
+            controller: "ContactDetailsCtrl",
+            controllerAs: "contactDetails"
+        })
         .when("/devices", {
             templateUrl: "/web-app/device/list.html",
             module: "Device",

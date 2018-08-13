@@ -7,10 +7,22 @@ const Contact = require("../bin/models/contact");
 router.get("/", function (req, res, next) {
     const filters = {};
     if (req.query.search) {
-        Contact.find({ $or: [{ name: { "$regex": req.query.search, "$options": "i" } }, { email: { "$regex": req.query.search, "$options": "i" } }] }, function (err, contacts) {
+        Contact.find({
+            $or: [{
+                name: {
+                    "$regex": req.query.search,
+                    "$options": "i"
+                }
+            }, {
+                email: {
+                    "$regex": req.query.search,
+                    "$options": "i"
+                }
+            }]
+        }, function (err, contacts) {
             if (err) res.status(500).json(err);
             else res.json(contacts);
-        })
+        });
     } else {
         if (req.query.id) filters._id = req.query.id;
         if (req.query.companyId) filters.companyId = req.query.companyId;
@@ -27,11 +39,14 @@ router.get("/", function (req, res, next) {
     }
 });
 router.get("/:contact_id", function (req, res, next) {
-    Contact.findById(req.params.contact_id, function (err, contact) {
-        if (err) res.status(500).json(err);
-        else res.json(contact);
-    })
-})
+    Contact
+        .findOne({'_id': req.params.contact_id})
+        .populate("companyId")
+        .exec(function (err, contact) {
+            if (err) res.status(500).json(err);
+            else res.json(contact);
+        });
+});
 router.post("/", function (req, res, next) {
     if (req.body.contact) {
         const contact = req.body.contact;
@@ -41,7 +56,9 @@ router.post("/", function (req, res, next) {
             if (err) res.status(500).json(err);
             else res.json(contact);
         });
-    } else res.status(400).json({ error: "missing parametesr" });
+    } else res.status(400).json({
+        error: "missing parametesr"
+    });
 });
 
 router.post("/:contact_id", function (req, res, next) {
@@ -60,11 +77,15 @@ router.post("/:contact_id", function (req, res, next) {
                 });
             }
         });
-    else res.status(400).json({ error: "missing parametesr" });
+    else res.status(400).json({
+        error: "missing parametesr"
+    });
 });
 
 router.delete("/:contact_id", function (req, res, next) {
-    Contact.remove({ "_id": req.params.contact_id }, function (err, contact) {
+    Contact.remove({
+        "_id": req.params.contact_id
+    }, function (err, contact) {
         if (err) res.status(500).json(err);
         else res.json(contact.result);
     })

@@ -8,11 +8,29 @@ function capitalize(val) {
 
 
 const CompanySchema = new mongoose.Schema({
-    name: { type: String, required: true, set: capitalize, trim: true, unique: true },
-    created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
-    edited_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
-    created_at: { type: Date },
-    updated_at: { type: Date }
+    name: {
+        type: String,
+        required: true,
+        set: capitalize,
+        trim: true,
+        unique: true
+    },
+    created_by: {
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "User"
+    },
+    edited_by: {
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "User"
+    },
+    created_at: {
+        type: Date
+    },
+    updated_at: {
+        type: Date
+    }
 });
 
 
@@ -38,21 +56,24 @@ Company.load = function (filters, cb) {
             if (err) cb(err);
             else {
                 companies = JSON.parse(JSON.stringify(companies))
-                companies.forEach(function (company) {
-                    Contact
-                        .find({ companyId: company._id })
-                        .count(function (err, count) {
-                            if (err) {
-                                console.log(err)
-                                cb(err);
-                            }
-                            else {
-                                company.contacts = count;
-                                done++;
-                            }
-                            if (done == companies.length) cb(null, companies);
-                        })
-                });
+                if (companies.length > 0)
+                    companies.forEach(function (company) {
+                        Contact
+                            .find({
+                                companyId: company._id
+                            })
+                            .count(function (err, count) {
+                                if (err) {
+                                    console.log(err)
+                                    cb(err);
+                                } else {
+                                    company.contacts = count;
+                                    done++;
+                                }
+                                if (done == companies.length) cb(null, companies);
+                            });
+                    });
+                else cb(null, []);
             }
         });
 }

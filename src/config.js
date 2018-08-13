@@ -1,7 +1,7 @@
 module.exports.appServer = {
-    vhost: "localhost"
-}
+    vhost: "get-a-key.ah-lab.fr"
+};
 
 module.exports.mongoConfig = {
-    host: "localhost"
-}
+    host: "mongo"
+};

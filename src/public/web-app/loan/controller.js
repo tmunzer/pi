@@ -241,7 +241,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     }
     // autocomplete
     function createFilterFor(query) {
-        var lowercaseQuery = angular.lowercase(query);
+        var lowercaseQuery = query.toLowerCase();
 
         return function filterFn(item) {
             return (item.name.toLowerCase().indexOf(lowercaseQuery) === 0);
@@ -257,7 +257,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
                 else {
                     loanEdit.company.companies = promise;
                 }
-            })
+            });
         },
         querySearch: function querySearch(query) {
             return query ? loanEdit.company.companies.filter(createFilterFor(query)) : loanEdit.company.companies;
@@ -267,7 +267,7 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
             var already_exists = false;
             loanEdit.company.companies.forEach(function (comp_list) {
                 if (company_name.toLowerCase() === comp_list.name.toLowerCase) already_exists = true;
-            })
+            });
             if (!already_exists)
                 CompanyService.create({ name: company.trim() }).then(function (promise) {
                     if (promise && promise.error) ErrorService.display(promise.error);
@@ -275,9 +275,9 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
                         loanEdit.company.selectedItem = promise;
                         loanEdit.company.refresh();
                     }
-                })
-        },
-    }
+                });
+        }
+    };
 
     loanEdit.contact = {
         contacts: [],

@@ -38,9 +38,9 @@ app.use('/bower_components',  express.static('../bower_components'));
 
 //=============CREATE LOGGER===============
 
-var morgan = require('morgan')
+var morgan = require('morgan');
 app.use(morgan('\x1b[32minfo\x1b[0m: :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', {
-  skip: function (req, res) { return res.statusCode < 400 && req.url != "/" && req.originalUrl.indexOf("/api") < 0 && req.originalUrl.indexOf("/webhook") < 0 }
+  skip: function (req, res) { return res.statusCode < 400 && req.url != "/" && req.originalUrl.indexOf("/api") < 0 && req.originalUrl.indexOf("/webhook") < 0; }
 }));
 
 //===============PASSPORT=================
@@ -55,11 +55,15 @@ var mongoSession = session({
     uri: 'mongodb://'+mongoConfig.host+'/express-session',
     collection: 'pi'
   }),
+  rolling: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 60 * 60 * 1000 // 60 minutes
-  }
-});
+    maxAge: 30 * 60 * 1000 // 30 minutes
+  },
+  unset: "destroy"
+}
+);
+
 app.use(mongoSession);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -101,7 +105,7 @@ var users = require('./routes/api.users');
 app.use('/api/users/', users);
 app.use('/', function(req, res){
     res.redirect('/web-app/');
-})
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

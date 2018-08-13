@@ -6,13 +6,36 @@ function upperCase(val) {
 }
 
 var HardwareSchema = new mongoose.Schema({
-    type: { type: String, required: true },
-    model: { type: String, required: true, unique: true, set: upperCase },
-    serialFormat: { type: String, required: true },
-    created_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
-    edited_by: { type: mongoose.Schema.ObjectId, required: true, ref: "User" },
-    created_at: { type: Date },
-    updated_at: { type: Date }
+    type: {
+        type: String,
+        required: true
+    },
+    model: {
+        type: String,
+        required: true,
+        unique: true,
+        set: upperCase
+    },
+    serialFormat: {
+        type: String,
+        required: true
+    },
+    created_by: {
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "User"
+    },
+    edited_by: {
+        type: mongoose.Schema.ObjectId,
+        required: true,
+        ref: "User"
+    },
+    created_at: {
+        type: Date
+    },
+    updated_at: {
+        type: Date
+    }
 });
 
 
@@ -31,27 +54,35 @@ Hardware.loadWithDevicesNumber = function (filters, cb) {
     const Device = require("./device");
     let done = 0;
     this.find(filters)
-        .sort({ 'model': 'asc' })
+        .sort({
+            'model': 'asc'
+        })
         .populate("created_by")
         .populate("edited_by")
         .exec(function (err, hardwares) {
-            if (err) cb(err)
-            else {
+            if (err) cb(err);
+            else if (hardwares && hardwares.length > 0) {
                 hardwares = JSON.parse(JSON.stringify(hardwares));
                 hardwares.forEach(function (hardware) {
-                    Device.countStatus({ hardwareId: hardware._id }, function (count) {
+                    Device.countStatus({
+                        hardwareId: hardware._id
+                    }, function (count) {
                         hardware.count = count;
                         done++;
                         if (done == hardwares.length) cb(null, hardwares);
-                    })
-                })
-            }
-        })
-}
+                    });
+                });
+            } else cb(null, []);
+        });
+};
 Hardware.findByType = function (type, callback) {
-    this.find({ type: type }, callback);
+    this.find({
+        type: type
+    }, callback);
 };
 Hardware.findByDevice = function (device, callback) {
-    this.find({ device: device }, callback);
+    this.find({
+        device: device
+    }, callback);
 };
 module.exports = Hardware;

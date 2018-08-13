@@ -1,0 +1,62 @@
+<section>
+    <article>
+
+        <detailed-header title="{{contactDetails.contact.name}}" object="contactDetails.contact" edit="contactDetails.edit()"></detailed-header>
+
+        <div layout="row" layout-align="space-between top">
+            <md-card flex="33">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Current Loan Status</h2>
+                    <div flex></div>
+
+                </md-card-header>
+                <md-card-content layout="row" layout-align="center center" style="padding-top: 50px;">
+                    <div>
+                        <span class="status error" ng-if="contactDetails.loansStatus.verdue > 0">OVERDUE</span>
+                        <span class="status ok" ng-if="contactDetails.loansStatus.overdue == 0 && contactDetails.loansStatus.progress > 0">IN PROGRESS</span>
+                        <span class="status warning" ng-if="contactDetails.loansStatus.overdue == 0 && contactDetails.loansStatus.progress == 0 && contactDetails.loansStatus.ended > 0">RETURNED</span>
+                        <span class="status none" ng-if="contactDetails.loansStatus.overdue == 0 && contactDetails.loansStatus.progress == 0 && contactDetails.loansStatus.ended == 0">NONE</span>
+                    </div>
+                </md-card-content>
+            </md-card>
+            <md-card flex="66">
+                <md-card-header class="small" layout-align="start center">
+                    <h2>Contact Information</h2>
+                </md-card-header>
+                <md-card-content layout="row" style="padding: 0">
+                    <div layout="column" layout-padding flex=40>
+                        <div layout="row"><b flex=50>Company: </b><a href="#!/companies/{{contactDetails.contact.companyId._id}}" class="md-primary">{{contactDetails.contact.companyId.name | capitalize }}</a></div>
+                        <div layout="row"><b flex=50>Name: </b><span>{{contactDetails.contact.name}}</span></div>
+                        <div layout="row"><b flex=50>Phone: </b><span>{{contactDetails.contact.phone}}</span></div>
+                        <div layout="row"><b flex=50>Email: </b><span>{{contactDetails.contact.email}}</span></div>
+                    </div>
+                    <div layout="column" layout-padding flex=60>
+                        <div layout="row"><b flex=40># of overdue loans: </b><span>{{contactDetails.loansStatus.overdue}}</span></div>
+                        <div layout="row"><b flex=40># of current loans: </b><span>{{contactDetails.loansStatus.progress}}</span></div>
+                        <div layout="row"><b flex=40># of returned loans: </b><span>{{contactDetails.loansStatus.ended}}</span></div>
+                    </div>
+                </md-card-content>
+            </md-card>
+
+        </div>
+
+    
+        <md-card>
+            <md-card-header class="small" layout-align="center center">
+                <h2>Loans History</h2>
+                <div flex></div>
+                <md-button ng-click="contactDetails.refreshLoans()">
+                    <md-tooltip>Refresh</md-tooltip>
+                    <md-icon class="material-icons">refresh</md-icon>
+                </md-button>
+                <md-button ng-click="contactDetails.newLoan()" class="md-primary">
+                    <md-icon class="material-icons">add_circle</md-icon>
+                    New Loan
+                </md-button>
+            </md-card-header>
+                <list-loans filters="contactDetails.filters" source="company" aborted='contactDetails.query.aborted' returned='contactDetails.query.returned'
+                    progress='contactDetails.query.progress' overdue='contactDetails.query.overdue' refresh="contactDetails.refreshRequestedLoans"
+                    loans="contactDetails.loans"></list-loans>
+        </md-card>
+    </article>
+</section>

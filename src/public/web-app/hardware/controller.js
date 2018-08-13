@@ -2,7 +2,7 @@ angular
     .module('Hardware')
     .controller('HardwareListCtrl', hardwareListCtrl)
     .controller('HardwareDetailsCtrl', hardwareDetailsCtrl)
-    .controller('HardwareEditCtrl', hardwareEditCtrl)
+    .controller('HardwareEditCtrl', hardwareEditCtrl);
 
 function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
     var hardwareList = this;
@@ -19,8 +19,8 @@ function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
         phyAppliance: true,
         other: true,
         filter: ""
-    }
-    hardwareList.request;
+    };
+    hardwareList.request = undefined;
     // functions binding
     hardwareList.refresh = refresh;
     hardwareList.edit = edit;
@@ -29,39 +29,39 @@ function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
     // watchers
     $scope.$watch("hardwareList.query.ap", function () {
         filter();
-    })
+    });
     $scope.$watch("hardwareList.query.sr", function () {
         filter();
-    })
+    });
     $scope.$watch("hardwareList.query.br", function () {
         filter();
-    })
+    });
     $scope.$watch("hardwareList.query.phyAppliance", function () {
         filter();
-    })
+    });
     $scope.$watch("hardwareList.query.other", function () {
         filter();
-    })
+    });
     $scope.$watch("hardwareList.query.filter", function () {
         filter();
-    })
+    });
     // functions
     function filter() {
         hardwareList.displayedHardwares = [];
-        hardwareList.hardwares.forEach(function (hardware) {
+        if (hardwareList.hardwares) hardwareList.hardwares.forEach(function (hardware) {
             if ((
-                (hardwareList.query.ap && hardware.type == "Access Point")
-                || (hardwareList.query.sr && hardware.type == "Switch")
-                || (hardwareList.query.sr && hardware.type == "Branch Router")
-                || (hardwareList.query.sr && hardware.type == "Physical Appliance")
-                || (hardwareList.query.br && hardware.type == "Other")
-            ) && (hardwareList.query.filter == ""
-                || hardware.model.toLowerCase().indexOf(hardwareList.query.filter.toLowerCase()) >= 0
+                    (hardwareList.query.ap && hardware.type == "Access Point") ||
+                    (hardwareList.query.sr && hardware.type == "Switch") ||
+                    (hardwareList.query.sr && hardware.type == "Branch Router") ||
+                    (hardwareList.query.sr && hardware.type == "Physical Appliance") ||
+                    (hardwareList.query.br && hardware.type == "Other")
+                ) && (hardwareList.query.filter == "" ||
+                    hardware.model.toLowerCase().indexOf(hardwareList.query.filter.toLowerCase()) >= 0
                 ))
                 hardwareList.displayedHardwares.push(hardware);
-
-        })
+        });
     }
+
     function refresh() {
         hardwareList.request = HardwareService.getList();
         hardwareList.request.then(function (promise) {
@@ -69,16 +69,19 @@ function hardwareListCtrl($scope, HardwareTypeService, HardwareService) {
             filter();
         });
     }
+
     function edit(hardware) {
         HardwareService.edit(hardware, refresh);
     }
+
     function copy(hardware) {
         const clonedHardware = angular.copy(hardware);
         delete clonedHardware._id;
-        HardwareService.edit(clonedHardware, refresh)
+        HardwareService.edit(clonedHardware, refresh);
     }
+
     function remove(hardware) {
-        HardwareService.remove(hardware._id, refresh)
+        HardwareService.remove(hardware._id, refresh);
     }
     // init
     refresh();
@@ -92,7 +95,7 @@ function hardwareDetailsCtrl($routeParams, $location, DeviceService, HardwareSer
         lost: false,
         returned: false,
         available: true
-    }
+    };
     hardwareDetails.hardware;
     hardwareDetails.request;
     hardwareDetails.filters;
@@ -105,25 +108,32 @@ function hardwareDetailsCtrl($routeParams, $location, DeviceService, HardwareSer
     // functions
     function edit() {
         HardwareService.edit(hardwareDetails.hardware, function (promise) {
-            if (promise) $location.path('/hardwares/'+promise.model)
+            if (promise) $location.path('/hardwares/' + promise.model);
         });
     }
+
     function addEvice() {
-        DeviceService.edit({ model: hardwareDetails.hardware._id }, refreshDevices);
+        DeviceService.edit({
+            model: hardwareDetails.hardware._id
+        }, refreshDevices);
     }
+
     function refresh() {
         HardwareService.get($routeParams.model).then(function (promise) {
             hardwareDetails.hardware = promise;
             hardwareDetails.hardwareId = promise._id;
-            hardwareDetails.filters = { hardwareId: hardwareDetails.hardwareId };
+            hardwareDetails.filters = {
+                hardwareId: hardwareDetails.hardwareId
+            };
             refreshDevices();
         });
     }
+
     function refreshDevices() {
         hardwareDetails.refreshRequested = true;
     }
     // init
-    refresh()
+    refresh();
 }
 
 function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService) {
@@ -138,7 +148,11 @@ function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService
         var master = items;
     } else {
         hardwareEdit.action = "Add";
-        var master = { type: "", model: "", serial: "" };
+        var master = {
+            type: "",
+            model: "",
+            serial: ""
+        };
     }
     hardwareEdit.hardwareType = HardwareTypeService.getHardwareType();
     // functions bindings
@@ -149,18 +163,21 @@ function hardwareEditCtrl($mdDialog, items, HardwareTypeService, HardwareService
     //functions
     function reset() {
         hardwareEdit.hardware = angular.copy(master);
-    };
+    }
+
     function save() {
         HardwareService.create(hardwareEdit.hardware).then(function (promise) {
             if (promise) close(promise);
-        })
-    };
+        });
+    }
+
     function cancel() {
-        $mdDialog.cancel()
-    };
+        $mdDialog.cancel();
+    }
+
     function close(promise) {
         $mdDialog.hide(promise);
-    };
+    }
     // init
     reset();
 }

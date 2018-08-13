@@ -7,8 +7,20 @@ const Loan = require("../bin/models/loan");
 
 router.get("/", function (req, res, next) {
     const filters = {};
-    if (req.query.search)
-        Hardware.find({ $or: [{ model: { "$regex": req.query.search, "$options": "i" } }, { type: { "$regex": req.query.search, "$options": "i" } }] }, function (err, hardwares) {
+    if (req.query.search != undefined)
+        Hardware.find({
+            $or: [{
+                model: {
+                    "$regex": req.query.search,
+                    "$options": "i"
+                }
+            }, {
+                type: {
+                    "$regex": req.query.search,
+                    "$options": "i"
+                }
+            }]
+        }, function (err, hardwares) {
             if (err) res.status(500).json(err);
             else res.json(hardwares);
         });
@@ -18,20 +30,22 @@ router.get("/", function (req, res, next) {
         Hardware.loadWithDevicesNumber(filters, function (err, hardwares) {
             if (err) res.status(500).json(err);
             else res.json(hardwares);
-        })
+        });
     }
 });
 
 router.get("/:model", function (req, res, next) {
     Hardware
-        .findOne({ model: req.params.model })
+        .findOne({
+            model: req.params.model
+        })
         .populate("created_by")
         .populate("edited_by")
         .exec(function (err, hardware) {
             if (err) res.status(500).json(err);
             else res.json(hardware);
-        })
-})
+        });
+});
 router.post("/", function (req, res, next) {
     if (req.body.hardware) {
         const hardware = req.body.hardware;
@@ -41,7 +55,9 @@ router.post("/", function (req, res, next) {
             if (err) res.status(500).json(err);
             else res.json(hardware);
         });
-    } else res.status(400).json({ error: "missing parametesr" });
+    } else res.status(400).json({
+        error: "missing parametesr"
+    });
 });
 router.post("/:hardware_id", function (req, res, next) {
     if (req.body.hardware)
@@ -57,15 +73,19 @@ router.post("/:hardware_id", function (req, res, next) {
                 });
             }
         });
-    else res.status(400).json({ error: "missing parametesr" });
+    else res.status(400).json({
+        error: "missing parametesr"
+    });
 });
 
 
 router.delete("/:hardware_id", function (req, res, next) {
-    Hardware.remove({ "_id": req.params.hardware_id }, function (err, hardware) {
+    Hardware.remove({
+        "_id": req.params.hardware_id
+    }, function (err, hardware) {
         if (err) res.status(500).json(err);
         else res.json(hardware.result);
-    })
+    });
 });
 
 
