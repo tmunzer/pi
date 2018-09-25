@@ -5,8 +5,8 @@ const Device = require("../bin/models/device");
 function xfilters(field, values) {
     let temp = {};
     if (typeof values == "string") {
-        temp[field] = values;
-        return temp;
+        //temp[field] = values;
+        return values;
     }
     else if (typeof values == "object") {
         let qstring = { $or: [] };
@@ -16,6 +16,14 @@ function xfilters(field, values) {
             qstring.$or.push(test)
         })
         return qstring;
+    } else if (typeof values == "boolean") {
+        if (field == "loaned") {
+
+        } else {
+            if (values == true) return true;
+            else return { $ne: true };
+            //return temp;
+        }
     }
 }
 
@@ -27,11 +35,15 @@ router.get("/", function (req, res, next) {
             else res.json(devices);
         });
     else {
-        if (req.query.id) filters = xfilters('_id', req.query.id);
-        if (req.query.ownerId) filters = xfilters('ownerId', req.query.ownerId);
-        if (req.query.hardwareId) filters = xfilters('hardwareId', req.query.hardwareId);
-        if (req.query.serialNumber) filters = xfilters('serialNumber', req.query.serialNumber);
-        if (req.query.macAddress) filters = xfilters('macAddress', req.query.macAddress);
+        if (req.query.id) filters.id = xfilters('_id', req.query.id);
+        if (req.query.ownerId) filters.ownerId = xfilters('ownerId', req.query.ownerId);
+        if (req.query.hardwareId) filters.hardwareId = xfilters('hardwareId', req.query.hardwareId);
+        if (req.query.serialNumber) filters.serialNumber = xfilters('serialNumber', req.query.serialNumber);
+        if (req.query.macAddress) filters.macAddress = xfilters('macAddress', req.query.macAddress);
+        if (req.query.returned) filters.returned = xfilters('returned', req.query.returned);
+        if (req.query.lost) filters.lost = xfilters('lost', req.query.lost);
+        if (req.query.loaned) filters.loanId = xfilters('loaned', req.query.loaned);
+
         filters.removed = { $ne: true };
 
         Device.loadLoandId(filters, function (err, devices) {
@@ -143,7 +155,7 @@ router.delete("/:device_id", function (req, res, next) {
     })
 });
 router.get("/replace/", function (req, res, next) {
-    if (req.query.hasOwnProperty('modelId')) {
+    if (req.query['modelId']) {
         Device.find({ modelId: req.query.modelId }, function (err, devices) {
             if (err) res.status(500).json(err);
             else {
