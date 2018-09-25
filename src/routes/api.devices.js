@@ -4,9 +4,16 @@ const Device = require("../bin/models/device");
 
 function xfilters(field, values) {
     let temp = {};
+    console.log(field, values, typeof values);
     if (typeof values == "string") {
-        //temp[field] = values;
-        return values;
+        if (field == "returned" || field == "lost") {
+            if (values == true) return true;
+            else return { $ne: true };
+            //return temp;
+        } else {
+            //temp[field] = values;
+            return values;
+        }
     }
     else if (typeof values == "object") {
         let qstring = { $or: [] };
@@ -16,14 +23,6 @@ function xfilters(field, values) {
             qstring.$or.push(test)
         })
         return qstring;
-    } else if (typeof values == "boolean") {
-        if (field == "loaned") {
-
-        } else {
-            if (values == true) return true;
-            else return { $ne: true };
-            //return temp;
-        }
     }
 }
 
@@ -42,10 +41,8 @@ router.get("/", function (req, res, next) {
         if (req.query.macAddress != undefined) filters.macAddress = xfilters('macAddress', req.query.macAddress);
         if (req.query.returned != undefined) filters.returned = xfilters('returned', req.query.returned);
         if (req.query.lost != undefined) filters.lost = xfilters('lost', req.query.lost);
-        if (req.query.loaned != undefined) filters.loanId = xfilters('loaned', req.query.loaned);
 
         filters.removed = { $ne: true };
-
         Device.loadLoandId(filters, function (err, devices) {
             if (err) res.status(500).json(err);
             else {
