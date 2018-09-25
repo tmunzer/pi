@@ -35,14 +35,14 @@ router.get("/", function (req, res, next) {
             else res.json(devices);
         });
     else {
-        if (req.query.id) filters.id = xfilters('_id', req.query.id);
-        if (req.query.ownerId) filters.ownerId = xfilters('ownerId', req.query.ownerId);
-        if (req.query.hardwareId) filters.hardwareId = xfilters('hardwareId', req.query.hardwareId);
-        if (req.query.serialNumber) filters.serialNumber = xfilters('serialNumber', req.query.serialNumber);
-        if (req.query.macAddress) filters.macAddress = xfilters('macAddress', req.query.macAddress);
-        if (req.query.returned) filters.returned = xfilters('returned', req.query.returned);
-        if (req.query.lost) filters.lost = xfilters('lost', req.query.lost);
-        if (req.query.loaned) filters.loanId = xfilters('loaned', req.query.loaned);
+        if (req.query.id != undefined) filters.id = xfilters('_id', req.query.id);
+        if (req.query.ownerId != undefined) filters.ownerId = xfilters('ownerId', req.query.ownerId);
+        if (req.query.hardwareId != undefined) filters.hardwareId = xfilters('hardwareId', req.query.hardwareId);
+        if (req.query.serialNumber != undefined) filters.serialNumber = xfilters('serialNumber', req.query.serialNumber);
+        if (req.query.macAddress != undefined) filters.macAddress = xfilters('macAddress', req.query.macAddress);
+        if (req.query.returned != undefined) filters.returned = xfilters('returned', req.query.returned);
+        if (req.query.lost != undefined) filters.lost = xfilters('lost', req.query.lost);
+        if (req.query.loaned != undefined) filters.loanId = xfilters('loaned', req.query.loaned);
 
         filters.removed = { $ne: true };
 
