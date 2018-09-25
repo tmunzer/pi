@@ -13,7 +13,7 @@ function detailedHeader() {
         scope: {
             'title': '@',
             'object': "=",
-            'edit': '&',
+            'edit': '&'
         },
         templateUrl: "/web-app/partials/detailedHeader.html"
     };

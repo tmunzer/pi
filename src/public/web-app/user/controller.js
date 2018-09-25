@@ -123,7 +123,7 @@ function userEditCtrl($mdDialog, items, UserService) {
         var master = items;
     } else {
         userEdit.action = "Add";
-        var master = { email: "", name: { first: "", last: "" }, password: "", enabled: true };
+        var master = { email: "", phone: "", name: { first: "", last: "" }, password: "", enabled: true };
     }
     // functions bindings
     userEdit.close = close;

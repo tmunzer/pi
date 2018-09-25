@@ -1,0 +1,124 @@
+doctype html
+html
+    head
+        title= title  
+        link(rel='stylesheet' href='/css/preview.css')
+    body
+        table
+            thead.header
+                tr                
+                    th
+                        div.logo
+                            img.logo(src="/ah.png") 
+            tbody
+                tr
+                    td
+                        div
+                            h1 Document de prêt de matériel Aerohive
+                        div
+                            div.responsable
+                                span.responsable
+                                    h3.responsable_header Responsable Aerohive
+                                    table
+                                        tr
+                                            td.title
+                                                span Nom:
+                                            td
+                                                span #{loan.ownerId.name.first} #{loan.ownerId.name.last}
+                                        tr  
+                                            td.title
+                                                span Email:
+                                            td
+                                                span #{loan.ownerId.email}
+                                        tr  
+                                            td.title 
+                                                span Téléphone:
+                                            td
+                                                span #{loan.ownerId.phone}
+                                span.responsable.to_fill
+                                    h3.responsable_header Responsable #{loan.companyId.name}
+                                    table
+                                        tr
+                                            td.title
+                                                span Nom:
+                                            td
+                                                span #{loan.contactId.name}
+                                        tr  
+                                            td.title
+                                                span Email:
+                                            td
+                                                span #{loan.contactId.email}
+                                        tr  
+                                            td.title
+                                                span Téléphone:
+                                            td
+                                                span #{loan.contactId.phone}
+                            div.spacer
+                                div
+                                    h3 Adresse et contact d'expédition:
+                                    div.to_fill.address
+                        div.date
+                            div
+                                h2 Les équipements doivent être retournés au plus tard le:
+                            div
+                                span.date #{endDate}
+                        div.spacer
+                            div
+                                h3 Adresse de retour:
+                            div(style="margin-left: 30px;")
+                                div
+                                    span Aerohive France
+                                div
+                                    span #{loan.ownerId.name.first} #{loan.ownerId.name.last}
+                                div
+                                    span 121 rue d'aguesseau
+                                div
+                                    span 92100 Boulogne-Billancourt
+                                div 
+                                    span FRANCE
+                                br
+                                div
+                                    span="Tél: "
+                                    span #{loan.ownerId.phone}
+                        div.warning
+                            span LES ÉQUIPEMENTS DOIVENT ÊTRE RETOURNÉS DANS LEUR EMBALLAGE D’ORIGINE ACCOMPAGNÉS DE L’ENSEMBLE DES ACCESSOIRES FOURNIS
+                        
+
+                        div.new_page
+                            h2 Liste des matériels
+                            table.devices
+                                thead
+                                    tr
+                                        th(style="width:5%")
+                                        th(style="width:15%")
+                                            span Modèle
+                                        th(style="width:25%")
+                                            span Numéro de série
+                                        th(style="width:14%")
+                                            span Kit Complet
+                                        th(style="width:41%")
+                                            span Commentaire
+                                tbody
+                                    each device, index in devices
+                                        tr
+                                            td #{index + 1}
+                                            td #{device.hardwareId.model}
+                                            td #{device.serialNumber}
+                                            td(style="text-align: center;") 
+                                                input(type="checkbox" checked)
+                                            td
+                        div.sig
+                            div
+                                span Le
+                                span(style="margin:0 10px;")  . . / . . 
+                                span à
+                                span(style="margin:0 10px;")  . . . . . . . . . . . . . . . . .
+                            div.spacer
+                                span Signature:
+
+
+                        
+
+
+                                    
+                            

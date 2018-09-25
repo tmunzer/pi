@@ -22,6 +22,7 @@ var UserSchema = new mongoose.Schema({
     },
     email: { type: String, required: true, unique: true, validator: validateEmail },
     password: { type: String, required: true, set: cryptPassword },
+    phone: { type: String },
     enabled: Boolean,
     lastLogin: Date,
     comment: String,

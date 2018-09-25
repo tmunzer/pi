@@ -6,6 +6,10 @@
             <md-tooltip>Edit</md-tooltip>
             <md-icon class="material-icon">mode_edit</md-icon>
         </md-button>
+        <md-button ng-if="object.startDate" class="md-icon-button md-primary md-raised" href="/preview/{{object._id}}" target="_blank">
+            <md-tooltip>Print</md-tooltip>
+            <md-icon class="material-icon">print</md-icon>
+        </md-button>
     </md-card-header>
     <md-card-content layout="row" layout-align="space-between center" layout-padding>
         <div><span>Created on </span><b>{{object.created_at | date:'mediumDate'}}</b><span ng-if='object.created_by'> by <b>{{object.created_by.email}}</b></span></div>

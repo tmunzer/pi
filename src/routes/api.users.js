@@ -39,6 +39,7 @@ router.post("/:user_id", function (req, res, next) {
             else {
                 user.name = req.body.user.name;
                 user.email = req.body.user.email;
+                user.phone = req.body.user.phone;
                 user.enabled = req.body.user.enabled;
                 user.edited_by = req.session.passport.user.id;
                 user.save(function (err, user) {

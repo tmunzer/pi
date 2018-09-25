@@ -91,6 +91,8 @@ var login = require('./routes/login');
 app.use('/', login);
 var index = require('./routes/web-app');
 app.use('/web-app/', index);
+var preview = require('./routes/preview');
+app.use('/preview/', preview);
 var hardwares = require('./routes/api.hardwares');
 app.use('/api/hardwares/', hardwares);
 var devices = require('./routes/api.devices');

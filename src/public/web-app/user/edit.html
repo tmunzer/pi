@@ -3,7 +3,7 @@
         <div class="new company">
             <md-toolbar>
                 </md-toolbar-tools>
-                <h4>{{userEdit.action}} Company</h4>
+                <h4>{{userEdit.action}} User</h4>
                 </md-toolbar-tools>
             </md-toolbar>
             <md-content layout-padding>
@@ -19,6 +19,9 @@
                     </div>
                     <md-input-container style="margin-bottom: 0;">
                         <input placeholder="Email" type="email" ng-model="userEdit.user.email" required="">
+                    </md-input-container>
+                    <md-input-container style="margin-bottom: 0;">
+                        <input placeholder="Phone number" type="text" ng-model="userEdit.user.phone" required="">
                     </md-input-container>
                     <div layout="row" ng-if="!userEdit.user._id">
                         <md-input-container style="margin-bottom: 0;" flex=50>
