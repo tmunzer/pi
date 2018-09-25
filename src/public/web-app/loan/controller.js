@@ -196,13 +196,14 @@ function loanEditCtrl($scope, $mdDialog, items, LoanService, UserService, Hardwa
     function loadDevices(device) {
         device.choices = [];
         if (loanEdit.model != 0)
-            DeviceService.getList({ hardwareId: device.hardwareId }).then(function (promise) {
+            DeviceService.getList({ hardwareId: device.hardwareId, returned: false, lost: false }).then(function (promise) {
                 var tempList = promise;
+
                 // remove the already selected and devices from the list
                 loanEdit.selectedDevices.forEach(function (selectedDevices) {
                     var index = -1;
                     for (var i = 0; i < tempList.length; i++) {
-                        if (tempList[i].lost == true || tempList[i].returned == true || selectedDevices.deviceId == tempList[i]._id) index = i;
+                        if (selectedDevices.deviceId == tempList[i]._id) index = i;
                     }
                     if (index >= 0) tempList.splice(index, 1);
                 })
