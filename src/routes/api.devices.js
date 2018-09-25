@@ -2,28 +2,28 @@ const express = require('express');
 const router = express.Router();
 const Device = require("../bin/models/device");
 
-function xfilters(field, values) {
+function xfilters(filters, field, values) {
     let temp = {};
-    console.log(field, values, typeof values);
     if (typeof values == "string") {
         if (field == "returned" || field == "lost") {
-            if (values == true) return true;
-            else return { $ne: true };
+            if (values == true)  filters[field] = true;
+            else  filters[field] = { $ne: true };
             //return temp;
         } else {
             //temp[field] = values;
-            return values;
+             filters[field] = values;
         }
     }
     else if (typeof values == "object") {
-        let qstring = { $or: [] };
+        let qstring = [];
         values.forEach(function (value) {
             var test = {};
-            test[field] = values;
-            qstring.$or.push(test)
-        })
-        return qstring;
+            test[field] = value;
+            qstring.push(test)
+        });
+        filters["$or"] = qstring;    
     }
+    return filters
 }
 
 router.get("/", function (req, res, next) {
@@ -34,14 +34,13 @@ router.get("/", function (req, res, next) {
             else res.json(devices);
         });
     else {
-        if (req.query.id != undefined) filters.id = xfilters('_id', req.query.id);
-        if (req.query.ownerId != undefined) filters.ownerId = xfilters('ownerId', req.query.ownerId);
-        if (req.query.hardwareId != undefined) filters.hardwareId = xfilters('hardwareId', req.query.hardwareId);
-        if (req.query.serialNumber != undefined) filters.serialNumber = xfilters('serialNumber', req.query.serialNumber);
-        if (req.query.macAddress != undefined) filters.macAddress = xfilters('macAddress', req.query.macAddress);
-        if (req.query.returned != undefined) filters.returned = xfilters('returned', req.query.returned);
-        if (req.query.lost != undefined) filters.lost = xfilters('lost', req.query.lost);
-
+        if (req.query.id != undefined) filters = xfilters(filters, '_id', req.query.id);
+        if (req.query.ownerId != undefined) filters = xfilters(filters, 'ownerId', req.query.ownerId);
+        if (req.query.hardwareId != undefined) filters = xfilters(filters, 'hardwareId', req.query.hardwareId);
+        if (req.query.serialNumber != undefined) filters = xfilters(filters, 'serialNumber', req.query.serialNumber);
+        if (req.query.macAddress != undefined) filters = xfilters(filters, 'macAddress', req.query.macAddress);
+        if (req.query.returned != undefined) filters = xfilters(filters, 'returned', req.query.returned);
+        if (req.query.lost != undefined) filters = xfilters(filters, 'lost', req.query.lost);
         filters.removed = { $ne: true };
         Device.loadLoandId(filters, function (err, devices) {
             if (err) res.status(500).json(err);
